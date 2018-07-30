@@ -703,7 +703,7 @@ def live_test(args):
 
         result = cam_mtccn(frame)
 
-        print " --- 0 ----"
+        print (" --- 0 ----")
         print("--- %s seconds ---" % (time.time() - start_time))
 
         if len(result) > 0:
@@ -729,7 +729,7 @@ def live_test(args):
             # disp_img("original", original)
             # cv2.waitKey(0)
 
-            print " --- 0.5 ----"
+            print (" --- 0.5 ----")
             print("--- %s seconds ---" % (time.time() - start_time))
 
             start_time = time.time()
@@ -737,7 +737,7 @@ def live_test(args):
             val_data = prepare_data([eye_left, eye_right, face, face_mask, None])
             val_data[-1] = np.zeros((1,2))
 
-            print " --- 1 ----"
+            print (" --- 1 ----")
             print("--- %s seconds ---" % (time.time() - start_time))
 
             start_time = time.time()
@@ -748,7 +748,7 @@ def live_test(args):
 
             pred = get_prediction(sess, val_data, val_ops)
 
-            print " --- 2 ----"
+            print (" --- 2 ----")
             print("--- %s seconds ---" % (time.time() - start_time))
 
 
