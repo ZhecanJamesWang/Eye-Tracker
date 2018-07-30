@@ -196,7 +196,7 @@ def normalize(data):
     return np.reshape(data, shape)
 
 def prepare_data(data):
-    print "-------- prepare_data --------"
+    print ("-------- prepare_data --------")
     eye_left, eye_right, face, face_mask, y = data
     eye_left = normalize(eye_left)
     eye_right = normalize(eye_right)
