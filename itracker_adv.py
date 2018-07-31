@@ -11,7 +11,7 @@ import time
 import os
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
-mtcnn_window = []
+global mtcnn_window = []
 data_proc_window = []
 eye_tracker_window = []
 display_window = []
@@ -705,6 +705,11 @@ def cam_mtcnn(draw):
 		return []
 
 def live_test(args):
+
+	global mtcnn_window
+	global data_proc_window
+	global eye_tracker_window
+	global display_window
 
 	cam=cv2.VideoCapture(0)
 	# sess = tf.Session()
