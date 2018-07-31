@@ -11,6 +11,7 @@ import time
 import os
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
+read_window = []
 mtcnn_window = []
 data_proc_window = []
 eye_tracker_window = []
@@ -706,6 +707,7 @@ def cam_mtcnn(draw):
 
 def live_test(args):
 
+	global read_window
 	global mtcnn_window
 	global data_proc_window
 	global eye_tracker_window
@@ -721,6 +723,14 @@ def live_test(args):
 		start_time = time.time()
 
 		ret, frame = cam.read()
+
+		lapse = time.time() - start_time
+		read_window.append(lapse)
+		if len(read_window) > 10:
+			read_window = read_window[-10:]
+		print (" --- read frame ----")
+		print("--- %s seconds ---" % np.mean(read_window))
+		start_time = time.time()
 
 		result = cam_mtcnn(frame)
 
