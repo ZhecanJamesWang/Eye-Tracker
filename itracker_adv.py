@@ -729,7 +729,7 @@ def live_test(args):
 		if len(mtcnn_window) > 10:
 			mtcnn_window = mtcnn_window[-10:]
 		print (" --- mtcnn ----")
-		print("--- %s seconds ---" % np.mean(matcnn_window))
+		print("--- %s seconds ---" % np.mean(mtcnn_window))
 
 		if len(result) > 0:
 			start_time = time.time()
