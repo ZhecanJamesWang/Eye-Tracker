@@ -729,7 +729,7 @@ def live_test(args):
 		if len(mtcnn_window) > 10:
 			mtcnn_window = mtcnn_window[-10:]
 		print (" --- mtcnn ----")
-		print("--- %s seconds ---" % mean(matcnn_window))
+		print("--- %s seconds ---" % np.mean(matcnn_window))
 
 		if len(result) > 0:
 			start_time = time.time()
@@ -763,7 +763,7 @@ def live_test(args):
 			if len(data_proc_window) > 10:
 				data_proc_window = data_proc_window[-10:]
 			print (" --- data_proc_window ----")
-			print("--- %s seconds ---" % mean(data_proc_window))
+			print("--- %s seconds ---" % np.mean(data_proc_window))
 			start_time = time.time()
 
 			# Load and validate the network.
@@ -777,7 +777,7 @@ def live_test(args):
 			if len(eye_tracker_window) > 10:
 				eye_tracker_window = eye_tracker_window[-10:]
 			print (" --- eye_tracker ----")
-			print("--- %s seconds ---" % mean(eye_tracker_window))
+			print("--- %s seconds ---" % np.mean(eye_tracker_window))
 			start_time = time.time()
 
 			arm_length = 70 # cm
@@ -808,7 +808,7 @@ def live_test(args):
 			if len(display_window) > 10:
 				display_window = display_window[-10:]
 			print (" --- display ----")
-			print("--- %s seconds ---" % mean(display_window))
+			print("--- %s seconds ---" % np.mean(display_window))
 
 def test(args):
 	_, val_data = load_data(args.input)
