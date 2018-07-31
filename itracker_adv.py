@@ -9,7 +9,7 @@ import detect_face
 from PIL import Image
 import time
 import os
-os.environ["CUDA_VISIBLE-DEVICES"] = "1"
+os.environ["CUDA_VISIBLE-DEVICES"] = "0"
 
 # Network Parameters
 img_size = 64
@@ -75,8 +75,8 @@ pre_data_mean = 0
 
 pred_values = None
 
-# sess = tf.Session()
-# pnet, rnet, onet = detect_face.create_mtcnn(sess, None)
+sess = tf.Session()
+pnet, rnet, onet = detect_face.create_mtcnn(sess, None)
 
 # def disp_img(img, x = None, y = None, px = None, py = None):
 #     # img = train_eye_left[0]
@@ -205,8 +205,8 @@ def prepare_data(data):
 	face = normalize(face)
 	face_mask = np.reshape(face_mask, (face_mask.shape[0], -1)).astype('float32')
 
-	# if y != None:
-	y = y.astype('float32')
+	if y != None:
+		y = y.astype('float32')
 
 	return [eye_left, eye_right, face, face_mask, y]
 
@@ -701,7 +701,7 @@ def cam_mtccn(draw):
 def live_test(args):
 
 	cam=cv2.VideoCapture(0)
-	sess = tf.Session()
+	# sess = tf.Session()
 
 	val_ops = load_model(sess, args.load_model)
 
