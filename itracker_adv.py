@@ -719,8 +719,8 @@ def live_test(args):
 
 		result = cam_mtcnn(frame)
 
-		time = time.time() - start_time
-		mtcnn_window.append(time)
+		lapse = time.time() - start_time
+		mtcnn_window.append(lapse)
 		if len(mtcnn_window) > 10:
 			mtcnn_window = mtcnn_window[-10:]
 		print (" --- mtcnn ----")
@@ -753,8 +753,8 @@ def live_test(args):
 			val_data = prepare_data([eye_left, eye_right, face, face_mask, None])
 			val_data[-1] = np.zeros((1,2))
 
-			time = time.time() - start_time
-			data_proc_window.append(time)
+			lapse = time.time() - start_time
+			data_proc_window.append(lapse)
 			if len(data_proc_window) > 10:
 				data_proc_window = data_proc_window[-10:]
 			print (" --- data_proc_window ----")
@@ -767,8 +767,8 @@ def live_test(args):
 
 			pred = get_prediction(sess, val_data, val_ops)
 
-			time = time.time() - start_time
-			eye_tracker_window.append(time)
+			lapse = time.time() - start_time
+			eye_tracker_window.append(lapse)
 			if len(eye_tracker_window) > 10:
 				eye_tracker_window = eye_tracker_window[-10:]
 			print (" --- eye_tracker ----")
@@ -798,8 +798,8 @@ def live_test(args):
 			# disp_img("final", draw)
 			cv2.waitKey(1)
 
-			time = time.time() - start_time
-			display_window.append(time)
+			lapse = time.time() - start_time
+			display_window.append(lapse)
 			if len(display_window) > 10:
 				display_window = display_window[-10:]
 			print (" --- display ----")
