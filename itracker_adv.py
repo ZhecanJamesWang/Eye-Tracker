@@ -11,7 +11,7 @@ import time
 import os
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
-global mtcnn_window = []
+mtcnn_window = []
 data_proc_window = []
 eye_tracker_window = []
 display_window = []
