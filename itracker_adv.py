@@ -9,7 +9,13 @@ import detect_face
 from PIL import Image
 import time
 import os
-os.environ["CUDA_VISIBLE-DEVICES"] = "0"
+os.environ["CUDA_VISIBLE-DEVICES"] = "1"
+
+mtcnn_window = []
+data_proc_window = []
+eye_tracker_window = []
+display_window = []
+
 
 # Network Parameters
 img_size = 64
@@ -634,7 +640,7 @@ def train(args):
 		np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
 								val_loss_history=val_loss_history, val_err_history=val_err_history)
 
-def cam_mtccn(draw):
+def cam_mtcnn(draw):
 
 	minsize = 40 # minimum size of face
 	threshold = [ 0.6, 0.7, 0.9 ]  # three steps's threshold
@@ -711,12 +717,17 @@ def live_test(args):
 
 		ret, frame = cam.read()
 
-		result = cam_mtccn(frame)
+		result = cam_mtcnn(frame)
 
-		print (" --- 0 ----")
-		print("--- %s seconds ---" % (time.time() - start_time))
+		time = time.time() - start_time
+		mtcnn_window.append(time)
+		if len(mtcnn_window) > 10:
+			mtcnn_window = mtcnn_window[-10:]
+		print (" --- mtcnn ----")
+		print("--- %s seconds ---" % mean(matcnn_window))
 
 		if len(result) > 0:
+			start_time = time.time()
 			# print "----------- get result -------------"
 			[original, draw, face, eye_left, eye_right, face_mask, left_eye, right_eye] = result
 
@@ -739,17 +750,15 @@ def live_test(args):
 			# disp_img("original", original)
 			# cv2.waitKey(0)
 
-			print (" --- 0.5 ----")
-			print("--- %s seconds ---" % (time.time() - start_time))
-
-			start_time = time.time()
-
 			val_data = prepare_data([eye_left, eye_right, face, face_mask, None])
 			val_data[-1] = np.zeros((1,2))
 
-			print (" --- 1 ----")
-			print("--- %s seconds ---" % (time.time() - start_time))
-
+			time = time.time() - start_time
+			data_proc_window.append(time)
+			if len(data_proc_window) > 10:
+				data_proc_window = data_proc_window[-10:]
+			print (" --- data_proc_window ----")
+			print("--- %s seconds ---" % mean(data_proc_window))
 			start_time = time.time()
 
 			# Load and validate the network.
@@ -758,9 +767,13 @@ def live_test(args):
 
 			pred = get_prediction(sess, val_data, val_ops)
 
-			print (" --- 2 ----")
-			print("--- %s seconds ---" % (time.time() - start_time))
-
+			time = time.time() - start_time
+			eye_tracker_window.append(time)
+			if len(eye_tracker_window) > 10:
+				eye_tracker_window = eye_tracker_window[-10:]
+			print (" --- eye_tracker ----")
+			print("--- %s seconds ---" % mean(eye_tracker_window))
+			start_time = time.time()
 
 			arm_length = 70 # cm
 
@@ -785,8 +798,12 @@ def live_test(args):
 			# disp_img("final", draw)
 			cv2.waitKey(1)
 
-
-
+			time = time.time() - start_time
+			display_window.append(time)
+			if len(display_window) > 10:
+				display_window = display_window[-10:]
+			print (" --- display ----")
+			print("--- %s seconds ---" % mean(display_window))
 
 def test(args):
 	_, val_data = load_data(args.input)
