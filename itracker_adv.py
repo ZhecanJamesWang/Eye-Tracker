@@ -212,8 +212,8 @@ def prepare_data(data):
 	face = normalize(face)
 	face_mask = np.reshape(face_mask, (face_mask.shape[0], -1)).astype('float32')
 
-	if y != None:
-		y = y.astype('float32')
+	# if y != None:
+	y = y.astype('float32')
 
 	return [eye_left, eye_right, face, face_mask, y]
 
@@ -353,8 +353,12 @@ class EyeTracker(object):
 		return out
 
 	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model'):
-		ckpt = os.path.split(out_model)[0]
+		# print ("out_model: ", out_model.split())
+		# ckpt = os.path.split(out_model)[0]
+		# ckpt = out_model.split()[0] + "/"
+		ckpt = "my_model/"
 		if not os.path.exists(ckpt):
+			print("ckpt: ", ckpt)
 			os.makedirs(ckpt)
 
 		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
@@ -415,11 +419,11 @@ class EyeTracker(object):
 				train_err_history.append(train_err)
 				val_loss_history.append(val_loss)
 				val_err_history.append(val_err)
-				if val_loss - min_delta < best_loss:
-					best_loss = val_loss
-					save_path = saver.save(sess, out_model, global_step=n_epoch)
-					print ("Model saved in file: %s" % save_path)
-					n_incr_error = 0
+				# if val_loss - min_delta < best_loss:
+				# 	best_loss = val_loss
+				# 	save_path = saver.save(sess, out_model, global_step=n_epoch)
+				# 	print ("Model saved in file: %s" % save_path)
+				# 	n_incr_error = 0
 
 				if n_epoch % print_per_epoch == 0:
 					print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
@@ -839,7 +843,7 @@ def main():
 	parser.add_argument('-i', '--input', required=False, type=str, help='path to the input data')
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
-	parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
+	parser.add_argument('-bs', '--batch_size', type=int, default=10, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=5, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
@@ -848,13 +852,13 @@ def main():
 	parser.add_argument('-sl', '--save_loss', type=str, default='loss.npz', help='save loss')
 	args = parser.parse_args()
 
-	if args.train:
-		train(args)
-	else:
-		if not args.load_model:
-			raise Exception('load_model arg needed in test phase')
-		# test(args)
-		live_test(args)
+	# if args.train:
+	train(args)
+	# else:
+	# 	if not args.load_model:
+	# 		raise Exception('load_model arg needed in test phase')
+	# 	# test(args)
+	# 	live_test(args)
 
 if __name__ == '__main__':
 	main()
