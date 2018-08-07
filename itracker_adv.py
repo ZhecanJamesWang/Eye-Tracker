@@ -359,14 +359,14 @@ class EyeTracker(object):
 		out = tf.add(tf.matmul(fc, weights['fc2']), biases['fc2'])
 		return out
 
-	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0):
+	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
 		print "out_model: ", out_model.split()
 
 		ckpt = out_model.split()[0]
 		# ckpt = ckpt + "/" + date + "/" + str(cycle) + "/"
 		print "ckpt: ", ckpt
 
-		ckpt = os.path.join(ckpt, date, str(cycle))
+		ckpt = os.path.join(ckpt, date, str(overall_epoch), str(cycle))
 		print "ckpt: ", ckpt
 		if not os.path.exists(ckpt):
 			os.makedirs(ckpt)
@@ -638,9 +638,12 @@ def train(args):
 	val_err_history = []
 	chunk_size = args.batch_size * 100
 
+	print ("chunk_size: ", chunk_size)
+
 	train_num = len(train_data)
 	MaxIters = train_num/chunk_size
 
+	# ////////////////////
 	for e in range(args.max_epoch):
 		for iter in range (int(MaxIters)):
 			print (" ------------- iter --------------: ", iter)
@@ -652,7 +655,6 @@ def train(args):
 		    print (np.asarray(batch[0][0]).shape)
 		    print (batch[1].shape)
 
-	////////////////////
 			train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(train_data, val_data, \
 													lr = args.learning_rate, \
 													batch_size = args.batch_size, \
@@ -661,13 +663,13 @@ def train(args):
 													patience = args.patience, \
 													print_per_epoch = args.print_per_epoch,
 													out_model = args.save_model,\
-													cycle = 1)
-
+													cycle = iter, overall_epoch = e)
+													
 			train_loss_history.extend(train_loss_history)
 			train_err_history.extend(train_err_history)
 			val_loss_history.extend(val_loss_history)
 			val_err_history.extend(val_err_history)
-	////////////////////
+	# ////////////////////
 
 
 	tf.summary.histogram("train_loss_history", train_loss_history)
