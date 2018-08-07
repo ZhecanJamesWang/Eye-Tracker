@@ -685,7 +685,7 @@ def train(args):
 			train_start=iter* chunk_size
 			train_end = (iter+1)* chunk_size
 			batch = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
-
+			train_data = batch
 			# print (len(batch[0]))
 			# print (np.asarray(batch[0][0]).shape)
 			# print (batch[1].shape)
