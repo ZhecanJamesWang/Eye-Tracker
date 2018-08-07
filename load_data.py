@@ -328,6 +328,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
         # face_grid[0, tl_y:br_y, tl_x:br_x] = 1
         face_grid[tl_y:br_y, tl_x:br_x] = 1
         face_grid = face_grid.flatten()
+        face_grid = np.expand_dims(face_grid, axis=1)
         # print ("face_grid: ", face_grid.shape)
 
         # get labels
