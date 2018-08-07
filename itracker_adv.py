@@ -436,6 +436,8 @@ class EyeTracker(object):
 
 					best_loss = val_loss
 					print ("os.path.abspath(out_model): ", os.path.abspath(out_model))
+
+					print ("n_epoch: ", n_epoch)
 					save_path = saver.save(sess, ckpt, os.path.abspath(out_model), global_step=n_epoch)
 					print ("Model saved in file: %s" % save_path)
 					n_incr_error = 0
