@@ -44,7 +44,7 @@ test_names = load_data_names(test_path)[:limit]
 
 # print (len(batch))
 # print (batch.shape)
-
+chunk_size = 100
 train_num = len(train_names)
 MaxIters = train_num/chunk_size
 
