@@ -629,7 +629,8 @@ def train(args):
 	# val_data = [each[:val_size] for each in val_data]
 
 
-	dataset_path = "GazeCapture"
+	# dataset_path = "C:\Users\Cheng Lu\Documents\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
+	dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
 	train_path = dataset_path + '\ '.strip() + "train"
 	val_path = dataset_path + '\ '.strip() + "validation"
 	test_path = dataset_path + '\ '.strip() + "test"
@@ -644,7 +645,7 @@ def train(args):
 	img_rows = 64
 	img_ch = 3
 
-	limit = 100
+	limit = 10000
 
 	# train data
 	train_names = load_data_names(train_path)[:limit]
@@ -655,6 +656,10 @@ def train(args):
 
 	# train_data = prepare_data(train_data)
 	# val_data = prepare_data(val_data)
+	#
+	# print ("train_data: ", type(train_data))
+	# print ("train_data: ", len(train_data))
+	# print ("train_data: ", train_data.shape)
 
 	start = timeit.default_timer()
 	et = EyeTracker()
@@ -663,29 +668,32 @@ def train(args):
 	train_err_history = []
 	val_loss_history = []
 	val_err_history = []
-	chunk_size = args.batch_size * 100
+	chunk_size = args.batch_size * 10
 
 	print ("chunk_size: ", chunk_size)
 
 	train_num = len(train_names)
-	MaxIters = train_num/chunk_size
 
+	print ("train_num: ", train_num)
+
+	MaxIters = train_num/chunk_size
+	print ("MaxIters: ", MaxIters)
 	# ////////////////////
 	for e in range(args.max_epoch):
 		for iter in range (int(MaxIters)):
 			print (" ------------- iter --------------: ", iter)
 			train_start=iter* chunk_size
 			train_end = (iter+1)* chunk_size
-		    batch = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+			batch = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
-		    print (len(batch[0]))
-		    print (np.asarray(batch[0][0]).shape)
-		    print (batch[1].shape)
+			# print (len(batch[0]))
+			# print (np.asarray(batch[0][0]).shape)
+			# print (batch[1].shape)
 
 			train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(train_data, val_data, \
 													lr = args.learning_rate, \
 													batch_size = args.batch_size, \
-													max_epoch = 1, \
+													max_epoch = 10, \
 													min_delta = 1e-4, \
 													patience = args.patience, \
 													print_per_epoch = args.print_per_epoch,

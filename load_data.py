@@ -370,7 +370,8 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
         # increase the size of the current batch
         b += 1
 
-    return [right_eye_batch, left_eye_batch, face_batch, face_grid_batch], y_batch
+    # return [right_eye_batch, left_eye_batch, face_batch, face_grid_batch], y_batch
+    return [right_eye_batch, left_eye_batch, face_batch, face_grid_batch, y_batch]
 
 
 
