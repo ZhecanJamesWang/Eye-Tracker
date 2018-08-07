@@ -362,16 +362,7 @@ class EyeTracker(object):
 		return out
 
 	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
-		print ("out_model: ", out_model.split())
 
-		ckpt = out_model.split()[0]
-		# ckpt = ckpt + "/" + date + "/" + str(cycle) + "/"
-		print ("ckpt: ", ckpt)
-
-		ckpt = os.path.join(ckpt, date, str(overall_epoch), str(cycle))
-		print ("ckpt: ", ckpt)
-		if not os.path.exists(ckpt):
-			os.makedirs(ckpt)
 
 		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
 		# Define loss and optimizer
@@ -432,6 +423,17 @@ class EyeTracker(object):
 				val_loss_history.append(val_loss)
 				val_err_history.append(val_err)
 				if val_loss - min_delta < best_loss:
+					print ("out_model: ", out_model.split())
+
+					ckpt = out_model.split()[0]
+					# ckpt = ckpt + "/" + date + "/" + str(cycle) + "/"
+					print ("ckpt: ", ckpt)
+
+					ckpt = os.path.join(ckpt, date, str(overall_epoch), str(cycle))
+					print ("ckpt: ", ckpt)
+					if not os.path.exists(ckpt):
+						os.makedirs(ckpt)
+
 					best_loss = val_loss
 					print ("os.path.abspath(out_model): ", os.path.abspath(out_model))
 					save_path = saver.save(sess, os.path.abspath(out_model), global_step=n_epoch)
@@ -646,10 +648,10 @@ def train(args):
 	img_ch = 3
 
 	# train data
-	limit = 10000
+	limit = 1000000000000000
 	train_names = load_data_names(train_path)[:limit]
 	# validation data
-	val_limit = 100
+	val_limit = 1000000000000
 	val_names = load_data_names(val_path)[:val_limit]
 	# test data
 	test_names = load_data_names(test_path)[:limit]
@@ -677,15 +679,25 @@ def train(args):
 	print ("train_num: ", train_num)
 
 	MaxIters = train_num/chunk_size
+	MaxTestIters = test_num/chunk_size
+
 	print ("MaxIters: ", MaxIters)
+	print ("MaxTestIters: ", MaxTestIters)
+
+	iterTest=0
 	# ////////////////////
 	for e in range(args.max_epoch):
 		for iter in range (int(MaxIters)):
 			print (" ------------- iter --------------: ", iter)
-			train_start=iter* chunk_size
-			train_end = (iter+1)* chunk_size
+			train_start=iter * chunk_size
+			train_end = (iter+1) * chunk_size
+
 			train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
-			val_data = load_batch_from_data(val_names, dataset_path, val_limit, img_ch, img_cols, img_rows, train_start = 0, train_end = val_limit)
+
+			test_start = iterTest * chunk_size
+			test_end = (iterTest + 1) * chunk_size
+
+			val_data = load_batch_from_data(val_names, dataset_path, val_limit, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 			# print (len(batch[0]))
 			# print (np.asarray(batch[0][0]).shape)
 			# print (batch[1].shape)
@@ -704,6 +716,9 @@ def train(args):
 			train_err_history.extend(train_err_history)
 			val_loss_history.extend(val_loss_history)
 			val_err_history.extend(val_err_history)
+
+			iterTest += 1
+			iterTest %= self.MaxTestIters
 	# ////////////////////
 
 
