@@ -10,6 +10,8 @@ from PIL import Image
 import time
 import os
 import datetime
+from load_data import load_data_names, load_batch_from_data
+
 now = datetime.datetime.now()
 date = now.strftime("%Y-%m-%d-%H-%M")
 
@@ -619,15 +621,40 @@ def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.p
 	# plt.show()
 
 def train(args):
-	train_data, val_data = load_data(args.input)
+	# train_data, val_data = load_data(args.input)
 
 	# train_size = 10
 	# train_data = [each[:train_size] for each in train_data]
 	# val_size = 1
 	# val_data = [each[:val_size] for each in val_data]
 
-	train_data = prepare_data(train_data)
-	val_data = prepare_data(val_data)
+
+	dataset_path = "GazeCapture"
+	train_path = "GazeCapture/train"
+	val_path = "GazeCapture/validation"
+	test_path = "GazeCapture/test"
+
+	# train parameters
+	# n_epoch = args.max_epoch
+	batch_size = 16
+	# patience = args.patience
+
+	# image parameter
+	img_cols = 64
+	img_rows = 64
+	img_ch = 3
+
+	limit = 100
+
+	# train data
+	train_names = load_data_names(train_path)[:limit]
+	# validation data
+	val_names = load_data_names(val_path)[:limit]
+	# test data
+	test_names = load_data_names(test_path)[:limit]
+
+	# train_data = prepare_data(train_data)
+	# val_data = prepare_data(val_data)
 
 	start = timeit.default_timer()
 	et = EyeTracker()
@@ -640,7 +667,7 @@ def train(args):
 
 	print ("chunk_size: ", chunk_size)
 
-	train_num = len(train_data)
+	train_num = len(train_names)
 	MaxIters = train_num/chunk_size
 
 	# ////////////////////
