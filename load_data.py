@@ -238,7 +238,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
     left_eye_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
     right_eye_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
     face_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
-    face_grid_batch = np.zeros(shape=(batch_size, 25 * 25, 1), dtype=np.float32)
+    face_grid_batch = np.zeros(shape=(batch_size, 25 * 25), dtype=np.float32)
     y_batch = np.zeros((batch_size, 2), dtype=np.float32)
 
     # counter for check the size of loading batch
