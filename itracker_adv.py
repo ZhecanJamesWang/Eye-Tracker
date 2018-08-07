@@ -675,8 +675,10 @@ def train(args):
 	print ("chunk_size: ", chunk_size)
 
 	train_num = len(train_names)
+	test_num = len(val_names)
 
 	print ("train_num: ", train_num)
+	print ("test_num: ", test_num)
 
 	MaxIters = train_num/chunk_size
 	MaxTestIters = test_num/chunk_size
