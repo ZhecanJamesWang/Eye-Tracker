@@ -327,7 +327,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
         # print ("face_grid: ", face_grid.shape)
         # face_grid[0, tl_y:br_y, tl_x:br_x] = 1
         face_grid[tl_y:br_y, tl_x:br_x] = 1
-        print ("face_grid: ", face_grid.shape)
+        # print ("face_grid: ", face_grid.shape)
 
         # get labels
         y_x = dot_json["XCam"][idx]
@@ -352,9 +352,9 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 
         ######################################################
 
-        print ("face: ", face.shape)
-        print ("left_eye: ", left_eye.shape)
-        print ("right_eye: ", right_eye.shape)
+        # print ("face: ", face.shape)
+        # print ("left_eye: ", left_eye.shape)
+        # print ("right_eye: ", right_eye.shape)
 
         # transpose images
         # face = face.transpose(2, 0, 1)
