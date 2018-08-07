@@ -630,9 +630,9 @@ def train(args):
 
 
 	dataset_path = "GazeCapture"
-	train_path = "GazeCapture/train"
-	val_path = "GazeCapture/validation"
-	test_path = "GazeCapture/test"
+	train_path = dataset_path + '\ '.strip() + "train"
+	val_path = dataset_path + '\ '.strip() + "validation"
+	test_path = dataset_path + '\ '.strip() + "test"
 
 	# train parameters
 	# n_epoch = args.max_epoch
@@ -712,9 +712,9 @@ def train(args):
 	plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=args.plot_loss)
 
 	# if args.save_loss:
-	with open(args.save_loss, 'w') as outfile:
-		np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
-								val_loss_history=val_loss_history, val_err_history=val_err_history)
+	# with open(args.save_loss, 'w') as outfile:
+	# 	np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
+	# 							val_loss_history=val_loss_history, val_err_history=val_err_history)
 
 def cam_mtcnn(draw):
 
