@@ -362,14 +362,14 @@ class EyeTracker(object):
 		return out
 
 	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
-		print "out_model: ", out_model.split()
+		print ("out_model: ", out_model.split())
 
 		ckpt = out_model.split()[0]
 		# ckpt = ckpt + "/" + date + "/" + str(cycle) + "/"
-		print "ckpt: ", ckpt
+		print ("ckpt: ", ckpt)
 
 		ckpt = os.path.join(ckpt, date, str(overall_epoch), str(cycle))
-		print "ckpt: ", ckpt
+		print ("ckpt: ", ckpt)
 		if not os.path.exists(ckpt):
 			os.makedirs(ckpt)
 
@@ -629,10 +629,11 @@ def train(args):
 	# val_data = [each[:val_size] for each in val_data]
 
 
-	dataset_path = "GazeCapture"
-	train_path = "GazeCapture/train"
-	val_path = "GazeCapture/validation"
-	test_path = "GazeCapture/test"
+	dataset_path = "C:\Users\Cheng Lu\Documents\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
+	train_path = dataset_path + '\ '.strip() + "train"
+	val_path = dataset_path + '\ '.strip() + "validation"
+	test_path = dataset_path + '\ '.strip() + 'test'
+
 
 	# train parameters
 	# n_epoch = args.max_epoch
