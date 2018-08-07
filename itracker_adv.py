@@ -642,9 +642,7 @@ def train(args):
 	MaxIters = train_num/chunk_size
 
 	for e in range(args.max_epoch):
-		for iter in range (int(self.MaxIters)):
-
-			print (self.subject_name)
+		for iter in range (int(MaxIters)):
 			print (" ------------- iter --------------: ", iter)
 			train_start=iter* chunk_size
 			train_end = (iter+1)* chunk_size
