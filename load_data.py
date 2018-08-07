@@ -356,9 +356,9 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
         print ("right_eye: ", right_eye.shape)
 
         # transpose images
-        # face = face.transpose(2, 0, 1)
-        # left_eye = left_eye.transpose(2, 0, 1)
-        # right_eye = right_eye.transpose(2, 0, 1)
+        face = face.transpose(2, 0, 1)
+        left_eye = left_eye.transpose(2, 0, 1)
+        right_eye = right_eye.transpose(2, 0, 1)
 
         print ("face: ", face.shape)
         print ("left_eye: ", left_eye.shape)
