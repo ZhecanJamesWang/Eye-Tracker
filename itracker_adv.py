@@ -670,7 +670,7 @@ def train(args):
 	train_err_history = []
 	val_loss_history = []
 	val_err_history = []
-	chunk_size = args.batch_size * 10
+	chunk_size = args.batch_size * 3
 
 	print ("chunk_size: ", chunk_size)
 
@@ -699,7 +699,7 @@ def train(args):
 			test_start = iterTest * chunk_size
 			test_end = (iterTest + 1) * chunk_size
 
-			val_data = load_batch_from_data(val_names, dataset_path, val_limit, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+			val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 			# print (len(batch[0]))
 			# print (np.asarray(batch[0][0]).shape)
 			# print (batch[1].shape)
