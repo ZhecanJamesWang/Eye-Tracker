@@ -433,7 +433,7 @@ class EyeTracker(object):
 				val_err_history.append(val_err)
 				if val_loss - min_delta < best_loss:
 					best_loss = val_loss
-					print "os.path.abspath(out_model): ", os.path.abspath(out_model)
+					print ("os.path.abspath(out_model): ", os.path.abspath(out_model))
 					save_path = saver.save(sess, os.path.abspath(out_model), global_step=n_epoch)
 					print ("Model saved in file: %s" % save_path)
 					n_incr_error = 0
@@ -629,11 +629,10 @@ def train(args):
 	# val_data = [each[:val_size] for each in val_data]
 
 
-	dataset_path = "C:\Users\Cheng Lu\Documents\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
-	train_path = dataset_path + '\ '.strip() + "train"
-	val_path = dataset_path + '\ '.strip() + "validation"
-	test_path = dataset_path + '\ '.strip() + 'test'
-
+	dataset_path = "GazeCapture"
+	train_path = "GazeCapture/train"
+	val_path = "GazeCapture/validation"
+	test_path = "GazeCapture/test"
 
 	# train parameters
 	# n_epoch = args.max_epoch
