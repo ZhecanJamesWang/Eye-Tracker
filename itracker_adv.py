@@ -720,8 +720,7 @@ def train(args):
 			val_err_history.extend(val_err_history)
 
 			iterTest += 1
-			iterTest %= self.MaxTestIters
-	# ////////////////////
+			iterTest %= MaxTestIters
 
 
 	tf.summary.histogram("train_loss_history", train_loss_history)
