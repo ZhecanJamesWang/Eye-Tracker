@@ -9,6 +9,10 @@ import detect_face
 from PIL import Image
 import time
 import os
+import datetime
+now = datetime.datetime.now()
+date = now.strftime("%Y-%m-%d-%H-%M")
+
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
 read_window = []
@@ -174,13 +178,16 @@ def increase_size(img, scale_percent):
 # Import data
 def load_data(file):
 	npzfile = np.load(file)
-	train_eye_left = npzfile["train_eye_left"]
-	train_eye_right = npzfile["train_eye_right"]
-	train_face = npzfile["train_face"]
-	train_face_mask = npzfile["train_face_mask"]
-	train_y = npzfile["train_y"]
 
 	limit = 100
+
+	train_eye_left = npzfile["train_eye_left"][:limit]
+	train_eye_right = npzfile["train_eye_right"][:limit]
+	train_face = npzfile["train_face"][:limit]
+	train_face_mask = npzfile["train_face_mask"][:limit]
+	train_y = npzfile["train_y"][:limit]
+
+
 	val_eye_left = npzfile["val_eye_left"][:limit]
 	val_eye_right = npzfile["val_eye_right"][:limit]
 	val_face = npzfile["val_face"][:limit]
@@ -212,8 +219,8 @@ def prepare_data(data):
 	face = normalize(face)
 	face_mask = np.reshape(face_mask, (face_mask.shape[0], -1)).astype('float32')
 
-	if y != None:
-		y = y.astype('float32')
+	# if y != None:
+	y = y.astype('float32')
 
 	return [eye_left, eye_right, face, face_mask, y]
 
@@ -352,8 +359,15 @@ class EyeTracker(object):
 		out = tf.add(tf.matmul(fc, weights['fc2']), biases['fc2'])
 		return out
 
-	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model'):
-		ckpt = os.path.split(out_model)[0]
+	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0):
+		print "out_model: ", out_model.split()
+
+		ckpt = out_model.split()[0]
+		# ckpt = ckpt + "/" + date + "/" + str(cycle) + "/"
+		print "ckpt: ", ckpt
+
+		ckpt = os.path.join(ckpt, date, str(cycle))
+		print "ckpt: ", ckpt
 		if not os.path.exists(ckpt):
 			os.makedirs(ckpt)
 
@@ -417,7 +431,8 @@ class EyeTracker(object):
 				val_err_history.append(val_err)
 				if val_loss - min_delta < best_loss:
 					best_loss = val_loss
-					save_path = saver.save(sess, out_model, global_step=n_epoch)
+					print "os.path.abspath(out_model): ", os.path.abspath(out_model)
+					save_path = saver.save(sess, os.path.abspath(out_model), global_step=n_epoch)
 					print ("Model saved in file: %s" % save_path)
 					n_incr_error = 0
 
@@ -616,14 +631,22 @@ def train(args):
 
 	start = timeit.default_timer()
 	et = EyeTracker()
-	train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(train_data, val_data, \
-											lr=args.learning_rate, \
-											batch_size=args.batch_size, \
-											max_epoch=args.max_epoch, \
-											min_delta=1e-4, \
-											patience=args.patience, \
-											print_per_epoch=args.print_per_epoch,
-											out_model=args.save_model)
+
+	for i in range ()
+	////////////////////
+		train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(train_data, val_data, \
+												lr=args.learning_rate, \
+												batch_size=args.batch_size, \
+												max_epoch=args.max_epoch, \
+												min_delta=1e-4, \
+												patience=args.patience, \
+												print_per_epoch=args.print_per_epoch,
+												out_model=args.save_model,\
+												cycle = 1)
+
+	////////////////////
+
+
 	tf.summary.histogram("train_loss_history", train_loss_history)
 	tf.summary.histogram("train_err_history", train_err_history)
 	tf.summary.histogram("val_loss_history", val_loss_history)
