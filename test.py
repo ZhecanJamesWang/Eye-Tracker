@@ -45,7 +45,10 @@ test_names = load_data_names(test_path)[:limit]
 # print (len(batch))
 # print (batch.shape)
 
-for iter in range (int(self.MaxIters)):
+train_num = len(train_names)
+MaxIters = train_num/chunk_size
+
+for iter in range (int(MaxIters)):
 	print (self.subject_name)
 	print (" ------------- iter --------------: ", iter)
 	train_start=iter*self.batch_size
