@@ -664,7 +664,7 @@ def train(args):
 													print_per_epoch = args.print_per_epoch,
 													out_model = args.save_model,\
 													cycle = iter, overall_epoch = e)
-													
+
 			train_loss_history.extend(train_loss_history)
 			train_err_history.extend(train_err_history)
 			val_loss_history.extend(val_loss_history)
