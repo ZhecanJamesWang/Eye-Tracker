@@ -645,12 +645,12 @@ def train(args):
 	img_rows = 64
 	img_ch = 3
 
-	limit = 10000
-
 	# train data
+	limit = 10000
 	train_names = load_data_names(train_path)[:limit]
 	# validation data
-	val_names = load_data_names(val_path)[:limit]
+	val_limit = 100
+	val_names = load_data_names(val_path)[:val_limit]
 	# test data
 	test_names = load_data_names(test_path)[:limit]
 
@@ -684,8 +684,8 @@ def train(args):
 			print (" ------------- iter --------------: ", iter)
 			train_start=iter* chunk_size
 			train_end = (iter+1)* chunk_size
-			batch = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
-			train_data = batch
+			train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+			val_data = load_batch_from_data(val_names, dataset_path, val_limit, img_ch, img_cols, img_rows, train_start = 0, train_end = val_limit)
 			# print (len(batch[0]))
 			# print (np.asarray(batch[0][0]).shape)
 			# print (batch[1].shape)
