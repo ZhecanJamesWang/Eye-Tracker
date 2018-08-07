@@ -369,7 +369,6 @@ class EyeTracker(object):
 		ckpt = os.path.join(ckpt, date, str(cycle))
 		print "ckpt: ", ckpt
 		if not os.path.exists(ckpt):
-			print("ckpt: ", ckpt)
 			os.makedirs(ckpt)
 
 		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
@@ -633,18 +632,43 @@ def train(args):
 	start = timeit.default_timer()
 	et = EyeTracker()
 
-	for i in range ()
-	////////////////////
-		train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(train_data, val_data, \
-												lr=args.learning_rate, \
-												batch_size=args.batch_size, \
-												max_epoch=args.max_epoch, \
-												min_delta=1e-4, \
-												patience=args.patience, \
-												print_per_epoch=args.print_per_epoch,
-												out_model=args.save_model,\
-												cycle = 1)
+	train_loss_history = []
+	train_err_history = []
+	val_loss_history = []
+	val_err_history = []
+	chunk_size = args.batch_size * 100
 
+	train_num = len(train_data)
+	MaxIters = train_num/chunk_size
+
+	for e in range(args.max_epoch):
+		for iter in range (int(self.MaxIters)):
+
+			print (self.subject_name)
+			print (" ------------- iter --------------: ", iter)
+			train_start=iter* chunk_size
+			train_end = (iter+1)* chunk_size
+		    batch = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+
+		    print (len(batch[0]))
+		    print (np.asarray(batch[0][0]).shape)
+		    print (batch[1].shape)
+
+	////////////////////
+			train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(train_data, val_data, \
+													lr = args.learning_rate, \
+													batch_size = args.batch_size, \
+													max_epoch = 1, \
+													min_delta = 1e-4, \
+													patience = args.patience, \
+													print_per_epoch = args.print_per_epoch,
+													out_model = args.save_model,\
+													cycle = 1)
+
+			train_loss_history.extend(train_loss_history)
+			train_err_history.extend(train_err_history)
+			val_loss_history.extend(val_loss_history)
+			val_err_history.extend(val_err_history)
 	////////////////////
 
 
@@ -863,7 +887,7 @@ def main():
 	parser.add_argument('-i', '--input', required=False, type=str, help='path to the input data')
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
-	parser.add_argument('-bs', '--batch_size', type=int, default=10, help='batch size')
+	parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=5, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
@@ -872,13 +896,13 @@ def main():
 	parser.add_argument('-sl', '--save_loss', type=str, default='loss.npz', help='save loss')
 	args = parser.parse_args()
 
-	# if args.train:
-	train(args)
-	# else:
-	# 	if not args.load_model:
-	# 		raise Exception('load_model arg needed in test phase')
-	# 	# test(args)
-	# 	live_test(args)
+	if args.train:
+		train(args)
+	else:
+		if not args.load_model:
+			raise Exception('load_model arg needed in test phase')
+		# test(args)
+		live_test(args)
 
 if __name__ == '__main__':
 	main()
