@@ -689,6 +689,7 @@ def train(args):
 	iterTest=0
 	# ////////////////////
 	for e in range(args.max_epoch):
+		print (" ------------- overall epoch --------------: ", e)
 		for iter in range (int(MaxIters)):
 			print (" ------------- iter --------------: ", iter)
 			train_start=iter * chunk_size
@@ -707,7 +708,7 @@ def train(args):
 			train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(train_data, val_data, \
 													lr = args.learning_rate, \
 													batch_size = args.batch_size, \
-													max_epoch = 10, \
+													max_epoch = 1, \
 													min_delta = 1e-4, \
 													patience = args.patience, \
 													print_per_epoch = args.print_per_epoch,
@@ -939,7 +940,7 @@ def main():
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
 	parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
-	parser.add_argument('-p', '--patience', type=int, default=5, help='early stopping patience')
+	parser.add_argument('-p', '--patience', type=int, default=50, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
 	parser.add_argument('-lm', '--load_model', type=str, help='path to the loaded model')
