@@ -434,11 +434,12 @@ class EyeTracker(object):
 					if not os.path.exists(ckpt):
 						os.makedirs(ckpt)
 
+					ckpt += "/model"
 					best_loss = val_loss
 					print ("os.path.abspath(out_model): ", os.path.abspath(out_model))
 
-					print ("n_epoch: ", n_epoch)
-					save_path = saver.save(sess, ckpt, global_step=n_epoch)
+					# , global_step=n_epoch
+					save_path = saver.save(sess, ckpt)
 					print ("Model saved in file: %s" % save_path)
 					n_incr_error = 0
 
@@ -672,7 +673,7 @@ def train(args):
 	train_err_history = []
 	val_loss_history = []
 	val_err_history = []
-	chunk_size = args.batch_size
+	chunk_size = args.batch_size * 100
 
 	print ("chunk_size: ", chunk_size)
 
