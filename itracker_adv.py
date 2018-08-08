@@ -393,7 +393,7 @@ class EyeTracker(object):
 		# init = tf.global_variables_initializer()
 		# Launch the graph
 		with tf.Session() as sess:
-			sess.run(init)
+			# sess.run(init)
 			writer = tf.summary.FileWriter("logs", sess.graph)
 
 			# Keep training until reach max iterations
@@ -691,8 +691,12 @@ def train(args):
 
 	iterTest=0
 
+
 	# Initializing the variables
 	init = tf.global_variables_initializer()
+	# Launch the graph
+	with tf.Session() as sess:
+		sess.run(init)
 
 	for e in range(args.max_epoch):
 		print (" ------------- overall epoch --------------: ", e)
