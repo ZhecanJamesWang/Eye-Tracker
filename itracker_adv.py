@@ -361,7 +361,7 @@ class EyeTracker(object):
 		out = tf.add(tf.matmul(fc, weights['fc2']), biases['fc2'])
 		return out
 
-	def train(self, sess, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
+	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
 
 
 		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
