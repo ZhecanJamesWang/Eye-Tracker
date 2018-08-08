@@ -425,11 +425,11 @@ class EyeTracker(object):
 				if val_loss - min_delta < best_loss:
 					print ("out_model: ", out_model.split())
 
-					ckpt = out_model.split()[0]
+					# ckpt = out_model.split()[0]
 					# ckpt = ckpt + "/" + date + "/" + str(cycle) + "/"
-					print ("ckpt: ", ckpt)
+					# print ("ckpt: ", ckpt)
 
-					ckpt = os.path.join(ckpt, date, str(overall_epoch), str(cycle))
+					ckpt = os.path.join(os.path.abspath(out_model), date, str(overall_epoch), str(cycle))
 					print ("ckpt: ", ckpt)
 					if not os.path.exists(ckpt):
 						os.makedirs(ckpt)
@@ -438,7 +438,7 @@ class EyeTracker(object):
 					print ("os.path.abspath(out_model): ", os.path.abspath(out_model))
 
 					print ("n_epoch: ", n_epoch)
-					save_path = saver.save(sess, ckpt, os.path.abspath(out_model), global_step=n_epoch)
+					save_path = saver.save(sess, ckpt, global_step=n_epoch)
 					print ("Model saved in file: %s" % save_path)
 					n_incr_error = 0
 
