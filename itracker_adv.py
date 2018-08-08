@@ -401,6 +401,7 @@ class EyeTracker(object):
 			init = tf.global_variables_initializer()
 			sess.run(init)
 			self.ifFirst = False
+			print "------------ initialize weights ------------"
 
 		writer = tf.summary.FileWriter("logs", sess.graph)
 
