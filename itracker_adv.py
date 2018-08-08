@@ -769,6 +769,10 @@ def train(args):
 
 				iterTest += 1
 				iterTest %= MaxTestIters
+				if iterTest > MaxTestIters - 2:
+					iterTest = 0
+
+
 
 
 	tf.summary.histogram("train_loss_history", train_loss_history)
