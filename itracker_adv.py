@@ -361,7 +361,7 @@ class EyeTracker(object):
 		out = tf.add(tf.matmul(fc, weights['fc2']), biases['fc2'])
 		return out
 
-	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
+	def train(self, sess, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
 
 
 		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
@@ -392,64 +392,64 @@ class EyeTracker(object):
 		# # Initializing the variables
 		# init = tf.global_variables_initializer()
 		# Launch the graph
-		with tf.Session() as sess:
+		# with tf.Session() as sess:
 			# sess.run(init)
-			writer = tf.summary.FileWriter("logs", sess.graph)
+		writer = tf.summary.FileWriter("logs", sess.graph)
 
-			# Keep training until reach max iterations
-			for n_epoch in range(1, max_epoch + 1):
-				n_incr_error += 1
-				train_loss = 0.
-				val_loss = 0.
-				train_err = 0.
-				val_err = 0.
-				train_data = shuffle_data(train_data)
-				for batch_train_data in next_batch(train_data, batch_size):
-					# Run optimization op (backprop)
-					sess.run(self.optimizer, feed_dict={self.eye_left: batch_train_data[0], \
-								self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
-								self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
-					train_batch_loss, train_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_train_data[0], \
-								self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
-								self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
-					train_loss += train_batch_loss / n_batches
-					train_err += train_batch_err / n_batches
-				val_loss, val_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: val_data[0], \
-								self.eye_right: val_data[1], self.face: val_data[2], \
-								self.face_mask: val_data[3], self.y: val_data[4]})
+		# Keep training until reach max iterations
+		for n_epoch in range(1, max_epoch + 1):
+			n_incr_error += 1
+			train_loss = 0.
+			val_loss = 0.
+			train_err = 0.
+			val_err = 0.
+			train_data = shuffle_data(train_data)
+			for batch_train_data in next_batch(train_data, batch_size):
+				# Run optimization op (backprop)
+				sess.run(self.optimizer, feed_dict={self.eye_left: batch_train_data[0], \
+							self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
+							self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
+				train_batch_loss, train_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_train_data[0], \
+							self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
+							self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
+				train_loss += train_batch_loss / n_batches
+				train_err += train_batch_err / n_batches
+			val_loss, val_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: val_data[0], \
+							self.eye_right: val_data[1], self.face: val_data[2], \
+							self.face_mask: val_data[3], self.y: val_data[4]})
 
-				train_loss_history.append(train_loss)
-				train_err_history.append(train_err)
-				val_loss_history.append(val_loss)
-				val_err_history.append(val_err)
-				if val_loss - min_delta < best_loss:
-					print ("out_model: ", out_model.split())
+			train_loss_history.append(train_loss)
+			train_err_history.append(train_err)
+			val_loss_history.append(val_loss)
+			val_err_history.append(val_err)
+			if val_loss - min_delta < best_loss:
+				print ("out_model: ", out_model.split())
 
-					# ckpt = out_model.split()[0]
-					# ckpt = ckpt + "/" + date + "/" + str(cycle) + "/"
-					# print ("ckpt: ", ckpt)
+				# ckpt = out_model.split()[0]
+				# ckpt = ckpt + "/" + date + "/" + str(cycle) + "/"
+				# print ("ckpt: ", ckpt)
 
-					ckpt = os.path.join(os.path.abspath(out_model), date, str(overall_epoch), str(cycle))
-					print ("ckpt: ", ckpt)
-					if not os.path.exists(ckpt):
-						os.makedirs(ckpt)
+				ckpt = os.path.join(os.path.abspath(out_model), date, str(overall_epoch), str(cycle))
+				print ("ckpt: ", ckpt)
+				if not os.path.exists(ckpt):
+					os.makedirs(ckpt)
 
-					ckpt += "/model"
-					best_loss = val_loss
-					print ("os.path.abspath(out_model): ", os.path.abspath(out_model))
+				ckpt += "/model"
+				best_loss = val_loss
+				print ("os.path.abspath(out_model): ", os.path.abspath(out_model))
 
-					# , global_step=n_epoch
-					save_path = saver.save(sess, ckpt)
-					print ("Model saved in file: %s" % save_path)
-					n_incr_error = 0
+				# , global_step=n_epoch
+				save_path = saver.save(sess, ckpt)
+				print ("Model saved in file: %s" % save_path)
+				n_incr_error = 0
 
-				if n_epoch % print_per_epoch == 0:
-					print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
-												(n_epoch, max_epoch, train_loss, train_err, val_loss, val_err))
+			if n_epoch % print_per_epoch == 0:
+				print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
+											(n_epoch, max_epoch, train_loss, train_err, val_loss, val_err))
 
-				if n_incr_error >= patience:
-					print ('Early stopping occured. Optimization Finished!')
-					return train_loss_history, train_err_history, val_loss_history, val_err_history
+			if n_incr_error >= patience:
+				print ('Early stopping occured. Optimization Finished!')
+				return train_loss_history, train_err_history, val_loss_history, val_err_history
 
 			return train_loss_history, train_err_history, val_loss_history, val_err_history
 
@@ -698,40 +698,40 @@ def train(args):
 	with tf.Session() as sess:
 		sess.run(init)
 
-	for e in range(args.max_epoch):
-		print (" ------------- overall epoch --------------: ", e)
-		for iter in range (int(MaxIters)):
-			print (" ------------- iter --------------: ", iter)
-			train_start=iter * chunk_size
-			train_end = (iter+1) * chunk_size
+		for e in range(args.max_epoch):
+			print (" ------------- overall epoch --------------: ", e)
+			for iter in range (int(MaxIters)):
+				print (" ------------- iter --------------: ", iter)
+				train_start=iter * chunk_size
+				train_end = (iter+1) * chunk_size
 
-			train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+				train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
-			test_start = iterTest * chunk_size
-			test_end = (iterTest + 1) * chunk_size
+				test_start = iterTest * chunk_size
+				test_end = (iterTest + 1) * chunk_size
 
-			val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
-			# print (len(batch[0]))
-			# print (np.asarray(batch[0][0]).shape)
-			# print (batch[1].shape)
+				val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+				# print (len(batch[0]))
+				# print (np.asarray(batch[0][0]).shape)
+				# print (batch[1].shape)
 
-			train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(train_data, val_data, \
-													lr = args.learning_rate, \
-													batch_size = args.batch_size, \
-													max_epoch = 1, \
-													min_delta = 1e-4, \
-													patience = args.patience, \
-													print_per_epoch = args.print_per_epoch,
-													out_model = args.save_model,\
-													cycle = iter, overall_epoch = e)
+				train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(sess, train_data, val_data, \
+														lr = args.learning_rate, \
+														batch_size = args.batch_size, \
+														max_epoch = 1, \
+														min_delta = 1e-4, \
+														patience = args.patience, \
+														print_per_epoch = args.print_per_epoch,
+														out_model = args.save_model,\
+														cycle = iter, overall_epoch = e)
 
-			train_loss_history.extend(train_loss_history)
-			train_err_history.extend(train_err_history)
-			val_loss_history.extend(val_loss_history)
-			val_err_history.extend(val_err_history)
+				train_loss_history.extend(train_loss_history)
+				train_err_history.extend(train_err_history)
+				val_loss_history.extend(val_loss_history)
+				val_err_history.extend(val_err_history)
 
-			iterTest += 1
-			iterTest %= MaxTestIters
+				iterTest += 1
+				iterTest %= MaxTestIters
 
 
 	tf.summary.histogram("train_loss_history", train_loss_history)
