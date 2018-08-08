@@ -389,8 +389,8 @@ class EyeTracker(object):
 		tf.add_to_collection("validation_nodes", self.pred)
 		saver = tf.train.Saver(max_to_keep=1)
 
-		# Initializing the variables
-		init = tf.global_variables_initializer()
+		# # Initializing the variables
+		# init = tf.global_variables_initializer()
 		# Launch the graph
 		with tf.Session() as sess:
 			sess.run(init)
@@ -690,7 +690,10 @@ def train(args):
 	print ("MaxTestIters: ", MaxTestIters)
 
 	iterTest=0
-	# ////////////////////
+
+	# Initializing the variables
+	init = tf.global_variables_initializer()
+
 	for e in range(args.max_epoch):
 		print (" ------------- overall epoch --------------: ", e)
 		for iter in range (int(MaxIters)):
