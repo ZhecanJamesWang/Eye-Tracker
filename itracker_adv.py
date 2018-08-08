@@ -362,24 +362,21 @@ class EyeTracker(object):
 		fc = tf.nn.relu(tf.add(tf.matmul(fc, weights['fc']), biases['fc']))
 		out = tf.add(tf.matmul(fc, weights['fc2']), biases['fc2'])
 		return out
+	def initialize(self):
 
-	def train(self, sess, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
-
-
-		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
 		# Define loss and optimizer
 		self.cost = tf.losses.mean_squared_error(self.y, self.pred)
 		self.optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost)
 
 		# Evaluate model
 		self.err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(self.pred, self.y), axis=1)))
-		train_loss_history = []
-		train_err_history = []
-		val_loss_history = []
-		val_err_history = []
-		n_incr_error = 0  # nb. of consecutive increase in error
-		best_loss = np.Inf
-		n_batches = train_data[0].shape[0] / batch_size + (train_data[0].shape[0] % batch_size != 0)
+		# train_loss_history = []
+		# train_err_history = []
+		# val_loss_history = []
+		# val_err_history = []
+		# n_incr_error = 0  # nb. of consecutive increase in error
+		# best_loss = np.Inf
+		# n_batches = train_data[0].shape[0] / batch_size + (train_data[0].shape[0] % batch_size != 0)
 
 		# Create the collection
 		tf.get_collection("validation_nodes")
@@ -389,6 +386,35 @@ class EyeTracker(object):
 		tf.add_to_collection("validation_nodes", self.face)
 		tf.add_to_collection("validation_nodes", self.face_mask)
 		tf.add_to_collection("validation_nodes", self.pred)
+		# self.saver = tf.train.Saver(max_to_keep=1)
+
+
+	def train(self, sess, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
+
+
+		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
+		# Define loss and optimizer
+		# self.cost = tf.losses.mean_squared_error(self.y, self.pred)
+		# self.optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost)
+
+		# Evaluate model
+		# self.err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(self.pred, self.y), axis=1)))
+		train_loss_history = []
+		train_err_history = []
+		val_loss_history = []
+		val_err_history = []
+		n_incr_error = 0  # nb. of consecutive increase in error
+		best_loss = np.Inf
+		n_batches = train_data[0].shape[0] / batch_size + (train_data[0].shape[0] % batch_size != 0)
+
+		# # Create the collection
+		# tf.get_collection("validation_nodes")
+		# # Add stuff to the collection.
+		# tf.add_to_collection("validation_nodes", self.eye_left)
+		# tf.add_to_collection("validation_nodes", self.eye_right)
+		# tf.add_to_collection("validation_nodes", self.face)
+		# tf.add_to_collection("validation_nodes", self.face_mask)
+		# tf.add_to_collection("validation_nodes", self.pred)
 		saver = tf.train.Saver(max_to_keep=1)
 
 		# # Initializing the variables
