@@ -672,7 +672,7 @@ def train(args):
 	train_err_history = []
 	val_loss_history = []
 	val_err_history = []
-	chunk_size = args.batch_size * 10
+	chunk_size = args.batch_size
 
 	print ("chunk_size: ", chunk_size)
 
