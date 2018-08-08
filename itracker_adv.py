@@ -750,6 +750,7 @@ def train(args):
 				# print (np.asarray(batch[0][0]).shape)
 				# print (batch[1].shape)
 
+				et.initialize()
 				train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(sess, train_data, val_data, \
 														lr = args.learning_rate, \
 														batch_size = args.batch_size, \
