@@ -673,7 +673,7 @@ def train(args):
 	train_err_history = []
 	val_loss_history = []
 	val_err_history = []
-	chunk_size = args.batch_size
+	chunk_size = args.batch_size * 100
 
 	print ("chunk_size: ", chunk_size)
 
@@ -940,9 +940,9 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--train', action='store_true', help='train flag')
 	parser.add_argument('-i', '--input', required=False, type=str, help='path to the input data')
-	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
+	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=10, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
-	parser.add_argument('-bs', '--batch_size', type=int, default = 16, help='batch size')
+	parser.add_argument('-bs', '--batch_size', type=int, default = 100, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=50, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
