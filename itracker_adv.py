@@ -767,6 +767,8 @@ def train(args):
 				val_loss_history.extend(val_loss_history)
 				val_err_history.extend(val_err_history)
 
+				plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file="loss_" + str(e) + "_" + str(iter) + ".png")
+
 				iterTest += 1
 				iterTest %= MaxTestIters
 
