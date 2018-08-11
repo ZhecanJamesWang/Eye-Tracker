@@ -181,7 +181,7 @@ def increase_size(img, scale_percent):
 def load_data(file):
 	npzfile = np.load(file)
 
-	length = len(npzfile)
+	length = len(npzfile["train_eye_left"])
 	index = randint(0, length - 101)
 
 	train_eye_left = npzfile["train_eye_left"][index : index + 100]
