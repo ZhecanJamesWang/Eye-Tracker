@@ -665,6 +665,9 @@ def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.p
 
 def train(args):
 	train_data, val_data = load_data(args.input)
+	train_data = prepare_data(train_data)
+	val_data = prepare_data(val_data)
+	
 	print (len(train_data))
 	print (train_data[-5].shape)
 	print (train_data[-4].shape)
@@ -752,6 +755,7 @@ def train(args):
 
 				train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
+
 				print (len(train_data))
 				print (train_data[-5].shape)
 				print (train_data[-4].shape)
@@ -763,9 +767,9 @@ def train(args):
 				test_end = (iterTest + 1) * chunk_size
 
 				val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
-				# print (len(batch[0]))
-				# print (np.asarray(batch[0][0]).shape)
-				# print (batch[1].shape)
+
+			    train_data = prepare_data(train_data)
+			    val_data = prepare_data(val_data)
 
 				train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(sess, train_data, val_data, \
 														lr = args.learning_rate, \
