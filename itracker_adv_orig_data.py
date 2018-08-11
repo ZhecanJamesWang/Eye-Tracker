@@ -181,20 +181,21 @@ def increase_size(img, scale_percent):
 def load_data(file):
 	npzfile = np.load(file)
 
-	limit = 100
+	length = len(npzfile)
+	index = randint(0, length - 101)
 
-	train_eye_left = npzfile["train_eye_left"][:limit]
-	train_eye_right = npzfile["train_eye_right"][:limit]
-	train_face = npzfile["train_face"][:limit]
-	train_face_mask = npzfile["train_face_mask"][:limit]
-	train_y = npzfile["train_y"][:limit]
+	train_eye_left = npzfile["train_eye_left"][index : index + 100]
+	train_eye_right = npzfile["train_eye_right"][index : index + 100]
+	train_face = npzfile["train_face"][index : index + 100]
+	train_face_mask = npzfile["train_face_mask"][index : index + 100]
+	train_y = npzfile["train_y"][index : index + 100]
 
 
-	val_eye_left = npzfile["val_eye_left"][:limit]
-	val_eye_right = npzfile["val_eye_right"][:limit]
-	val_face = npzfile["val_face"][:limit]
-	val_face_mask = npzfile["val_face_mask"][:limit]
-	val_y = npzfile["val_y"][:limit]
+	val_eye_left = npzfile["val_eye_left"][index : index + 100]
+	val_eye_right = npzfile["val_eye_right"][index : index + 100]
+	val_face = npzfile["val_face"][index : index + 100]
+	val_face_mask = npzfile["val_face_mask"][index : index + 100]
+	val_y = npzfile["val_y"][index : index + 100]
 
 	return [train_eye_left, train_eye_right, train_face, train_face_mask, train_y], [val_eye_left, val_eye_right, val_face, val_face_mask, val_y]
 
@@ -432,11 +433,9 @@ class EyeTracker(object):
 			self.ifFirst = False
 			print ("------------ initialize weights ------------")
 
-		# writer = tf.summary.FileWriter("logs", sess.graph)
+		writer = tf.summary.FileWriter("logs", sess.graph)
 
 		# Keep training until reach max iterations
-		self.ifFirst = False
-
 		for n_epoch in range(1, max_epoch + 1):
 			n_incr_error += 1
 			train_loss = 0.
@@ -669,7 +668,7 @@ def train(args):
 	# train_data, val_data = load_data(args.input)
 	# train_data = prepare_data(train_data)
 	# val_data = prepare_data(val_data)
-	#
+
 	# print (len(train_data))
 	# print (train_data[-5].shape)
 	# print (train_data[-4].shape)
@@ -708,12 +707,6 @@ def train(args):
 	# test data
 	test_names = load_data_names(test_path)[:limit]
 
-	# train_data = prepare_data(train_data)
-	# val_data = prepare_data(val_data)
-	#
-	# print ("train_data: ", type(train_data))
-	# print ("train_data: ", len(train_data))
-	# print ("train_data: ", train_data.shape)
 
 	et = EyeTracker()
 
@@ -755,15 +748,20 @@ def train(args):
 				train_start=iter * chunk_size
 				train_end = (iter+1) * chunk_size
 
-				train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
-
-				test_start = iterTest * chunk_size
-				test_end = (iterTest + 1) * chunk_size
-
-				val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
-
+				train_data, val_data = load_data(args.input)
 				train_data = prepare_data(train_data)
 				val_data = prepare_data(val_data)
+
+				#
+				# train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+				#
+				# test_start = iterTest * chunk_size
+				# test_end = (iterTest + 1) * chunk_size
+				#
+				# val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+				#
+				# train_data = prepare_data(train_data)
+				# val_data = prepare_data(val_data)
 
 				train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(sess, train_data, val_data, \
 														lr = args.learning_rate, \
@@ -780,7 +778,7 @@ def train(args):
 				Val_loss_history.extend(val_loss_history)
 				Val_err_history.extend(val_err_history)
 
-				plot_loss(np.array(Train_loss_history), np.array(Train_err_history), np.array(Val_err_history), start=0, per=1, save_file="test1/loss_" + str(e) + "_" + str(iter) + ".png")
+				plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file="test2/loss_" + str(e) + "_" + str(iter) + ".png")
 
 				iterTest += 1
 				iterTest %= MaxTestIters
