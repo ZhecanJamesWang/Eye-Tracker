@@ -755,14 +755,6 @@ def train(args):
 
 				train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
-
-				print (len(train_data))
-				print (train_data[-5].shape)
-				print (train_data[-4].shape)
-				print (train_data[-3].shape)
-				print (train_data[-2].shape)
-				print (train_data[-1].shape)
-
 				test_start = iterTest * chunk_size
 				test_end = (iterTest + 1) * chunk_size
 
@@ -771,15 +763,6 @@ def train(args):
 				train_data = prepare_data(train_data)
 				val_data = prepare_data(val_data)
 
-
-				print (len(train_data))
-				print (train_data[-5].shape)
-				print (train_data[-4].shape)
-				print (train_data[-3].shape)
-				print (train_data[-2].shape)
-				print (train_data[-1].shape)
-
-				
 				train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(sess, train_data, val_data, \
 														lr = args.learning_rate, \
 														batch_size = args.batch_size, \
