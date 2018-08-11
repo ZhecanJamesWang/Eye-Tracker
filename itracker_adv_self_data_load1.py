@@ -664,16 +664,16 @@ def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.p
 	# plt.show()
 
 def train(args):
-	train_data, val_data = load_data(args.input)
-	train_data = prepare_data(train_data)
-	val_data = prepare_data(val_data)
-
-	print (len(train_data))
-	print (train_data[-5].shape)
-	print (train_data[-4].shape)
-	print (train_data[-3].shape)
-	print (train_data[-2].shape)
-	print (train_data[-1].shape)
+	# train_data, val_data = load_data(args.input)
+	# train_data = prepare_data(train_data)
+	# val_data = prepare_data(val_data)
+	#
+	# print (len(train_data))
+	# print (train_data[-5].shape)
+	# print (train_data[-4].shape)
+	# print (train_data[-3].shape)
+	# print (train_data[-2].shape)
+	# print (train_data[-1].shape)
 
 	# train_size = 10
 	# train_data = [each[:train_size] for each in train_data]
