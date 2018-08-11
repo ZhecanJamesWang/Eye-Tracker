@@ -317,7 +317,8 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
         right_eye = img[tl_y:br_y, tl_x:br_x]
 
         # get face grid (in ch, cols, rows convention)
-        face_grid = np.zeros(shape=(25, 25, 1), dtype=np.float32)
+        # face_grid = np.zeros(shape=(25, 25, 1), dtype=np.float32)
+        face_grid = np.zeros(shape=(25, 25), dtype=np.float32)
         tl_x = int(grid_json["X"][idx])
         tl_y = int(grid_json["Y"][idx])
         w = int(grid_json["W"][idx])
