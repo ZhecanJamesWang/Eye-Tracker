@@ -405,7 +405,7 @@ class EyeTracker(object):
 		val_loss_history = []
 		val_err_history = []
 		n_incr_error = 0  # nb. of consecutive increase in error
-//////////////////////////////////////////////////
+# //////////////////////////////////////////////////
 		best_loss = np.Inf
 		n_batches = train_data[0].shape[0] / batch_size + (train_data[0].shape[0] % batch_size != 0)
 
@@ -417,7 +417,7 @@ class EyeTracker(object):
 		# tf.add_to_collection("validation_nodes", self.face)
 		# tf.add_to_collection("validation_nodes", self.face_mask)
 		# tf.add_to_collection("validation_nodes", self.pred)
-//////////////////////////////////////////////////
+# //////////////////////////////////////////////////
 		saver = tf.train.Saver(max_to_keep=1)
 
 		# # Initializing the variables
