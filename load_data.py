@@ -342,12 +342,11 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 
         # save images (for debug)
 # /////////////////////////////////////////////////////////
-        # if save_img:
-        cv2.imwrite("images/face.png", face)
-        cv2.imwrite("images/right.png", right_eye)
-        cv2.imwrite("images/left.png", left_eye)
-        cv2.imwrite("images/image.png", img)
-        raise "debug"
+        if save_img:
+            cv2.imwrite("images/face.png", face)
+            cv2.imwrite("images/right.png", right_eye)
+            cv2.imwrite("images/left.png", left_eye)
+            cv2.imwrite("images/image.png", img)
 
         # normalization
         face = image_normalization(face)
