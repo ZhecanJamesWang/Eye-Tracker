@@ -436,7 +436,7 @@ class EyeTracker(object):
 
 		# Keep training until reach max iterations
 		self.ifFirst = False
-		
+
 		for n_epoch in range(1, max_epoch + 1):
 			n_incr_error += 1
 			train_loss = 0.
@@ -717,10 +717,10 @@ def train(args):
 
 	et = EyeTracker()
 
-	train_loss_history = []
-	train_err_history = []
-	val_loss_history = []
-	val_err_history = []
+	Train_loss_history = []
+	Train_err_history = []
+	Val_loss_history = []
+	Val_err_history = []
 	chunk_size = args.batch_size * 10
 	# chunk_size = args.batch_size
 
@@ -775,12 +775,12 @@ def train(args):
 														out_model = args.save_model,\
 														cycle = iter, overall_epoch = e)
 
-				train_loss_history.extend(train_loss_history)
-				train_err_history.extend(train_err_history)
-				val_loss_history.extend(val_loss_history)
-				val_err_history.extend(val_err_history)
+				Train_loss_history.extend(train_loss_history)
+				Train_err_history.extend(train_err_history)
+				Val_loss_history.extend(val_loss_history)
+				Val_err_history.extend(val_err_history)
 
-				plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file="test1/loss_" + str(e) + "_" + str(iter) + ".png")
+				plot_loss(np.array(Train_loss_history), np.array(Train_err_history), np.array(Val_err_history), start=0, per=1, save_file="test1/loss_" + str(e) + "_" + str(iter) + ".png")
 
 				iterTest += 1
 				iterTest %= MaxTestIters
