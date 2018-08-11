@@ -238,7 +238,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
     left_eye_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
     right_eye_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
     face_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
-    face_grid_batch = np.zeros(shape=(batch_size, 25 * 25), dtype=np.float32)
+    face_grid_batch = np.zeros(shape=(batch_size, 25, 25), dtype=np.float32)
     y_batch = np.zeros((batch_size, 2), dtype=np.float32)
 
     # counter for check the size of loading batch
@@ -324,12 +324,12 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
         h = int(grid_json["H"][idx])
         br_x = tl_x + w
         br_y = tl_y + h
-        # print ("face_grid: ", face_grid.shape)
+        print ("face_grid: ", face_grid.shape)
         # face_grid[0, tl_y:br_y, tl_x:br_x] = 1
         face_grid[tl_y:br_y, tl_x:br_x] = 1
-        face_grid = face_grid.flatten()
+        # face_grid = face_grid.flatten()
         # face_grid = np.expand_dims(face_grid, axis=1)
-        # print ("face_grid: ", face_grid.shape)
+        print ("face_grid: ", face_grid.shape)
 
         # get labels
         y_x = dot_json["XCam"][idx]
