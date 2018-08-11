@@ -664,15 +664,7 @@ def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.p
 	# plt.show()
 
 def train(args):
-	train_data, val_data = load_data(args.input)
-
-	print (train_data[-3].shape)
-	print (train_data[-2].shape)
-	print (train_data[-1].shape)
-	print ("-----------------------------------------")
-	print ("*" * 20)
-
-	raise "debug"
+	# train_data, val_data = load_data(args.input)
 
 	# train_size = 10
 	# train_data = [each[:train_size] for each in train_data]
@@ -753,6 +745,11 @@ def train(args):
 				train_end = (iter+1) * chunk_size
 
 				train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+
+				print (len(train_data))
+				print (train_data[-3].shape)
+				print (train_data[-2].shape)
+				print (train_data[-1].shape)
 
 				test_start = iterTest * chunk_size
 				test_end = (iterTest + 1) * chunk_size
