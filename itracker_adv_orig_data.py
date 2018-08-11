@@ -190,6 +190,7 @@ def load_data(file):
 	train_face_mask = npzfile["train_face_mask"][index : index + 100]
 	train_y = npzfile["train_y"][index : index + 100]
 
+	index = np.random.randint(0, length - 101)
 
 	val_eye_left = npzfile["val_eye_left"][index : index + 100]
 	val_eye_right = npzfile["val_eye_right"][index : index + 100]
@@ -749,6 +750,14 @@ def train(args):
 				train_end = (iter+1) * chunk_size
 
 				train_data, val_data = load_data(args.input)
+
+				print (len(train_data))
+				print (train_data[-5].shape)
+				print (train_data[-4].shape)
+				print (train_data[-3].shape)
+				print (train_data[-2].shape)
+				print (train_data[-1].shape)
+
 				train_data = prepare_data(train_data)
 				val_data = prepare_data(val_data)
 
