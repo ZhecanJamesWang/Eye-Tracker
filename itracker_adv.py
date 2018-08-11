@@ -667,7 +667,7 @@ def train(args):
 	train_data, val_data = load_data(args.input)
 	train_data = prepare_data(train_data)
 	val_data = prepare_data(val_data)
-	
+
 	print (len(train_data))
 	print (train_data[-5].shape)
 	print (train_data[-4].shape)
@@ -768,8 +768,8 @@ def train(args):
 
 				val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
-			    train_data = prepare_data(train_data)
-			    val_data = prepare_data(val_data)
+				train_data = prepare_data(train_data)
+				val_data = prepare_data(val_data)
 
 				train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(sess, train_data, val_data, \
 														lr = args.learning_rate, \
