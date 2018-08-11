@@ -242,6 +242,7 @@ class EyeTracker(object):
 	def __init__(self):
 		# tf Graph input
 		self.ifFirst = True
+		self.best_loss = np.Inf
 
 		self.eye_left = tf.placeholder(tf.float32, [None, img_size, img_size, n_channel], name='eye_left')
 		self.eye_right = tf.placeholder(tf.float32, [None, img_size, img_size, n_channel], name='eye_right')
@@ -406,7 +407,6 @@ class EyeTracker(object):
 		val_err_history = []
 		n_incr_error = 0  # nb. of consecutive increase in error
 # //////////////////////////////////////////////////
-		best_loss = np.Inf
 		n_batches = train_data[0].shape[0] / batch_size + (train_data[0].shape[0] % batch_size != 0)
 
 		# # Create the collection
@@ -432,9 +432,11 @@ class EyeTracker(object):
 			self.ifFirst = False
 			print ("------------ initialize weights ------------")
 
-		writer = tf.summary.FileWriter("logs", sess.graph)
+		# writer = tf.summary.FileWriter("logs", sess.graph)
 
 		# Keep training until reach max iterations
+		self.ifFirst = False
+		
 		for n_epoch in range(1, max_epoch + 1):
 			n_incr_error += 1
 			train_loss = 0.
@@ -460,7 +462,7 @@ class EyeTracker(object):
 			train_err_history.append(train_err)
 			val_loss_history.append(val_loss)
 			val_err_history.append(val_err)
-			if val_loss - min_delta < best_loss:
+			if val_loss - min_delta < self.best_loss:
 				print ("out_model: ", out_model.split())
 
 				# ckpt = out_model.split()[0]
@@ -473,7 +475,7 @@ class EyeTracker(object):
 					os.makedirs(ckpt)
 
 				ckpt += "/model"
-				best_loss = val_loss
+				self.best_loss = val_loss
 				print ("os.path.abspath(out_model): ", os.path.abspath(out_model))
 
 				# , global_step=n_epoch
@@ -778,7 +780,7 @@ def train(args):
 				val_loss_history.extend(val_loss_history)
 				val_err_history.extend(val_err_history)
 
-				plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file="loss_" + str(e) + "_" + str(iter) + ".png")
+				plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file="test1/loss_" + str(e) + "_" + str(iter) + ".png")
 
 				iterTest += 1
 				iterTest %= MaxTestIters
