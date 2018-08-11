@@ -664,7 +664,9 @@ def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.p
 	# plt.show()
 
 def train(args):
-	# train_data, val_data = load_data(args.input)
+	train_data, val_data = load_data(args.input)
+	print train_data[-1].shape
+	raise "debug"
 
 	# train_size = 10
 	# train_data = [each[:train_size] for each in train_data]
@@ -704,7 +706,6 @@ def train(args):
 	# print ("train_data: ", len(train_data))
 	# print ("train_data: ", train_data.shape)
 
-	start = timeit.default_timer()
 	et = EyeTracker()
 
 	train_loss_history = []
@@ -740,6 +741,7 @@ def train(args):
 		for e in range(args.max_epoch):
 			print (" ------------- overall epoch --------------: ", e)
 			for iter in range (int(MaxIters)):
+				start = timeit.default_timer()
 				print (" ------------- iter --------------: ", iter)
 				train_start=iter * chunk_size
 				train_end = (iter+1) * chunk_size
@@ -776,7 +778,7 @@ def train(args):
 				if iterTest > MaxTestIters - 2:
 					iterTest = 0
 
-
+			    print ('runtime: %.1fs' % (timeit.default_timer() - start))
 
 
 	tf.summary.histogram("train_loss_history", train_loss_history)
@@ -785,7 +787,7 @@ def train(args):
 	tf.summary.histogram("val_err_history", val_err_history)
 
 
-	print ('runtime: %.1fs' % (timeit.default_timer() - start))
+
 
 
 	# if args.plot_loss:
