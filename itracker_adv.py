@@ -665,7 +665,11 @@ def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.p
 
 def train(args):
 	train_data, val_data = load_data(args.input)
+
 	print (train_data[-1].shape)
+	print ("-----------------------------------------")
+	print ("*" * 20)
+
 	raise "debug"
 
 	# train_size = 10
