@@ -229,7 +229,20 @@ def normalize(data):
 
 def prepare_data(data):
 	print ("-------- prepare_data --------")
-	eye_left, eye_right, face, face_mask, y = data
+	eye_left, eye_right, face, face_mask, y = data[0]
+
+
+	cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
+	# save images (for debug)
+	# /////////////////////////////////////////////////////////
+	# if save_img:
+	cv2.imwrite("images/face.png", face)
+	cv2.imwrite("images/right.png", right_eye)
+	cv2.imwrite("images/left.png", left_eye)
+	cv2.imwrite("images/image.png", img)
+
+	raise "debug"
+
 	eye_left = normalize(eye_left)
 	eye_right = normalize(eye_right)
 	face = normalize(face)
