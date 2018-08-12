@@ -199,16 +199,16 @@ def load_data(file):
 	# val_y = npzfile["val_y"][index : index + 100]
 
 
-    train_eye_left = npzfile["train_eye_left"][:100]
-    train_eye_right = npzfile["train_eye_right"][:100]
-    train_face = npzfile["train_face"][:100]
-    train_face_mask = npzfile["train_face_mask"][:100]
-    train_y = npzfile["train_y"][:100]
-    val_eye_left = npzfile["val_eye_left"][:100]
-    val_eye_right = npzfile["val_eye_right"][:100]
-    val_face = npzfile["val_face"][:100]
-    val_face_mask = npzfile["val_face_mask"][:100]
-    val_y = npzfile["val_y"][:100]
+	train_eye_left = npzfile["train_eye_left"][:100]
+	train_eye_right = npzfile["train_eye_right"][:100]
+	train_face = npzfile["train_face"][:100]
+	train_face_mask = npzfile["train_face_mask"][:100]
+	train_y = npzfile["train_y"][:100]
+	val_eye_left = npzfile["val_eye_left"][:100]
+	val_eye_right = npzfile["val_eye_right"][:100]
+	val_face = npzfile["val_face"][:100]
+	val_face_mask = npzfile["val_face_mask"][:100]
+	val_y = npzfile["val_y"][:100]
 
 	return [train_eye_left, train_eye_right, train_face, train_face_mask, train_y], [val_eye_left, val_eye_right, val_face, val_face_mask, val_y]
 
@@ -229,13 +229,13 @@ def normalize(data):
 
 def prepare_data(data):
 	print ("-------- prepare_data --------")
-    eye_left, eye_right, face, face_mask, y = data
-    eye_left = normalize(eye_left)
-    eye_right = normalize(eye_right)
-    face = normalize(face)
-    face_mask = np.reshape(face_mask, (face_mask.shape[0], -1)).astype('float32')
-    y = y.astype('float32')
-    return [eye_left, eye_right, face, face_mask, y]
+	eye_left, eye_right, face, face_mask, y = data
+	eye_left = normalize(eye_left)
+	eye_right = normalize(eye_right)
+	face = normalize(face)
+	face_mask = np.reshape(face_mask, (face_mask.shape[0], -1)).astype('float32')
+	y = y.astype('float32')
+	return [eye_left, eye_right, face, face_mask, y]
 
 
 def shuffle_data(data):
