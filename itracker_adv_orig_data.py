@@ -737,7 +737,7 @@ def train(args):
 	MaxIters = 30
 	# MaxIters = train_num/chunk_size
 	# MaxTestIters = test_num/chunk_size
-	#
+	MaxTestIters = 200
 	# print ("MaxIters: ", MaxIters)
 	# print ("MaxTestIters: ", MaxTestIters)
 	#
