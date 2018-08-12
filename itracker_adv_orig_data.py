@@ -687,11 +687,6 @@ def train(args):
 	# print (train_data[-2].shape)
 	# print (train_data[-1].shape)
 
-	# train_size = 10
-	# train_data = [each[:train_size] for each in train_data]
-	# val_size = 1
-	# val_data = [each[:val_size] for each in val_data]
-
 
 	# dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
 	# train_path = dataset_path + '\ '.strip() + "train"

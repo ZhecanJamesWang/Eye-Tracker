@@ -677,13 +677,6 @@ def train(args):
 	# print (train_data[-2].shape)
 	# print (train_data[-1].shape)
 
-	# train_size = 10
-	# train_data = [each[:train_size] for each in train_data]
-	# val_size = 1
-	# val_data = [each[:val_size] for each in val_data]
-
-
-	# dataset_path = "C:\Users\Cheng Lu\Documents\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
 	dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
 	train_path = dataset_path + '\ '.strip() + "train"
 	val_path = dataset_path + '\ '.strip() + "validation"
@@ -707,13 +700,6 @@ def train(args):
 	val_names = load_data_names(val_path)[:val_limit]
 	# test data
 	test_names = load_data_names(test_path)[:limit]
-
-	# train_data = prepare_data(train_data)
-	# val_data = prepare_data(val_data)
-	#
-	# print ("train_data: ", type(train_data))
-	# print ("train_data: ", len(train_data))
-	# print ("train_data: ", train_data.shape)
 
 	et = EyeTracker()
 
@@ -742,7 +728,6 @@ def train(args):
 
 
 	# Initializing the variables
-	# init = tf.global_variables_initializer()
 	# Launch the graph
 	with tf.Session() as sess:
 		# sess.run(init)

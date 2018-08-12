@@ -490,13 +490,20 @@ def load_batch_from_names_random(names, path, batch_size, img_ch, img_cols, img_
         left_eye = cv2.resize(left_eye, (img_cols, img_rows))
         right_eye = cv2.resize(right_eye, (img_cols, img_rows))
 
+        print ("y_x: ", y_x)
+        print ("y_y: ", y_y)
         # save images (for debug)
-        if save_img:
-            cv2.imwrite("images/face.png", face)
-            cv2.imwrite("images/right.png", right_eye)
-            cv2.imwrite("images/left.png", left_eye)
-            cv2.imwrite("images/image.png", img)
 
+		cv2.circle(face, (y_x, y_y), 1, (0, 0, 255), 2)
+
+        # if save_img:
+        cv2.imwrite("images/face.png", face)
+        cv2.imwrite("images/right.png", right_eye)
+        cv2.imwrite("images/left.png", left_eye)
+        cv2.imwrite("images/image.png", img)
+
+        raise "debug"
+        
         # normalization
         face = image_normalization(face)
         left_eye = image_normalization(left_eye)
