@@ -230,7 +230,7 @@ def normalize(data):
 def prepare_data(data):
 	print ("-------- prepare_data --------")
 	eye_left, eye_right, face, face_mask, y = data[:][0]
-
+	eye_left, eye_right, face, face_mask, y = eye_left[0], eye_right[0], face[0], face_mask[0], y[0]
 	[y_x, y_y] = y
 
 	cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
