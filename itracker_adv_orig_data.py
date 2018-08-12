@@ -11,6 +11,8 @@ import time
 import os
 import datetime
 from load_data import load_data_names, load_batch_from_data
+import cv
+
 
 now = datetime.datetime.now()
 date = now.strftime("%Y-%m-%d-%H-%M")
