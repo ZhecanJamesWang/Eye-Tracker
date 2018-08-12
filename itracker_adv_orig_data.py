@@ -745,8 +745,8 @@ def train(args):
 			for iter in range (int(MaxIters)):
 				start = timeit.default_timer()
 				print (" ------------- iter --------------: ", iter)
-				train_start=iter * chunk_size
-				train_end = (iter+1) * chunk_size
+				# train_start=iter * chunk_size
+				# train_end = (iter+1) * chunk_size
 
 				train_data, val_data = load_data(args.input)
 
