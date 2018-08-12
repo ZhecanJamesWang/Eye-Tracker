@@ -393,7 +393,7 @@ class EyeTracker(object):
 		# self.saver = tf.train.Saver(max_to_keep=1)
 
 
-	def train(self, sess, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
+	def train(self, sess, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
 
 
 		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
@@ -434,7 +434,7 @@ class EyeTracker(object):
 			self.ifFirst = False
 			print ("------------ initialize weights ------------")
 
-		writer = tf.summary.FileWriter("logs", sess.graph)
+		# writer = tf.summary.FileWriter("logs", sess.graph)
 
 		# Keep training until reach max iterations
 		for n_epoch in range(1, max_epoch + 1):
@@ -683,30 +683,29 @@ def train(args):
 	# val_data = [each[:val_size] for each in val_data]
 
 
-	# dataset_path = "C:\Users\Cheng Lu\Documents\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
-	dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
-	train_path = dataset_path + '\ '.strip() + "train"
-	val_path = dataset_path + '\ '.strip() + "validation"
-	test_path = dataset_path + '\ '.strip() + "test"
-
-	# train parameters
-	# n_epoch = args.max_epoch
-	batch_size = 16
-	# patience = args.patience
-
-	# image parameter
-	img_cols = 64
-	img_rows = 64
-	img_ch = 3
-
-	# train data
-	limit = 1000000000000000
-	train_names = load_data_names(train_path)[:limit]
-	# validation data
-	val_limit = 1000000000000
-	val_names = load_data_names(val_path)[:val_limit]
-	# test data
-	test_names = load_data_names(test_path)[:limit]
+	# dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
+	# train_path = dataset_path + '\ '.strip() + "train"
+	# val_path = dataset_path + '\ '.strip() + "validation"
+	# test_path = dataset_path + '\ '.strip() + "test"
+	#
+	# # train parameters
+	# # n_epoch = args.max_epoch
+	# batch_size = 16
+	# # patience = args.patience
+	#
+	# # image parameter
+	# img_cols = 64
+	# img_rows = 64
+	# img_ch = 3
+	#
+	# # train data
+	# limit = 1000000000000000
+	# train_names = load_data_names(train_path)[:limit]
+	# # validation data
+	# val_limit = 1000000000000
+	# val_names = load_data_names(val_path)[:val_limit]
+	# # test data
+	# test_names = load_data_names(test_path)[:limit]
 
 
 	et = EyeTracker()
@@ -715,25 +714,25 @@ def train(args):
 	Train_err_history = []
 	Val_loss_history = []
 	Val_err_history = []
-	chunk_size = args.batch_size * 10
-	# chunk_size = args.batch_size
-
-	print ("chunk_size: ", chunk_size)
-
-	train_num = len(train_names)
-	test_num = len(val_names)
-
-	print ("train_num: ", train_num)
-	print ("test_num: ", test_num)
-
-	MaxIters = train_num/chunk_size
-	MaxTestIters = test_num/chunk_size
-
-	print ("MaxIters: ", MaxIters)
-	print ("MaxTestIters: ", MaxTestIters)
-
-	iterTest=0
-
+	# chunk_size = args.batch_size * 10
+	# # chunk_size = args.batch_size
+	#
+	# print ("chunk_size: ", chunk_size)
+	#
+	# train_num = len(train_names)
+	# test_num = len(val_names)
+	#
+	# print ("train_num: ", train_num)
+	# print ("test_num: ", test_num)
+	#
+	# MaxIters = train_num/chunk_size
+	# MaxTestIters = test_num/chunk_size
+	#
+	# print ("MaxIters: ", MaxIters)
+	# print ("MaxTestIters: ", MaxTestIters)
+	#
+	# iterTest=0
+	#
 
 	# Initializing the variables
 	# init = tf.global_variables_initializer()
