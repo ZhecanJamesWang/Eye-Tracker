@@ -344,7 +344,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		print ("y_y: ", y_y)
 		# save images (for debug)
 
-		cv2.circle(face, (y_x, y_y), 1, (0, 0, 255), 2)
+		cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
 
 		# save images (for debug)
 # /////////////////////////////////////////////////////////
