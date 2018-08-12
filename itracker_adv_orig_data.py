@@ -741,7 +741,7 @@ def train(args):
 	# print ("MaxIters: ", MaxIters)
 	# print ("MaxTestIters: ", MaxTestIters)
 	#
-	# iterTest=0
+	iterTest=0
 	#
 
 	# Initializing the variables
