@@ -232,11 +232,11 @@ def prepare_data(data):
 	eye_left, eye_right, face, face_mask, y = data
 	eye_left, eye_right, face, face_mask, y = eye_left[0], eye_right[0], face[0], face_mask[0], y[0]
 
-	eye_left = cv.fromarray(eye_left)
-	eye_right = cv.fromarray(eye_right)
-	face = cv.fromarray(face)
-	face_mask = cv.fromarray(face_mask)
-	y = cv.fromarray(y)
+	eye_left = cv2.fromarray(eye_left)
+	eye_right = cv2.fromarray(eye_right)
+	face = cv2.fromarray(face)
+	face_mask = cv2.fromarray(face_mask)
+	y = cv2.fromarray(y)
 
 
 	[y_x, y_y] = y
