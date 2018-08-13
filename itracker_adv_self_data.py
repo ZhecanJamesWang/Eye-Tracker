@@ -744,14 +744,17 @@ def train(args):
 				train_start = 0
 				train_end = 3000
 
-				train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+				# train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+
+				train_data = load_batch_from_data(train_names, dataset_path, 3000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
 				# test_start = iterTest * chunk_size
 				# test_end = (iterTest + 1) * chunk_size
 				test_start = 0
 				test_end = 500
 
-				val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+				# val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+				val_data = load_batch_from_data(val_names, dataset_path, 500, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
 				train_data = prepare_data(train_data)
 				val_data = prepare_data(val_data)
