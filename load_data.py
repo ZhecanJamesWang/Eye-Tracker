@@ -335,19 +335,19 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		y_x = dot_json["XCam"][idx]
 		y_y = dot_json["YCam"][idx]
 
-		print ("y_x: ", y_x)
-		print ("y_y: ", y_y)
-		# save images (for debug)
-
-		cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
-
-		# save images (for debug)
-# /////////////////////////////////////////////////////////
-		# if save_img:
-		cv2.imwrite("images/face.png", face)
-		cv2.imwrite("images/right.png", right_eye)
-		cv2.imwrite("images/left.png", left_eye)
-		cv2.imwrite("images/image.png", img)
+# 		print ("y_x: ", y_x)
+# 		print ("y_y: ", y_y)
+# 		# save images (for debug)
+#
+# 		cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
+#
+# 		# save images (for debug)
+# # /////////////////////////////////////////////////////////
+# 		# if save_img:
+# 		cv2.imwrite("images/face.png", face)
+# 		cv2.imwrite("images/right.png", right_eye)
+# 		cv2.imwrite("images/left.png", left_eye)
+# 		cv2.imwrite("images/image.png", img)
 
 
 
