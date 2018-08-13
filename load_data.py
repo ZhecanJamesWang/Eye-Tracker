@@ -244,6 +244,8 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 	# counter for check the size of loading batch
 	b = 0
 	# while b < batch_size:
+	print ("int(train_start),int(train_end: ", int(train_start),int(train_end))
+
 	for i in range(int(train_start),int(train_end)):
 		# lottery
 		# i = np.random.randint(0, len(names))

@@ -765,14 +765,6 @@ def train(args):
 				Val_loss_history.extend(val_loss_history)
 				Val_err_history.extend(val_err_history)
 
-				print ("train_loss_history: ", train_loss_history)
-				print (type(train_loss_history[0]))
-				print ("train_err_history: ", train_err_history)
-				print (type(train_err_history[0]))
-				print ("val_loss_history: ", val_loss_history)
-				print (type(val_loss_history[0]))
-				print ("val_err_history: ", val_err_history)
-				print (type(val_err_history[0]))
 
 				plot_loss(np.array(Train_loss_history), np.array(Train_err_history), np.array(Val_err_history), start=0, per=1, save_file="test1/loss_" + str(e) + "_" + str(iter) + ".png")
 
