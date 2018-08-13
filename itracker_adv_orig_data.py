@@ -233,24 +233,30 @@ def prepare_data(data):
 	print ("-------- prepare_data --------")
 	eye_left, eye_right, face, face_mask, y = data
 	eye_left, eye_right, face, face_mask, y = eye_left[0], eye_right[0], face[0], face_mask[0], y[0]
-
-	eye_left = cv2.fromarray(eye_left)
-	eye_right = cv2.fromarray(eye_right)
-	face = cv2.fromarray(face)
-	face_mask = cv2.fromarray(face_mask)
-	y = cv2.fromarray(y)
-
-
 	[y_x, y_y] = y
+
+	print ("y_x: ", y_x)
+	print ("y_y: ", y_y)
+
+	print type(eye_left)
+	print eye_left.shape
+	eye_left = eye_left[:, :, ::-1].copy()
+	eye_right = eye_right[:, :, ::-1].copy()
+	face = face[:, :, ::-1].copy()
+	# face_mask = face_mask[:, :, ::-1].copy()
+
+	# cv2.imshow('Image', eye_left)
+	# cv2.waitKey(0)
+	face = np.asarray(face)
 
 	cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
 	# save images (for debug)
 	# /////////////////////////////////////////////////////////
 	# if save_img:
 	cv2.imwrite("images/face.png", face)
-	cv2.imwrite("images/right.png", right_eye)
-	cv2.imwrite("images/left.png", left_eye)
-	cv2.imwrite("images/image.png", img)
+	cv2.imwrite("images/right.png", eye_right)
+	cv2.imwrite("images/left.png", eye_left)
+	cv2.imwrite("images/face_mask.png", face_mask)
 
 	raise "debug"
 

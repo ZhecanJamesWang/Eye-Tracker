@@ -10,7 +10,7 @@ from data_utility import image_normalization
 # load data directly from the npz file (small dataset, 48k and 5k for train and test)
 def load_data_from_npz(file):
 
-	print("Loading dataset from npz file...", end='')
+	print("Loading dataset from npz file...")
 	npzfile = np.load(file)
 	train_eye_left = npzfile["train_eye_left"]
 	train_eye_right = npzfile["train_eye_right"]
