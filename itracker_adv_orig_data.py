@@ -228,6 +228,7 @@ def denormalize(data):
 
 def normalize(data):
 	shape = data.shape
+	print ("shape: ", shape)
 	data = np.reshape(data, (shape[0], -1))
 	data = data.astype('float32') / 255. # scaling
 	pre_data_mean = np.mean(data, axis=0)
