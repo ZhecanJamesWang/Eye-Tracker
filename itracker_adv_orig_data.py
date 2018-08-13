@@ -200,8 +200,9 @@ def load_data(file):
 	val_face_mask = npzfile["val_face_mask"][index : index + 101]
 	val_y = npzfile["val_y"][index : index + 101]
 
+	print ("train_eye_left: ", type(train_eye_left), train_eye_left.shape)
 
-	# train_eye_left = npzfile["train_eye_left"][:100]
+	train_eye_left = npzfile["train_eye_left"][:100]
 	# train_eye_right = npzfile["train_eye_right"][:100]
 	# train_face = npzfile["train_face"][:100]
 	# train_face_mask = npzfile["train_face_mask"][:100]
@@ -212,6 +213,7 @@ def load_data(file):
 	# val_face_mask = npzfile["val_face_mask"][:100]
 	# val_y = npzfile["val_y"][:100]
 
+	print ("train_eye_left: ", type(train_eye_left), train_eye_left.shape)
 
 	return [train_eye_left, train_eye_right, train_face, train_face_mask, train_y], [val_eye_left, val_eye_right, val_face, val_face_mask, val_y]
 
