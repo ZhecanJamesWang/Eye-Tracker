@@ -185,20 +185,20 @@ def load_data(file):
 	length = len(npzfile["train_eye_left"])
 	print ("length: ", length)
 	index = np.random.randint(0, length - 102)
-	print ("choosing: ", index, " to ", index + 101)
-	train_eye_left = npzfile["train_eye_left"][index : index + 101]
-	train_eye_right = npzfile["train_eye_right"][index : index + 101]
-	train_face = npzfile["train_face"][index : index + 101]
-	train_face_mask = npzfile["train_face_mask"][index : index + 101]
-	train_y = npzfile["train_y"][index : index + 101]
+	print ("choosing: ", index, " to ", index + 100)
+	train_eye_left = npzfile["train_eye_left"][index : index + 100]
+	train_eye_right = npzfile["train_eye_right"][index : index + 100]
+	train_face = npzfile["train_face"][index : index + 100]
+	train_face_mask = npzfile["train_face_mask"][index : index + 100]
+	train_y = npzfile["train_y"][index : index + 100]
 
 	index = np.random.randint(0, length - 102)
 	#
-	val_eye_left = npzfile["val_eye_left"][index : index + 101]
-	val_eye_right = npzfile["val_eye_right"][index : index + 101]
-	val_face = npzfile["val_face"][index : index + 101]
-	val_face_mask = npzfile["val_face_mask"][index : index + 101]
-	val_y = npzfile["val_y"][index : index + 101]
+	val_eye_left = npzfile["val_eye_left"][index : index + 100]
+	val_eye_right = npzfile["val_eye_right"][index : index + 100]
+	val_face = npzfile["val_face"][index : index + 100]
+	val_face_mask = npzfile["val_face_mask"][index : index + 100]
+	val_y = npzfile["val_y"][index : index + 100]
 
 	print ("train_eye_left: ", type(train_eye_left), train_eye_left.shape)
 	print ("train_y: ", type(train_y), train_y.shape)
