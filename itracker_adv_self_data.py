@@ -738,13 +738,18 @@ def train(args):
 			for iter in range (int(MaxIters)):
 				start = timeit.default_timer()
 				print (" ------------- iter --------------: ", iter)
-				train_start=iter * chunk_size
-				train_end = (iter+1) * chunk_size
+				# train_start=iter * chunk_size
+				# train_end = (iter+1) * chunk_size
+
+				train_start = 0
+				train_end = 3000
 
 				train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
-				test_start = iterTest * chunk_size
-				test_end = (iterTest + 1) * chunk_size
+				# test_start = iterTest * chunk_size
+				# test_end = (iterTest + 1) * chunk_size
+				test_start = 0
+				test_end = 500
 
 				val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
