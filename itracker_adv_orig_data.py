@@ -192,6 +192,7 @@ def load_data(file):
 	train_face_mask = npzfile["train_face_mask"][index : index + 100]
 	train_y = npzfile["train_y"][index : index + 100]
 
+	length = len(npzfile["val_eye_left"])
 	index = np.random.randint(0, length - 102)
 	#
 	val_eye_left = npzfile["val_eye_left"][index : index + 100]
