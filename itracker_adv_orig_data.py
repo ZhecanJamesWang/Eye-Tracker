@@ -236,24 +236,24 @@ def prepare_data(data):
 
 	# save images (for debug)
 	# /////////////////////////////////////////////////////////
-	if save_img:
-
-		print ("y_x: ", y_x)
-		print ("y_y: ", y_y)
-
-		eye_left = eye_left[:, :, ::-1].copy()
-		eye_right = eye_right[:, :, ::-1].copy()
-		face = face[:, :, ::-1].copy()
-		# face_mask = face_mask[:, :, ::-1].copy()
-		# cv2.imshow('Image', eye_left)
-		# cv2.waitKey(0)
-
-		cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
-
-		cv2.imwrite("images/face.png", face)
-		cv2.imwrite("images/right.png", eye_right)
-		cv2.imwrite("images/left.png", eye_left)
-		cv2.imwrite("images/face_mask.png", face_mask)
+	# if save_img:
+	#
+	# 	print ("y_x: ", y_x)
+	# 	print ("y_y: ", y_y)
+	#
+	# 	eye_left = eye_left[:, :, ::-1].copy()
+	# 	eye_right = eye_right[:, :, ::-1].copy()
+	# 	face = face[:, :, ::-1].copy()
+	# 	# face_mask = face_mask[:, :, ::-1].copy()
+	# 	# cv2.imshow('Image', eye_left)
+	# 	# cv2.waitKey(0)
+	#
+	# 	cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
+	#
+	# 	cv2.imwrite("images/face.png", face)
+	# 	cv2.imwrite("images/right.png", eye_right)
+	# 	cv2.imwrite("images/left.png", eye_left)
+	# 	cv2.imwrite("images/face_mask.png", face_mask)
 
 
 	eye_left = normalize(eye_left)
