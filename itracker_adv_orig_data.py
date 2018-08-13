@@ -820,7 +820,13 @@ def train(args):
 
 				print ("train_loss_history: ", train_loss_history[0])
 				print (type(train_loss_history[0]))
-				
+				print ("train_err_history: ", train_err_history[0])
+				print (type(train_err_history[0]))
+				print ("val_loss_history: ", val_loss_history[0])
+				print (type(val_loss_history[0]))
+				print ("val_err_history: ", val_err_history[0])
+				print (type(val_err_history[0]))
+
 				plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file="test2/loss_" + str(e) + "_" + str(iter) + ".png")
 
 				iterTest += 1
