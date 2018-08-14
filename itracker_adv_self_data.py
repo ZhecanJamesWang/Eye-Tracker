@@ -777,12 +777,13 @@ def train(args):
 
 				# print ("----------after----------")
 
-				# print (len(train_data))
-				# print (train_data[-5].shape)
-				# print (train_data[-4].shape)
-				# print (train_data[-3].shape)
-				# print (train_data[-2].shape)
-				# print (train_data[-1].shape)
+				print (len(train_data))
+				print (train_data.shape)
+				print (train_data[-5].shape)
+				print (train_data[-4].shape)
+				print (train_data[-3].shape)
+				print (train_data[-2].shape)
+				print (train_data[-1].shape)
 
 				train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(sess, train_data, val_data, \
 														lr = args.learning_rate, \
