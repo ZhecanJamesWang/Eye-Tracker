@@ -242,29 +242,23 @@ def normalize(data):
 
 def check_data(data):
 	eye_left, eye_right, face, face_mask, y = data
-	# eye_left, eye_right, face, face_mask, y = eye_left[0], eye_right[0], face[0], face_mask[0], y[0]
-	# [y_x, y_y] = y
+	for i in range(len(eye_left)):
+		eye_left, eye_right, face, face_mask, y = eye_left[i], eye_right[i], face[i], face_mask[i], y[i]
+		[y_x, y_y] = y
 
-	# save images (for debug)
-	# /////////////////////////////////////////////////////////
-	# if save_img:
-	#
-	# 	print ("y_x: ", y_x)
-	# 	print ("y_y: ", y_y)
-	#
-		# eye_left = eye_left[:, :, ::-1].copy()
-		# eye_right = eye_right[:, :, ::-1].copy()
-		# face = face[:, :, ::-1].copy()
-		# face_mask = face_mask[:, :, ::-1].copy()
+		eye_left = eye_left[:, :, ::-1].copy()
+		eye_right = eye_right[:, :, ::-1].copy()
+		face = face[:, :, ::-1].copy()
+		face_mask = face_mask[:, :, ::-1].copy()
 		# cv2.imshow('Image', eye_left)
 		# cv2.waitKey(0)
-	#
-	# 	cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
-	#
-	# 	cv2.imwrite("images/face.png", face)
-	# 	cv2.imwrite("images/right.png", eye_right)
-	# 	cv2.imwrite("images/left.png", eye_left)
-	# 	cv2.imwrite("images/face_mask.png", face_mask)
+
+		cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
+
+		cv2.imwrite("images/face.png", face)
+		cv2.imwrite("images/right.png", eye_right)
+		cv2.imwrite("images/left.png", eye_left)
+		cv2.imwrite("images/face_mask.png", face_mask)
 
 def prepare_data(data):
 	print ("-------- prepare_data --------")
@@ -1054,10 +1048,10 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--train', action='store_true', help='train flag')
 	parser.add_argument('-i', '--input', required=False, type=str, help='path to the input data')
-	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=10, help='max number of iterations')
+	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
 	parser.add_argument('-bs', '--batch_size', type=int, default = 100, help='batch size')
-	parser.add_argument('-p', '--patience', type=int, default=50, help='early stopping patience')
+	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
 	parser.add_argument('-lm', '--load_model', type=str, help='path to the loaded model')
