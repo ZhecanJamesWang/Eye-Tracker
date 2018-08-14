@@ -353,8 +353,10 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 # 		cv2.imwrite("images/left.png", left_eye)
 # 		cv2.imwrite("images/image.png", img)
 
-
-
+		print ("face.shape: ", face.shape)
+		print ("left_eye.shape: ", left_eye.shape)
+		print ("right_eye.shape: ", right_eye.shape)
+# ///////////////////////////////////////////////////
 		# resize images
 		face = cv2.resize(face, (img_cols, img_rows))
 		left_eye = cv2.resize(left_eye, (img_cols, img_rows))
