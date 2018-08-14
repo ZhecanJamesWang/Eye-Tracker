@@ -249,7 +249,7 @@ def check_data(data):
 		eye_left = eye_left[:, :, ::-1].copy()
 		eye_right = eye_right[:, :, ::-1].copy()
 		face = face[:, :, ::-1].copy()
-		face_mask = face_mask[:, :, ::-1].copy()
+		# face_mask = face_mask[:, :, ::-1].copy()
 		# cv2.imshow('Image', eye_left)
 		# cv2.waitKey(0)
 		increase = 3
