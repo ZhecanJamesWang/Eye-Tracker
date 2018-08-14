@@ -444,7 +444,7 @@ class EyeTracker(object):
 
 		for n_epoch in range(1, max_epoch + 1):
 			print ("n_epoch: ", n_epoch)
-			
+
 			n_incr_error += 1
 			train_loss = 0.
 			val_loss = 0.
@@ -494,9 +494,9 @@ class EyeTracker(object):
 				print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
 											(n_epoch, max_epoch, train_loss, train_err, val_loss, val_err))
 
-			if n_incr_error >= patience:
-				print ('Early stopping occured. Optimization Finished!')
-				return train_loss_history, train_err_history, val_loss_history, val_err_history
+			# if n_incr_error >= patience:
+			# 	print ('Early stopping occured. Optimization Finished!')
+			# 	return train_loss_history, train_err_history, val_loss_history, val_err_history
 
 			return train_loss_history, train_err_history, val_loss_history, val_err_history
 
