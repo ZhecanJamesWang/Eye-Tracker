@@ -435,12 +435,12 @@ def train(args):
 	train_start = 0
 	train_end = 1000
 
-	train_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+	train_data = load_batch_from_data(train_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
 	test_start = 0
 	test_end = 1000
 
-	val_data = load_batch_from_data(train_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+	val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
 	# train_data, val_data = load_data(args.input)
 
@@ -499,7 +499,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--train', action='store_true', help='train flag')
 	parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
-	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
+	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=20, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
 	parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
