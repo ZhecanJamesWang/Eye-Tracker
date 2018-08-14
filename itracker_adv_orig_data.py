@@ -805,8 +805,8 @@ def train(args):
 
 				train_data, val_data = load_data(args.input)
 
-				check_data(train_data)
-				raise "debug"
+				# check_data(train_data)
+				# raise "debug"
 
 				print (len(train_data))
 				print (train_data[-5].shape)
@@ -824,7 +824,7 @@ def train(args):
 				print (train_data[-3].shape)
 				print (train_data[-2].shape)
 				print (train_data[-1].shape)
-				
+
 				#
 				# train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 				#
