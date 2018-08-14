@@ -435,7 +435,7 @@ def train(args):
 	train_start = 0
 	train_end = 1000
 
-	train_data = load_batch_from_data(train_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+	train_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
 	test_start = 0
 	test_end = 1000
