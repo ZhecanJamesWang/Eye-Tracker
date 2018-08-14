@@ -752,11 +752,11 @@ def train(args):
 				# train_end = (iter+1) * chunk_size
 
 				train_start = 0
-				train_end = 3000
+				train_end = 4000
 
 				# train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
-				train_data = load_batch_from_data(train_names, dataset_path, 3000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+				train_data = load_batch_from_data(train_names, dataset_path, 4000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
 				# test_start = iterTest * chunk_size
 				# test_end = (iterTest + 1) * chunk_size
