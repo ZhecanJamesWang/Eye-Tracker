@@ -441,37 +441,20 @@ def train(args):
 
 	val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
+	# train_data, val_data = load_data(args.input)
+
+	# print (len(train_data))
+	# print (train_data[-5].shape)
+	# print (train_data[-4].shape)
+	# print (train_data[-3].shape)
+	# print (train_data[-2].shape)
+	# print (train_data[-1].shape)
+
+	# print (train_data[-1][0])
+	# print (train_data[-2][10])
 
 	train_data = prepare_data(train_data)
 	val_data = prepare_data(val_data)
-
-	print (len(train_data))
-	print (train_data[-5].shape)
-	print (train_data[-4].shape)
-	print (train_data[-3].shape)
-	print (train_data[-2].shape)
-	print (train_data[-1].shape)
-
-	print (train_data[-1][0])
-	print (train_data[-2][10])
-
-	print ("-------------------------------------------")
-
-	train_data, val_data = load_data(args.input)
-
-	train_data = prepare_data(train_data)
-	val_data = prepare_data(val_data)
-
-	print (len(train_data))
-	print (train_data[-5].shape)
-	print (train_data[-4].shape)
-	print (train_data[-3].shape)
-	print (train_data[-2].shape)
-	print (train_data[-1].shape)
-
-	print (train_data[-1][0])
-	print (train_data[-2][0])
-	raise "debug"
 
 
 	start = timeit.default_timer()

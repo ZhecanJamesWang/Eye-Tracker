@@ -347,10 +347,14 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 
 # ///////////////////////////////////////////////////
 		# resize images
+		h, w, _ = face.shape
 		face = cv2.resize(face, (img_cols, img_rows))
 		left_eye = cv2.resize(left_eye, (img_cols, img_rows))
 		right_eye = cv2.resize(right_eye, (img_cols, img_rows))
 
+		scale = img_cols/w
+		y_x *= scale
+		y_y *= scale
 
 # 		# save images (for debug)
 
