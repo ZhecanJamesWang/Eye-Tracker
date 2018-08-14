@@ -352,7 +352,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		increase = 3
 		y_x, y_y = - int(y_x * increase), int(y_y * increase)
 		# print (px, py)
-		h, w = face.shape
+		h, w, _ = face.shape
 		cx, cy = w/2.0, h/2.0
 		cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
 		cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
