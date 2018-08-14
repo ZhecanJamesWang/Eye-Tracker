@@ -205,14 +205,14 @@ def load_data(file):
 	# print ("train_eye_left: ", type(train_eye_left), train_eye_left.shape)
 	# print ("train_y: ", type(train_y), train_y.shape)
 
-	limit = 100000000000
+	limit = 3000
 	train_eye_left = npzfile["train_eye_left"][:limit]
 	train_eye_right = npzfile["train_eye_right"][:limit]
 	train_face = npzfile["train_face"][:limit]
 	train_face_mask = npzfile["train_face_mask"][:limit]
 	train_y = npzfile["train_y"][:limit]
 
-	limit = 100000000000
+	limit = 2000
 	val_eye_left = npzfile["val_eye_left"][:limit]
 	val_eye_right = npzfile["val_eye_right"][:limit]
 	val_face = npzfile["val_face"][:limit]
