@@ -241,9 +241,9 @@ def normalize(data):
 	return np.reshape(data, shape)
 
 def check_data(data):
-	eye_left, eye_right, face, face_mask, Y = data
+	Eye_left, Eye_right, Face, Face_mask, Y = data
 	for i in range(len(eye_left)):
-		eye_left, eye_right, face, face_mask, y = eye_left[i], eye_right[i], face[i], face_mask[i], Y[i]
+		eye_left, eye_right, face, face_mask, y = Eye_left[i], Eye_right[i], Face[i], Face_mask[i], Y[i]
 		[y_x, y_y] = y
 
 		print ("eye_left.shape: ", eye_left.shape)
@@ -261,7 +261,7 @@ def check_data(data):
 		y_x, y_y = - int(y_x * increase), int(y_y * increase)
 		# print (px, py)
 		print("face.shape: ", face.shape)
-		
+
 		h, w, _ = face.shape
 		cx, cy = w/2.0, h/2.0
 		cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
