@@ -359,7 +359,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		y_x *= scale
 		y_y *= scale
 		print (y_x, y_y)
-		print ("/\/\/\/\/\/\/\//\/\/\")
+		print ("/\/\/\/\/\/\/\//\/\/")
 # 		# save images (for debug)
 
 #
