@@ -205,14 +205,14 @@ def load_data(file):
 	# print ("train_eye_left: ", type(train_eye_left), train_eye_left.shape)
 	# print ("train_y: ", type(train_y), train_y.shape)
 
-	limit = 3000
+	limit = 1000
 	train_eye_left = npzfile["train_eye_left"][:limit]
 	train_eye_right = npzfile["train_eye_right"][:limit]
 	train_face = npzfile["train_face"][:limit]
 	train_face_mask = npzfile["train_face_mask"][:limit]
 	train_y = npzfile["train_y"][:limit]
 
-	limit = 2000
+	limit = 1000
 	val_eye_left = npzfile["val_eye_left"][:limit]
 	val_eye_right = npzfile["val_eye_right"][:limit]
 	val_face = npzfile["val_face"][:limit]
@@ -240,8 +240,7 @@ def normalize(data):
 	data = data - pre_data_mean # normalizing
 	return np.reshape(data, shape)
 
-def prepare_data(data):
-	print ("-------- prepare_data --------")
+def check_data(data):
 	eye_left, eye_right, face, face_mask, y = data
 	# eye_left, eye_right, face, face_mask, y = eye_left[0], eye_right[0], face[0], face_mask[0], y[0]
 	# [y_x, y_y] = y
@@ -253,12 +252,12 @@ def prepare_data(data):
 	# 	print ("y_x: ", y_x)
 	# 	print ("y_y: ", y_y)
 	#
-	# 	eye_left = eye_left[:, :, ::-1].copy()
-	# 	eye_right = eye_right[:, :, ::-1].copy()
-	# 	face = face[:, :, ::-1].copy()
-	# 	# face_mask = face_mask[:, :, ::-1].copy()
-	# 	# cv2.imshow('Image', eye_left)
-	# 	# cv2.waitKey(0)
+		eye_left = eye_left[:, :, ::-1].copy()
+		eye_right = eye_right[:, :, ::-1].copy()
+		face = face[:, :, ::-1].copy()
+		# face_mask = face_mask[:, :, ::-1].copy()
+		# cv2.imshow('Image', eye_left)
+		# cv2.waitKey(0)
 	#
 	# 	cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
 	#
@@ -267,7 +266,9 @@ def prepare_data(data):
 	# 	cv2.imwrite("images/left.png", eye_left)
 	# 	cv2.imwrite("images/face_mask.png", face_mask)
 
-
+def prepare_data(data):
+	print ("-------- prepare_data --------")
+	eye_left, eye_right, face, face_mask, y = data
 	eye_left = normalize(eye_left)
 	eye_right = normalize(eye_right)
 	face = normalize(face)
