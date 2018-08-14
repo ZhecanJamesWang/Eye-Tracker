@@ -241,10 +241,9 @@ def normalize(data):
 	return np.reshape(data, shape)
 
 def check_data(data):
-	eye_left, eye_right, face, face_mask, y = data
+	eye_left, eye_right, face, face_mask, Y = data
 	for i in range(len(eye_left)):
-		eye_left, eye_right, face, face_mask, y = eye_left[i], eye_right[i], face[i], face_mask[i], y[i]
-		print (y)
+		eye_left, eye_right, face, face_mask, y = eye_left[i], eye_right[i], face[i], face_mask[i], Y[i]
 		[y_x, y_y] = y
 
 		eye_left = eye_left[:, :, ::-1].copy()
