@@ -396,7 +396,7 @@ class EyeTracker(object):
 		# self.saver = tf.train.Saver(max_to_keep=1)
 
 
-	def train(self, sess, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
+	def train(self, sess, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=10, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model', cycle = 0, overall_epoch = 0):
 
 
 		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
@@ -443,6 +443,8 @@ class EyeTracker(object):
 		self.ifFirst = False
 
 		for n_epoch in range(1, max_epoch + 1):
+			print ("n_epoch: ", n_epoch)
+			
 			n_incr_error += 1
 			train_loss = 0.
 			val_loss = 0.
