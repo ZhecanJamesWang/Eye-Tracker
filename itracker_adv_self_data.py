@@ -787,7 +787,7 @@ def train(args):
 				train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(sess, train_data, val_data, \
 														lr = args.learning_rate, \
 														batch_size = args.batch_size, \
-														max_epoch = 1, \
+														max_epoch = 10, \
 														min_delta = 1e-4, \
 														patience = args.patience, \
 														print_per_epoch = args.print_per_epoch,
