@@ -4,6 +4,7 @@ import timeit
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
+from load_data import load_data_names, load_batch_from_data
 
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
