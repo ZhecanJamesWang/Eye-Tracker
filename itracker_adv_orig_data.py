@@ -244,7 +244,7 @@ def check_data(data):
 	eye_left, eye_right, face, face_mask, y = data
 	for i in range(len(eye_left)):
 		eye_left, eye_right, face, face_mask, y = eye_left[i], eye_right[i], face[i], face_mask[i], y[i]
-		print y 
+		print y
 		[y_x, y_y] = y
 
 		eye_left = eye_left[:, :, ::-1].copy()
@@ -258,7 +258,7 @@ def check_data(data):
 		# print (px, py)
 		h, w, _ = face.shape
 		cx, cy = w/2.0, h/2.0
-		cv2.circle(face,(int(cx), int(cy)), 20, (0,0,255), -1)
+		cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
 		cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
 		cv2.imwrite("images/" + str(i) + "_face.png", face)
 		cv2.imwrite("images/" + str(i) + "_right.png", eye_right)
