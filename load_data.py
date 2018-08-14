@@ -341,7 +341,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 
 		# print ("y_x: ", y_x)
 		# print ("y_y: ", y_y)
-		print (y_x, y_y)
+		# print (y_x, y_y)
 
 # ///////////////////////////////////////////////////
 		# resize images
