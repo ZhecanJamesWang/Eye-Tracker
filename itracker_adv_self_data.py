@@ -207,11 +207,16 @@ def denormalize(data):
 
 def normalize(data):
 	shape = data.shape
+	print ("data.shape: ", data.shape)
 	data = np.reshape(data, (shape[0], -1))
+	print ("data.shape: ", data.shape)
+
 	data = data.astype('float32') / 255. # scaling
 	pre_data_mean = np.mean(data, axis=0)
 	data = data - pre_data_mean # normalizing
-	return np.reshape(data, shape)
+	data = np.reshape(data, shape)
+	print ("data.shape: ", data.shape)
+	return data
 
 def prepare_data(data):
 	print ("-------- prepare_data --------")
@@ -759,6 +764,7 @@ def train(args):
 				# val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 				val_data = load_batch_from_data(val_names, dataset_path, 500, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
+				print ("----------before----------")
 				print (len(train_data))
 				print (train_data[-5].shape)
 				print (train_data[-4].shape)
@@ -769,13 +775,15 @@ def train(args):
 				train_data = prepare_data(train_data)
 				val_data = prepare_data(val_data)
 
+				print ("----------after----------")
+
 				print (len(train_data))
 				print (train_data[-5].shape)
 				print (train_data[-4].shape)
 				print (train_data[-3].shape)
 				print (train_data[-2].shape)
 				print (train_data[-1].shape)
-				
+
 				train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(sess, train_data, val_data, \
 														lr = args.learning_rate, \
 														batch_size = args.batch_size, \

@@ -233,12 +233,16 @@ def denormalize(data):
 
 def normalize(data):
 	shape = data.shape
-	print ("shape: ", shape)
+	print ("data.shape: ", data.shape)
 	data = np.reshape(data, (shape[0], -1))
+	print ("data.shape: ", data.shape)
+
 	data = data.astype('float32') / 255. # scaling
 	pre_data_mean = np.mean(data, axis=0)
 	data = data - pre_data_mean # normalizing
-	return np.reshape(data, shape)
+	data = np.reshape(data, shape)
+	print ("data.shape: ", data.shape)
+	return data
 
 def check_data(data):
 	Eye_left, Eye_right, Face, Face_mask, Y = data
