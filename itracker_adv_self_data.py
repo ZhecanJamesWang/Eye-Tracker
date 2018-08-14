@@ -450,7 +450,7 @@ class EyeTracker(object):
 			val_loss = 0.
 			train_err = 0.
 			val_err = 0.
-			train_data = shuffle_data(train_data)
+			# train_data = shuffle_data(train_data)
 			for batch_train_data in next_batch(train_data, batch_size):
 				# Run optimization op (backprop)
 				sess.run(self.optimizer, feed_dict={self.eye_left: batch_train_data[0], \
