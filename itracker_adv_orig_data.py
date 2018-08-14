@@ -812,6 +812,8 @@ def train(args):
 				# check_data(train_data)
 				# raise "debug"
 
+				print ("----------before----------")
+
 				print (len(train_data))
 				print (train_data[-5].shape)
 				print (train_data[-4].shape)
@@ -821,6 +823,8 @@ def train(args):
 
 				train_data = prepare_data(train_data)
 				val_data = prepare_data(val_data)
+
+				print ("----------after----------")
 
 				print (len(train_data))
 				print (train_data[-5].shape)
