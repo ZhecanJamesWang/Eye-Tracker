@@ -449,7 +449,7 @@ def train(args):
 	print (train_data[-2].shape)
 	print (train_data[-1].shape)
 
-	print train_data[-5][0]
+	print (train_data[-5][0])
 
 	print "-------------------------------------------"
 
@@ -462,7 +462,7 @@ def train(args):
 	print (train_data[-2].shape)
 	print (train_data[-1].shape)
 
-	print train_data[-5][0]
+	print (train_data[-5][0])
 	raise "debug"
 
 
