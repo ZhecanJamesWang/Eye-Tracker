@@ -353,9 +353,13 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		right_eye = cv2.resize(right_eye, (img_cols, img_rows))
 
 		scale = img_cols/w
+		print ("vvvvvvvvvvvvvvvvvvv")
+		print (y_x, y_y)
+		print ("scale: ", scale)
 		y_x *= scale
 		y_y *= scale
-
+		print (y_x, y_y)
+		print ("/\/\/\/\/\/\/\//\/\/\")
 # 		# save images (for debug)
 
 #
