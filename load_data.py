@@ -354,8 +354,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		# print (px, py)
 		h, w = face.shape
 		cx, cy = w/2.0, h/2.0
-		cv2.line(face, (int(cx), int(cy), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
-
+		cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
 		cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
 		cv2.imwrite("images/" + dir + "_" + frame + "_right.png", right_eye)
 		cv2.imwrite("images/" + dir + "_" + frame + "_left.png", left_eye)
