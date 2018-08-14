@@ -498,7 +498,7 @@ class EyeTracker(object):
 			# 	print ('Early stopping occured. Optimization Finished!')
 			# 	return train_loss_history, train_err_history, val_loss_history, val_err_history
 
-			return train_loss_history, train_err_history, val_loss_history, val_err_history
+		return train_loss_history, train_err_history, val_loss_history, val_err_history
 
 def extract_validation_handles(session):
 	""" Extracts the input and predict_op handles that we use for validation.
