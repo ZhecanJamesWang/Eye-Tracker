@@ -427,7 +427,7 @@ def train(args):
 	img_cols = 64
 	img_rows = 64
 	img_ch = 3
-	
+
 	train_names = load_data_names(train_path)
 	val_names = load_data_names(val_path)
 
@@ -441,12 +441,30 @@ def train(args):
 
 	val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
-	# train_data, val_data = load_data(args.input)
 
-	# train_size = 10
-	# train_data = [each[:train_size] for each in train_data]
-	# val_size = 1
-	# val_data = [each[:val_size] for each in val_data]
+	print (len(train_data))
+	print (train_data[-5].shape)
+	print (train_data[-4].shape)
+	print (train_data[-3].shape)
+	print (train_data[-2].shape)
+	print (train_data[-1].shape)
+
+	print train_data[-5][0]
+
+	print "-------------------------------------------"
+
+	train_data, val_data = load_data(args.input)
+
+	print (len(train_data))
+	print (train_data[-5].shape)
+	print (train_data[-4].shape)
+	print (train_data[-3].shape)
+	print (train_data[-2].shape)
+	print (train_data[-1].shape)
+
+	print train_data[-5][0]
+	raise "debug"
+
 
 	train_data = prepare_data(train_data)
 	val_data = prepare_data(val_data)
