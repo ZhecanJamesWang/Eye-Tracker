@@ -263,8 +263,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		idx = int(frame[:-4])
 		print ("frame: ", frame)
 		print ("idx: ", idx)
-		raise "debug"
-
+		print ("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 		# open json files
 		face_file = open(join(path, dir, "appleFace.json"))
 		left_file = open(join(path, dir, "appleLeftEye.json"))
