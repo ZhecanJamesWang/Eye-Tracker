@@ -246,6 +246,8 @@ def check_data(data):
 		eye_left, eye_right, face, face_mask, y = eye_left[i], eye_right[i], face[i], face_mask[i], Y[i]
 		[y_x, y_y] = y
 
+		print ("eye_left.shape: ", eye_left.shape)
+		
 		eye_left = eye_left[:, :, ::-1].copy()
 		eye_right = eye_right[:, :, ::-1].copy()
 		face = face[:, :, ::-1].copy()
