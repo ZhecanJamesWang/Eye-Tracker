@@ -261,9 +261,10 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 
 		# index of the frame into a sequence
 		idx = int(frame[:-4])
-		# print ("frame: ", frame)
-		# print ("idx: ", idx)
-		# print ("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+		print ("img_name: ", img_name)
+		print ("frame: ", frame)
+		print ("idx: ", idx)
+		print ("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 		# open json files
 		face_file = open(join(path, dir, "appleFace.json"))
 		left_file = open(join(path, dir, "appleLeftEye.json"))
@@ -347,22 +348,23 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 
 # ///////////////////////////////////////////////////
 		# resize images
-		h, w, _ = face.shape
-		print ("vvvvvvvvvvvvvvvvvvv")
-		print ("face.shape: ", face.shape)
+		# h, w, _ = face.shape
+		# print ("vvvvvvvvvvvvvvvvvvv")
+		# print ("face.shape: ", face.shape)
 		face = cv2.resize(face, (img_cols, img_rows))
 		left_eye = cv2.resize(left_eye, (img_cols, img_rows))
 		right_eye = cv2.resize(right_eye, (img_cols, img_rows))
 
-		scale = img_cols/w
+		# scale = img_cols/w
+		#
+		# print (y_x, y_y)
+		# print ("scale: ", scale)
+		# y_x *= scale
+		# y_y *= scale
+		# print (y_x, y_y)
+		# print ("/\/\/\/\/\/\/\//\/\/")
 
-		print (y_x, y_y)
-		print ("scale: ", scale)
-		y_x *= scale
-		y_y *= scale
-		print (y_x, y_y)
-		print ("/\/\/\/\/\/\/\//\/\/")
-# 		# save images (for debug)
+
 
 #
 # 		# save images (for debug)

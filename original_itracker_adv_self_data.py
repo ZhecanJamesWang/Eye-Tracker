@@ -420,9 +420,10 @@ def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.p
 	# plt.show()
 
 def train(args):
-	dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
-	train_path = dataset_path + '\ '.strip() + "train"
-	val_path = dataset_path + '\ '.strip() + "validation"
+	dataset_path = "../Eye-Tracking-for-Everyone-master/Eye-Tracking-for-Everyone-master/GazeCapture"
+
+	train_path = dataset_path + '/train'
+	val_path = dataset_path + '/validation'
 
 	img_cols = 64
 	img_rows = 64
