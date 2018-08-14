@@ -419,22 +419,22 @@ def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.p
 	# plt.show()
 
 def train(args):
-    dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
-    train_path = dataset_path + '\ '.strip() + "train"
-    val_path = dataset_path + '\ '.strip() + "validation"
+	dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
+	train_path = dataset_path + '\ '.strip() + "train"
+	val_path = dataset_path + '\ '.strip() + "validation"
 
-    train_names = load_data_names(train_path)
-    val_names = load_data_names(val_path)
+	train_names = load_data_names(train_path)
+	val_names = load_data_names(val_path)
 
-    train_start = 0
-    train_end = 1000
+	train_start = 0
+	train_end = 1000
 
-    train_data = load_batch_from_data(train_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+	train_data = load_batch_from_data(train_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
-    test_start = 0
-    test_end = 1000
+	test_start = 0
+	test_end = 1000
 
-    val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+	val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
 	# train_data, val_data = load_data(args.input)
 
