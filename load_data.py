@@ -261,6 +261,9 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 
 		# index of the frame into a sequence
 		idx = int(frame[:-4])
+		print ("frame: ", frame)
+		print ("idx: ", idx)
+		raise "debug"
 
 		# open json files
 		face_file = open(join(path, dir, "appleFace.json"))

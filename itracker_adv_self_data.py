@@ -693,13 +693,16 @@ def train(args):
 	img_ch = 3
 
 	# train data
-	limit = 1000000000000000
-	train_names = load_data_names(train_path)[:limit]
+	# limit = 1000000000000000
+	train_names = load_data_names(train_path)
+	# [:limit]
 	# validation data
-	val_limit = 1000000000000
-	val_names = load_data_names(val_path)[:val_limit]
+	# val_limit = 1000000000000
+	val_names = load_data_names(val_path)
+	# [:val_limit]
 	# test data
-	test_names = load_data_names(test_path)[:limit]
+	test_names = load_data_names(test_path)
+	# [:limit]
 
 	et = EyeTracker()
 
