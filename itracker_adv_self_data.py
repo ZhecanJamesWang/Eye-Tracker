@@ -778,7 +778,6 @@ def train(args):
 				# print ("----------after----------")
 
 				print (len(train_data))
-				print (train_data.shape)
 				print (train_data[-5].shape)
 				print (train_data[-4].shape)
 				print (train_data[-3].shape)
