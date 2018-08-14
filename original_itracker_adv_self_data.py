@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
+os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
 # Network Parameters
 img_size = 64
@@ -85,6 +86,7 @@ def load_data(file):
 	val_y = npzfile["val_y"][:limit]
 
 	return [train_eye_left, train_eye_right, train_face, train_face_mask, train_y], [val_eye_left, val_eye_right, val_face, val_face_mask, val_y]
+
 
 def normalize(data):
 	shape = data.shape
@@ -236,11 +238,11 @@ class EyeTracker(object):
 		return out
 
 	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model'):
-		ckpt = os.path.split(out_model)[0]
-		if not os.path.exists(ckpt):
-			os.makedirs(ckpt)
+		# ckpt = os.path.split(out_model)[0]
+		# if not os.path.exists(ckpt):
+		#     os.makedirs(ckpt)
 
-		print 'Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0])
+		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
 		# Define loss and optimizer
 		self.cost = tf.losses.mean_squared_error(self.y, self.pred)
 		self.optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost)
@@ -304,17 +306,32 @@ class EyeTracker(object):
 				val_loss_history.append(val_loss)
 				val_err_history.append(val_err)
 				if val_loss - min_delta < best_loss:
+					print ("out_model: ", out_model.split())
+
+					# ckpt = out_model.split()[0]
+					# ckpt = ckpt + "/" + date + "/" + str(cycle) + "/"
+					# print ("ckpt: ", ckpt)
+
+					ckpt = os.path.abspath(out_model)
+					print ("ckpt: ", ckpt)
+					if not os.path.exists(ckpt):
+						os.makedirs(ckpt)
+
+					ckpt += "/model"
 					best_loss = val_loss
-					save_path = saver.save(sess, out_model, global_step=n_epoch)
-					print "Model saved in file: %s" % save_path
+					print ("os.path.abspath(out_model): ", os.path.abspath(out_model))
+
+					# , global_step=n_epoch
+					save_path = saver.save(sess, ckpt)
+					print ("Model saved in file: %s" % save_path)
 					n_incr_error = 0
 
 				if n_epoch % print_per_epoch == 0:
-					print 'Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
-												(n_epoch, max_epoch, train_loss, train_err, val_loss, val_err)
+					print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
+												(n_epoch, max_epoch, train_loss, train_err, val_loss, val_err))
 
 				if n_incr_error >= patience:
-					print 'Early stopping occured. Optimization Finished!'
+					print ('Early stopping occured. Optimization Finished!')
 					return train_loss_history, train_err_history, val_loss_history, val_err_history
 
 			return train_loss_history, train_err_history, val_loss_history, val_err_history
@@ -339,7 +356,7 @@ def load_model(session, save_path):
 	Returns:
 		The inputs placehoder and the prediction operation.
 	"""
-	print "Loading model from file '%s'..." % save_path
+	print ("Loading model from file '%s'..." % save_path)
 
 	meta_file = save_path + ".meta"
 	if not os.path.exists(meta_file):
@@ -361,7 +378,7 @@ def validate_model(session, val_data, val_ops, batch_size=200):
 		val_ops: The validation operations.
 	Returns:
 		The overall validation error for the model. """
-	print "Validating model..."
+	print ("Validating model...")
 
 	eye_left, eye_right, face, face_mask, pred = val_ops
 	y = tf.placeholder(tf.float32, [None, 2], name='pos')
@@ -402,24 +419,29 @@ def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.p
 	# plt.show()
 
 def train(args):
-	dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
-	train_path = dataset_path + '\ '.strip() + "train"
-	val_path = dataset_path + '\ '.strip() + "validation"
+    dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
+    train_path = dataset_path + '\ '.strip() + "train"
+    val_path = dataset_path + '\ '.strip() + "validation"
 
-	train_names = load_data_names(train_path)
-	val_names = load_data_names(val_path)
+    train_names = load_data_names(train_path)
+    val_names = load_data_names(val_path)
 
-	train_start = 0
-	train_end = 1000
+    train_start = 0
+    train_end = 1000
 
-	train_data = load_batch_from_data(train_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+    train_data = load_batch_from_data(train_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
-	test_start = 0
-	test_end = 1000
+    test_start = 0
+    test_end = 1000
 
-	val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+    val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
 	# train_data, val_data = load_data(args.input)
+
+	# train_size = 10
+	# train_data = [each[:train_size] for each in train_data]
+	# val_size = 1
+	# val_data = [each[:val_size] for each in val_data]
 
 	train_data = prepare_data(train_data)
 	val_data = prepare_data(val_data)
@@ -435,19 +457,17 @@ def train(args):
 											print_per_epoch=args.print_per_epoch,
 											out_model=args.save_model)
 
-	print 'runtime: %.1fs' % (timeit.default_timer() - start)
-
+	print ('runtime: %.1fs' % (timeit.default_timer() - start))
 
 	plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file="test2/loss.png")
 
 	# if args.save_loss:
-	#     with open(args.save_loss, 'w') as outfile:
-	#         np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
-	#                                 val_loss_history=val_loss_history, val_err_history=val_err_history)
+	# 	with open(args.save_loss, 'w') as outfile:
+	# 		np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
+	# 								val_loss_history=val_loss_history, val_err_history=val_err_history)
 	#
 	# if args.plot_loss:
-	#     plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=args.plot_loss)
-
+	# 	plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=args.plot_loss)
 
 def test(args):
 	_, val_data = load_data(args.input)
@@ -461,16 +481,16 @@ def test(args):
 	with tf.Session() as sess:
 		val_ops = load_model(sess, args.load_model)
 		error = validate_model(sess, val_data, val_ops, batch_size=args.batch_size)
-		print 'Overall validation error: %f' % error
+		print ('Overall validation error: %f' % error)
 
 def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--train', action='store_true', help='train flag')
 	parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
-	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=30, help='max number of iterations')
+	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
 	parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
-	parser.add_argument('-p', '--patience', type=int, default=5, help='early stopping patience')
+	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
 	parser.add_argument('-lm', '--load_model', type=str, help='path to the loaded model')
