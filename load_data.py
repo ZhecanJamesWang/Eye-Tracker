@@ -354,6 +354,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 
 		scale = img_cols/w
 		print ("vvvvvvvvvvvvvvvvvvv")
+		print ("face.shape: ", face.shape)
 		print (y_x, y_y)
 		print ("scale: ", scale)
 		y_x *= scale
