@@ -348,14 +348,23 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 # 		# save images (for debug)
 # # /////////////////////////////////////////////////////////
 # 		# if save_img:
-# 		cv2.imwrite("images/face.png", face)
-# 		cv2.imwrite("images/right.png", right_eye)
-# 		cv2.imwrite("images/left.png", left_eye)
-# 		cv2.imwrite("images/image.png", img)
 
-		print ("face.shape: ", face.shape)
-		print ("left_eye.shape: ", left_eye.shape)
-		print ("right_eye.shape: ", right_eye.shape)
+		increase = 3
+		y_x, y_y = - int(y_x * increase), int(y_y * increase)
+		# print (px, py)
+		h, w = face.shape
+		cx, cy = w/2.0, h/2.0
+		cv2.line(face, (int(cx), int(cy), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
+
+		cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
+		cv2.imwrite("images/" + dir + "_" + frame + "_right.png", right_eye)
+		cv2.imwrite("images/" + dir + "_" + frame + "_left.png", left_eye)
+		cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid.png", face_grid)
+		cv2.imwrite("images/" + dir + "_" + frame + "_image.png", img)
+
+		# print ("face.shape: ", face.shape)
+		# print ("left_eye.shape: ", left_eye.shape)
+		# print ("right_eye.shape: ", right_eye.shape)
 # ///////////////////////////////////////////////////
 		# resize images
 		face = cv2.resize(face, (img_cols, img_rows))
