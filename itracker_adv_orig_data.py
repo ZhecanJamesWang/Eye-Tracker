@@ -818,6 +818,13 @@ def train(args):
 				train_data = prepare_data(train_data)
 				val_data = prepare_data(val_data)
 
+				print (len(train_data))
+				print (train_data[-5].shape)
+				print (train_data[-4].shape)
+				print (train_data[-3].shape)
+				print (train_data[-2].shape)
+				print (train_data[-1].shape)
+				
 				#
 				# train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 				#
