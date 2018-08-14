@@ -252,13 +252,23 @@ def check_data(data):
 		face_mask = face_mask[:, :, ::-1].copy()
 		# cv2.imshow('Image', eye_left)
 		# cv2.waitKey(0)
+		increase = 3
+		y_x, y_y = - int(y_x * increase), int(y_y * increase)
+		# print (px, py)
+		h, w, _ = face.shape
+		cx, cy = w/2.0, h/2.0
+		cv2.circle(face,(int(cx), int(cy)), 20, (0,0,255), -1)
+		cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
+		cv2.imwrite("images/" + str(i) + "_face.png", face)
+		cv2.imwrite("images/" + str(i) + "_right.png", right_eye)
+		cv2.imwrite("images/" + str(i) + "_left.png", left_eye)
+		cv2.imwrite("images/" + str(i) + "_faceGrid.png", face_grid)
+		cv2.imwrite("images/" + str(i) + "_image.png", img)
 
-		cv2.circle(face, (int(y_x), int(y_y)), 1, (0, 0, 255), 2)
-
-		cv2.imwrite("images/face.png", face)
-		cv2.imwrite("images/right.png", eye_right)
-		cv2.imwrite("images/left.png", eye_left)
-		cv2.imwrite("images/face_mask.png", face_mask)
+		# cv2.imwrite("images/face.png", face)
+		# cv2.imwrite("images/right.png", eye_right)
+		# cv2.imwrite("images/left.png", eye_left)
+		# cv2.imwrite("images/face_mask.png", face_mask)
 
 def prepare_data(data):
 	print ("-------- prepare_data --------")
@@ -787,6 +797,9 @@ def train(args):
 				# train_end = (iter+1) * chunk_size
 
 				train_data, val_data = load_data(args.input)
+
+				check_data(train_data)
+				raise "debug"
 
 				print (len(train_data))
 				print (train_data[-5].shape)
