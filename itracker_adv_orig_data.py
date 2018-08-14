@@ -260,6 +260,8 @@ def check_data(data):
 		increase = 3
 		y_x, y_y = - int(y_x * increase), int(y_y * increase)
 		# print (px, py)
+		print("face.shape: ", face.shape)
+		
 		h, w, _ = face.shape
 		cx, cy = w/2.0, h/2.0
 		cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
