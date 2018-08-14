@@ -70,17 +70,23 @@ fc2_size = 2
 # Import data
 def load_data(file):
 	npzfile = np.load(file)
-	train_eye_left = npzfile["train_eye_left"]
-	train_eye_right = npzfile["train_eye_right"]
-	train_face = npzfile["train_face"]
-	train_face_mask = npzfile["train_face_mask"]
-	train_y = npzfile["train_y"]
-	val_eye_left = npzfile["val_eye_left"]
-	val_eye_right = npzfile["val_eye_right"]
-	val_face = npzfile["val_face"]
-	val_face_mask = npzfile["val_face_mask"]
-	val_y = npzfile["val_y"]
+
+	limit = 1000
+	train_eye_left = npzfile["train_eye_left"][:limit]
+	train_eye_right = npzfile["train_eye_right"][:limit]
+	train_face = npzfile["train_face"][:limit]
+	train_face_mask = npzfile["train_face_mask"][:limit]
+	train_y = npzfile["train_y"][:limit]
+
+	limit = 1000
+	val_eye_left = npzfile["val_eye_left"][:limit]
+	val_eye_right = npzfile["val_eye_right"][:limit]
+	val_face = npzfile["val_face"][:limit]
+	val_face_mask = npzfile["val_face_mask"][:limit]
+	val_y = npzfile["val_y"][:limit]
+
 	return [train_eye_left, train_eye_right, train_face, train_face_mask, train_y], [val_eye_left, val_eye_right, val_face, val_face_mask, val_y]
+
 
 def normalize(data):
 	shape = data.shape
@@ -436,13 +442,15 @@ def train(args):
 
 	print ('runtime: %.1fs' % (timeit.default_timer() - start))
 
-	if args.save_loss:
-		with open(args.save_loss, 'w') as outfile:
-			np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
-									val_loss_history=val_loss_history, val_err_history=val_err_history)
+	plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file="test2/loss.png")
 
-	if args.plot_loss:
-		plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=args.plot_loss)
+	# if args.save_loss:
+	# 	with open(args.save_loss, 'w') as outfile:
+	# 		np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
+	# 								val_loss_history=val_loss_history, val_err_history=val_err_history)
+	#
+	# if args.plot_loss:
+	# 	plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=args.plot_loss)
 
 def test(args):
 	_, val_data = load_data(args.input)
@@ -462,7 +470,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--train', action='store_true', help='train flag')
 	parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
-	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
+	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=30, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
 	parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=5, help='early stopping patience')
