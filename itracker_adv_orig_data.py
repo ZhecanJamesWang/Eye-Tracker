@@ -242,7 +242,7 @@ def normalize(data):
 
 def check_data(data):
 	Eye_left, Eye_right, Face, Face_mask, Y = data
-	for i in range(len(eye_left)):
+	for i in range(len(Eye_left)):
 		eye_left, eye_right, face, face_mask, y = Eye_left[i], Eye_right[i], Face[i], Face_mask[i], Y[i]
 		[y_x, y_y] = y
 
