@@ -424,6 +424,10 @@ def train(args):
 	train_path = dataset_path + '\ '.strip() + "train"
 	val_path = dataset_path + '\ '.strip() + "validation"
 
+	img_cols = 64
+	img_rows = 64
+	img_ch = 3
+	
 	train_names = load_data_names(train_path)
 	val_names = load_data_names(val_path)
 
