@@ -451,7 +451,7 @@ def train(args):
 
 	print (train_data[-5][0])
 
-	print "-------------------------------------------"
+	print ("-------------------------------------------")
 
 	train_data, val_data = load_data(args.input)
 
