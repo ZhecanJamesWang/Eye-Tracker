@@ -320,6 +320,8 @@ class EyeTracker(object):
 				iterTest=0
 
 				for iter in range (int(MaxIters)):
+					print ("--------------------------------")
+					print ("iter: ", iter)
 					train_start=iter * batch_size
 					train_end = (iter+1) * batch_size
 
@@ -363,8 +365,6 @@ class EyeTracker(object):
 
 						iterTest += 1
 						iterTest %= MaxTestIters
-						if iterTest > MaxTestIters - 2:
-							iterTest = 0
 
 				train_loss_history.append(train_loss)
 				train_err_history.append(train_err)
