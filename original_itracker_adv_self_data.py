@@ -433,7 +433,7 @@ def train(args):
 	val_names = load_data_names(val_path)
 
 	train_start = 0
-	train_end = 1000
+	train_end = 2000
 	chunk_size = train_end - train_start
 
 	train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
@@ -441,7 +441,7 @@ def train(args):
 	# test_start = 1000
 	# test_end = 2000
 	test_start = 0
-	test_end = 1000
+	test_end = 500
 
 	chunk_size = test_end - test_start
 
@@ -504,7 +504,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--train', action='store_true', help='train flag')
 	# parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
-	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=20, help='max number of iterations')
+	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=30, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
 	parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
