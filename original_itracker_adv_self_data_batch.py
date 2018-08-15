@@ -318,8 +318,10 @@ class EyeTracker(object):
 				print ("vvvvvvvvvvvvvvvvvvv")
 				print ("n_epoch: ", n_epoch)
 				# n_incr_error += 1
-				train_loss = 0.
-				train_err = 0.
+				# train_loss = 0.
+				# train_err = 0.
+				train_loss = []
+				train_err = []
 				# train_data = shuffle_data(train_data)
 				# for batch_train_data in next_batch(train_data, batch_size):
 				iterTest=0
@@ -341,8 +343,12 @@ class EyeTracker(object):
 					train_batch_loss, train_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_train_data[0], \
 								self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
 								self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
-					train_loss += train_batch_loss / n_batches
-					train_err += train_batch_err / n_batches
+					# train_loss += train_batch_loss / n_batches
+					# train_err += train_batch_err / n_batches
+					print ("train batch loss: ", train_batch_loss, "train_batch_err: ", train_batch_err)
+					
+					train_loss.append(train_batch_loss)
+					train_err.append(train_batch_err)
 
 				# val_loss = 0.
 				# val_err = 0
@@ -366,9 +372,8 @@ class EyeTracker(object):
 						# val_err += val_batch_err / val_n_batches
 						print ("vvvvvvvvvvvvvvvvvvv")
 						print ("iter: ", iter)
-						print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
-													(n_epoch, max_epoch, train_loss, train_err, val_loss, val_err))
-
+						print ('Epoch %s/%s, avg train loss: %.5f, avg train error: %.5f, val loss: %.5f, val error: %.5f' % \
+													(n_epoch, max_epoch, np.mean(train_loss), np.mean(train_err), val_loss, val_err))
 						iterTest += 1
 						iterTest %= MaxTestIters
 
