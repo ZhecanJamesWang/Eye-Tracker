@@ -253,7 +253,7 @@ class EyeTracker(object):
 		# train_data, val_data,
 
 		# limit = 1000
-		train_names = load_data_names(train_path)[:10001]
+		train_names = load_data_names(train_path)[:1001]
 		# [:limit]
 		val_names = load_data_names(train_path)[1001:2002]
 		# val_names = load_data_names(val_path)
