@@ -252,7 +252,7 @@ class EyeTracker(object):
 	def train(self, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model'):
 		# train_data, val_data,
 
-		limit = 1000
+		limit = np.Inf
 		train_names = load_data_names(train_path)[:limit]
 		val_names = load_data_names(val_path)[:limit]
 
@@ -322,8 +322,8 @@ class EyeTracker(object):
 				iterTest=0
 
 				for iter in range (int(MaxIters)):
-					print ("--------------------------------")
-					print ("iter: ", iter)
+					# print ("--------------------------------")
+					# print ("iter: ", iter)
 					train_start=iter * batch_size
 					train_end = (iter+1) * batch_size
 
@@ -361,7 +361,8 @@ class EyeTracker(object):
 						val_err = val_batch_err
 						# val_loss += val_batch_loss / val_n_batches
 						# val_err += val_batch_err / val_n_batches
-
+						print ("vvvvvvvvvvvvvvvvvvv")
+						print ("iter: ", iter)
 						print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
 													(n_epoch, max_epoch, train_loss, train_err, val_loss, val_err))
 
@@ -570,7 +571,7 @@ def main():
 	# parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
-	parser.add_argument('-bs', '--batch_size', type=int, default=32, help='batch size')
+	parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
