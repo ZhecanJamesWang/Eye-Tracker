@@ -355,34 +355,28 @@ class EyeTracker(object):
 				# val_err = 0
 				# for batch_val_data in next_batch(val_data, batch_size):
 				# for iter in range (int(MaxTestIters)):
-					if iter % 10 == 0:
-						test_start=iterTest * batch_size
-						test_end = (iterTest+1) * batch_size
 
-						batch_val_data = load_batch_from_data(val_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+				test_start = 0
+				test_end = 1000
 
-						batch_val_data = prepare_data(batch_val_data)
+				batch_val_data = load_batch_from_data(val_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
-						val_batch_loss, val_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_val_data[0], \
-										self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
-										self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
+				batch_val_data = prepare_data(batch_val_data)
 
-						val_loss = val_batch_loss
-						val_err = val_batch_err
-						# val_loss += val_batch_loss / val_n_batches
-						# val_err += val_batch_err / val_n_batches
-						print ("vvvvvvvvvvvvvvvvvvv")
-						print ("iter: ", iter)
-						print ('Epoch %s/%s, avg train loss: %.5f, avg train error: %.5f, val loss: %.5f, val error: %.5f' % \
-													(n_epoch, max_epoch, np.mean(train_loss), np.mean(train_err), val_loss, val_err))
-						iterTest += 1
-						iterTest %= MaxTestIters
+				val_batch_loss, val_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_val_data[0], \
+								self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
+								self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
+
+				val_loss = val_batch_loss
+				val_err = val_batch_err
+				# val_loss += val_batch_loss / val_n_batches
+				# val_err += val_batch_err / val_n_batches
 
 				train_loss_history.append(np.mean(train_loss))
 				train_err_history.append(np.mean(train_err))
-				# val_loss_history.append(val_loss)
-				# val_err_history.append(val_err)
-				
+				val_loss_history.append(val_loss)
+				val_err_history.append(val_err)
+
 				# if val_loss - min_delta < best_loss:
 				# 	print ("out_model: ", out_model.split())
 				#
@@ -404,9 +398,9 @@ class EyeTracker(object):
 				# 	print ("Model saved in file: %s" % save_path)
 				# 	n_incr_error = 0
 
-				if n_epoch % print_per_epoch == 0:
-					print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
-												(n_epoch, max_epoch, np.mean(train_loss), np.mean(train_err), val_loss, val_err))
+				# if n_epoch % print_per_epoch == 0:
+				print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
+											(n_epoch, max_epoch, np.mean(train_loss), np.mean(train_err), val_loss, val_err))
 
 				# if n_incr_error >= patience:
 				# 	print ('Early stopping occured. Optimization Finished!')
