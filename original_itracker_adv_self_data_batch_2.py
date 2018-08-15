@@ -253,9 +253,9 @@ class EyeTracker(object):
 		# train_data, val_data,
 
 		# limit = 1000
-		train_names = load_data_names(train_path)[:1001]
+		train_names = load_data_names(train_path)[:1000]
 		# [:limit]
-		val_names = load_data_names(train_path)[1001:2002]
+		val_names = load_data_names(train_path)[1000:2000]
 		# val_names = load_data_names(val_path)
 		# [:limit]
 
@@ -351,26 +351,14 @@ class EyeTracker(object):
 					train_loss.append(train_batch_loss)
 					train_err.append(train_batch_err)
 
-				# val_loss = 0.
-				# val_err = 0
-				# for batch_val_data in next_batch(val_data, batch_size):
-				# for iter in range (int(MaxTestIters)):
-
-				test_start = 0
-				test_end = 1000
-				
-				batch_val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
-
-				batch_val_data = prepare_data(batch_val_data)
-
-				val_batch_loss, val_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_val_data[0], \
-								self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
-								self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
-
-				val_loss = val_batch_loss
-				val_err = val_batch_err
-				# val_loss += val_batch_loss / val_n_batches
-				# val_err += val_batch_err / val_n_batches
+				val_loss = 0.
+				val_err = 0
+				for batch_val_data in next_batch(val_data, batch_size):
+					val_batch_loss, val_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_val_data[0], \
+									self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
+									self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
+					val_loss += val_batch_loss / val_n_batches
+					val_err += val_batch_err / val_n_batches
 
 				train_loss_history.append(np.mean(train_loss))
 				train_err_history.append(np.mean(train_err))
