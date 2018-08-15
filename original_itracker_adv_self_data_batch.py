@@ -256,7 +256,7 @@ class EyeTracker(object):
 		val_err_history = []
 		n_incr_error = 0  # nb. of consecutive increase in error
 		best_loss = np.Inf
-		print ("train_data.shape: ", train_data.shape)
+		print ("len(train_data): ", len(train_data))
 		print ("train_data[0].shape: ", train_data[0].shape)
 		print ("train_data[0].shape[0]: ", train_data[0].shape[0])
 		print ("train_data[0].shape[0] / batch_size: ", train_data[0].shape[0] / batch_size)
