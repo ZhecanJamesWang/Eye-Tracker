@@ -345,8 +345,9 @@ class EyeTracker(object):
 								self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
 					# train_loss += train_batch_loss / n_batches
 					# train_err += train_batch_err / n_batches
-					print ("train batch loss: ", train_batch_loss, "train_batch_err: ", train_batch_err)
-					
+
+					# print ("train batch loss: ", train_batch_loss, "train_batch_err: ", train_batch_err)
+
 					train_loss.append(train_batch_loss)
 					train_err.append(train_batch_err)
 
@@ -404,7 +405,7 @@ class EyeTracker(object):
 
 				if n_epoch % print_per_epoch == 0:
 					print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
-												(n_epoch, max_epoch, train_loss, train_err, val_loss, val_err))
+												(n_epoch, max_epoch, np.mean(train_loss), np.mean(train_err), val_loss, val_err))
 
 				# if n_incr_error >= patience:
 				# 	print ('Early stopping occured. Optimization Finished!')
