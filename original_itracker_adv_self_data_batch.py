@@ -253,9 +253,10 @@ class EyeTracker(object):
 		# train_data, val_data,
 
 		# limit = 1000
-		train_names = load_data_names(train_path)
+		train_names = load_data_names(train_path)[:10000]
 		# [:limit]
-		val_names = load_data_names(val_path)
+		val_names = load_data_names(train_path)[10000:15000]
+		# val_names = load_data_names(val_path)
 		# [:limit]
 
 		train_num = len(train_names)
@@ -267,7 +268,7 @@ class EyeTracker(object):
 		MaxIters = train_num/batch_size
 		n_batches = MaxIters
 		MaxTestIters = val_num/batch_size
-		val_n_batches = MaxTestIters
+		# val_n_batches = MaxTestIters
 
 		print ("MaxIters: ", MaxIters)
 		print ("MaxTestIters: ", MaxTestIters)
@@ -283,8 +284,8 @@ class EyeTracker(object):
 		train_err_history = []
 		val_loss_history = []
 		val_err_history = []
-		n_incr_error = 0  # nb. of consecutive increase in error
-		best_loss = np.Inf
+		# n_incr_error = 0  # nb. of consecutive increase in error
+		# best_loss = np.Inf
 		# print ("len(train_data): ", len(train_data))
 		# print ("train_data[0].shape: ", train_data[0].shape)
 		# print ("train_data[0].shape[0]: ", train_data[0].shape[0])
@@ -316,7 +317,7 @@ class EyeTracker(object):
 			for n_epoch in range(1, max_epoch + 1):
 				print ("vvvvvvvvvvvvvvvvvvv")
 				print ("n_epoch: ", n_epoch)
-				n_incr_error += 1
+				# n_incr_error += 1
 				train_loss = 0.
 				train_err = 0.
 				# train_data = shuffle_data(train_data)
@@ -573,7 +574,7 @@ def main():
 	# parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
-	parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
+	parser.add_argument('-bs', '--batch_size', type=int, default=1000, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
