@@ -358,8 +358,8 @@ class EyeTracker(object):
 
 				test_start = 0
 				test_end = 1000
-
-				batch_val_data = load_batch_from_data(val_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+				
+				batch_val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
 				batch_val_data = prepare_data(batch_val_data)
 
