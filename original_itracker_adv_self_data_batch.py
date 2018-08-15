@@ -317,6 +317,8 @@ class EyeTracker(object):
 				train_err = 0.
 				# train_data = shuffle_data(train_data)
 				# for batch_train_data in next_batch(train_data, batch_size):
+				iterTest=0
+
 				for iter in range (int(MaxIters)):
 					train_start=iter * batch_size
 					train_end = (iter+1) * batch_size
@@ -335,22 +337,34 @@ class EyeTracker(object):
 					train_loss += train_batch_loss / n_batches
 					train_err += train_batch_err / n_batches
 
-				val_loss = 0.
-				val_err = 0
+				# val_loss = 0.
+				# val_err = 0
 				# for batch_val_data in next_batch(val_data, batch_size):
-				for iter in range (int(MaxTestIters)):
-					test_start=iter * batch_size
-					test_end = (iter+1) * batch_size
+				# for iter in range (int(MaxTestIters)):
+					if iter % 5 == 0:
+						test_start=iterTest * batch_size
+						test_end = (iterTest+1) * batch_size
 
-					batch_val_data = load_batch_from_data(val_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+						batch_val_data = load_batch_from_data(val_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
-					batch_val_data = prepare_data(batch_val_data)
+						batch_val_data = prepare_data(batch_val_data)
 
-					val_batch_loss, val_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_val_data[0], \
-									self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
-									self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
-					val_loss += val_batch_loss / val_n_batches
-					val_err += val_batch_err / val_n_batches
+						val_batch_loss, val_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_val_data[0], \
+										self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
+										self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
+
+						val_loss = val_batch_loss
+						val_err = val_batch_err
+						# val_loss += val_batch_loss / val_n_batches
+						# val_err += val_batch_err / val_n_batches
+
+						print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
+													(n_epoch, max_epoch, train_loss, train_err, val_loss, val_err))
+
+						iterTest += 1
+						iterTest %= MaxTestIters
+						if iterTest > MaxTestIters - 2:
+							iterTest = 0
 
 				train_loss_history.append(train_loss)
 				train_err_history.append(train_err)
