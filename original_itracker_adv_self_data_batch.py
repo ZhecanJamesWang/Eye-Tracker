@@ -8,6 +8,17 @@ from load_data import load_data_names, load_batch_from_data
 
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
+
+dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
+train_path = dataset_path + '\ '.strip() + "train"
+val_path = dataset_path + '\ '.strip() + "validation"
+test_path = dataset_path + '\ '.strip() + "test"
+
+img_cols = 64
+img_rows = 64
+img_ch = 3
+
+
 # Network Parameters
 img_size = 64
 n_channel = 3
@@ -238,10 +249,26 @@ class EyeTracker(object):
 		out = tf.add(tf.matmul(fc, weights['fc2']), biases['fc2'])
 		return out
 
-	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model'):
-		# ckpt = os.path.split(out_model)[0]
-		# if not os.path.exists(ckpt):
-		#     os.makedirs(ckpt)
+	def train(self, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model'):
+		# train_data, val_data,
+
+		limit = 1000
+		train_names = load_data_names(train_path)[:limit]
+		val_names = load_data_names(val_path)[:limit]
+
+		train_num = len(train_names)
+		val_num = len(val_names)
+
+		print ("train_num: ", train_num)
+		print ("test_num: ", val_num)
+
+		MaxIters = train_num/batch_size
+		n_batches = MaxIters
+		MaxTestIters = val_num/batch_size
+		val_n_batches = MaxTestIters
+
+		print ("MaxIters: ", MaxIters)
+		print ("MaxTestIters: ", MaxTestIters)
 
 		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
 		# Define loss and optimizer
@@ -256,15 +283,15 @@ class EyeTracker(object):
 		val_err_history = []
 		n_incr_error = 0  # nb. of consecutive increase in error
 		best_loss = np.Inf
-		print ("len(train_data): ", len(train_data))
-		print ("train_data[0].shape: ", train_data[0].shape)
-		print ("train_data[0].shape[0]: ", train_data[0].shape[0])
-		print ("train_data[0].shape[0] / batch_size: ", train_data[0].shape[0] / batch_size)
-		n_batches = train_data[0].shape[0] / batch_size + (train_data[0].shape[0] % batch_size != 0)
-		print ("n_batches: ", n_batches)
-		raise "debug"
+		# print ("len(train_data): ", len(train_data))
+		# print ("train_data[0].shape: ", train_data[0].shape)
+		# print ("train_data[0].shape[0]: ", train_data[0].shape[0])
+		# print ("train_data[0].shape[0] / batch_size: ", train_data[0].shape[0] / batch_size)
 
-		val_n_batches = val_data[0].shape[0] / batch_size + (val_data[0].shape[0] % batch_size != 0)
+		# n_batches = train_data[0].shape[0] / batch_size + (train_data[0].shape[0] % batch_size != 0)
+		# print ("n_batches: ", n_batches)
+
+		# val_n_batches = val_data[0].shape[0] / batch_size + (val_data[0].shape[0] % batch_size != 0)
 
 		# Create the collection
 		tf.get_collection("validation_nodes")
@@ -289,7 +316,15 @@ class EyeTracker(object):
 				train_loss = 0.
 				train_err = 0.
 				# train_data = shuffle_data(train_data)
-				for batch_train_data in next_batch(train_data, batch_size):
+				# for batch_train_data in next_batch(train_data, batch_size):
+				for iter in range (int(MaxIters)):
+					train_start=iter * batch_size
+					train_end = (iter+1) * batch_size
+
+					batch_train_data = load_batch_from_data(train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+
+					batch_train_data = prepare_data(batch_train_data)
+
 					# Run optimization op (backprop)
 					sess.run(self.optimizer, feed_dict={self.eye_left: batch_train_data[0], \
 								self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
@@ -302,7 +337,15 @@ class EyeTracker(object):
 
 				val_loss = 0.
 				val_err = 0
-				for batch_val_data in next_batch(val_data, batch_size):
+				# for batch_val_data in next_batch(val_data, batch_size):
+				for iter in range (int(MaxTestIters)):
+					test_start=iter * batch_size
+					test_end = (iter+1) * batch_size
+
+					batch_val_data = load_batch_from_data(val_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+
+					batch_val_data = prepare_data(batch_val_data)
+
 					val_batch_loss, val_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_val_data[0], \
 									self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
 									self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
@@ -427,58 +470,56 @@ def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.p
 	# plt.show()
 
 def train(args):
-	dataset_path = "../Eye-Tracking-for-Everyone-master/Eye-Tracking-for-Everyone-master/GazeCapture"
-
-	train_path = dataset_path + '/train'
-	val_path = dataset_path + '/validation'
-
-	img_cols = 64
-	img_rows = 64
-	img_ch = 3
-
-	train_names = load_data_names(train_path)
-	val_names = load_data_names(val_path)
-
-	train_start = 3000
-	train_end = 4000
-	chunk_size = train_end - train_start
-
-	train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
-
-	test_start = 2000
-	test_end = 3000
-	# test_start = 0
-	# test_end = 1000
-
-	chunk_size = test_end - test_start
-
-	val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
-
-	# train_data, val_data = load_data(args.input)
-
-	# print (len(train_data))
-	# print (train_data[-5].shape)
-	# print (train_data[-4].shape)
-	# print (train_data[-3].shape)
-	# print (train_data[-2].shape)
-	# print (train_data[-1].shape)
-
-	# print (train_data[-1][0])
-	# print (train_data[-2][10])
-
-	train_data = prepare_data(train_data)
-	val_data = prepare_data(val_data)
-
+	# dataset_path = "../Eye-Tracking-for-Everyone-master/Eye-Tracking-for-Everyone-master/GazeCapture"
+	#
+	# train_path = dataset_path + '/train'
+	# val_path = dataset_path + '/validation'
+	#
+	# img_cols = 64
+	# img_rows = 64
+	# img_ch = 3
+	#
+	# train_names = load_data_names(train_path)
+	# val_names = load_data_names(val_path)
+	#
+	# train_start = 3000
+	# train_end = 4000
+	# chunk_size = train_end - train_start
+	#
+	# train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+	#
+	# test_start = 2000
+	# test_end = 3000
+	# # test_start = 0
+	# # test_end = 1000
+	#
+	# chunk_size = test_end - test_start
+	#
+	# val_data = load_batch_from_data(val_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+	#
+	# # train_data, val_data = load_data(args.input)
+	#
+	# # print (len(train_data))
+	# # print (train_data[-5].shape)
+	# # print (train_data[-4].shape)
+	# # print (train_data[-3].shape)
+	# # print (train_data[-2].shape)
+	# # print (train_data[-1].shape)
+	#
+	# # print (train_data[-1][0])
+	# # print (train_data[-2][10])
+	#
+	# train_data = prepare_data(train_data)
+	# val_data = prepare_data(val_data)
+	#
 
 	start = timeit.default_timer()
 	et = EyeTracker()
-	train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(train_data, val_data, \
-											lr=args.learning_rate, \
-											batch_size=args.batch_size, \
+	train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(lr=args.learning_rate, batch_size=args.batch_size, \
 											max_epoch=args.max_epoch, \
 											min_delta=1e-4, \
 											patience=args.patience, \
-											print_per_epoch=args.print_per_epoch,
+											print_per_epoch=args.print_per_epoch, \
 											out_model=args.save_model)
 
 	print ('runtime: %.1fs' % (timeit.default_timer() - start))
