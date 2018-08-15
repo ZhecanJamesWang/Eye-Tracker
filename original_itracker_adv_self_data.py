@@ -281,7 +281,7 @@ class EyeTracker(object):
 				n_incr_error += 1
 				train_loss = 0.
 				train_err = 0.
-				train_data = shuffle_data(train_data)
+				# train_data = shuffle_data(train_data)
 				for batch_train_data in next_batch(train_data, batch_size):
 					# Run optimization op (backprop)
 					sess.run(self.optimizer, feed_dict={self.eye_left: batch_train_data[0], \
@@ -433,14 +433,16 @@ def train(args):
 	val_names = load_data_names(val_path)
 
 	train_start = 0
-	train_end = 10000
+	train_end = 1000
+	chunk_size = train_end - train_start
 
-	train_data = load_batch_from_data(train_names, dataset_path, 10000, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+	train_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
-	test_start = 0
-	test_end = 1000
+	test_start = 1000
+	test_end = 2000
+	chunk_size = test_end - test_start
 
-	val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+	val_data = load_batch_from_data(train_names, dataset_path, chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
 	# train_data, val_data = load_data(args.input)
 
