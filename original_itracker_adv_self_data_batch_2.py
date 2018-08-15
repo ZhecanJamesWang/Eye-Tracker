@@ -351,6 +351,11 @@ class EyeTracker(object):
 					train_loss.append(train_batch_loss)
 					train_err.append(train_batch_err)
 
+				test_start = 0
+				test_end = val_num
+
+				val_data = load_batch_from_data(val_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+
 				val_loss = 0.
 				val_err = 0
 				for batch_val_data in next_batch(val_data, batch_size):
