@@ -294,7 +294,6 @@ class EyeTracker(object):
 		# n_batches = train_data[0].shape[0] / batch_size + (train_data[0].shape[0] % batch_size != 0)
 		# print ("n_batches: ", n_batches)
 
-		val_n_batches = val_data[0].shape[0] / batch_size + (val_data[0].shape[0] % batch_size != 0)
 
 		# Create the collection
 		tf.get_collection("validation_nodes")
@@ -355,6 +354,8 @@ class EyeTracker(object):
 				test_end = val_num
 
 				val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+
+				val_n_batches = val_data[0].shape[0] / batch_size + (val_data[0].shape[0] % batch_size != 0)
 
 				val_data = prepare_data(val_data)
 
