@@ -253,9 +253,9 @@ class EyeTracker(object):
 		# train_data, val_data,
 
 		# limit = 1000
-		train_names = load_data_names(train_path)[:1000]
+		train_names = load_data_names(train_path)[3000:4000]
 		# [:limit]
-		val_names = load_data_names(train_path)[1000:2000]
+		val_names = load_data_names(val_path)[2000:3000]
 		# val_names = load_data_names(val_path)
 		# [:limit]
 
@@ -569,7 +569,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--train', action='store_true', help='train flag')
 	# parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
-	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=30, help='max number of iterations')
+	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=60, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
 	parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
