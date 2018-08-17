@@ -255,7 +255,7 @@ class EyeTracker(object):
 	def train(self, ckpt, plot_ckpt, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10):
 
 		ifCheck = False
-		
+
 		# limit = 1000
 		train_names = load_data_names(train_path)[:1000]
 		# [:limit]
@@ -384,6 +384,9 @@ class EyeTracker(object):
 
 						iterTest += 1
 						iterTest %= MaxTestIters
+						print ("train_loss: ", train_loss[:3])
+						print ("train_err: ", train_err[:3])
+						print ("Val_err: ", Val_err[:3])
 
 						plot_loss(np.array(train_loss), np.array(train_err), np.array(Val_err), start=0, per=1, save_file=plot_ckpt + "/loss_" + str(n_epoch) + "_" + str(iter) + ".png")
 						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
