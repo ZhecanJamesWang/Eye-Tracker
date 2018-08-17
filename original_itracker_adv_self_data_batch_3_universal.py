@@ -377,9 +377,12 @@ class EyeTracker(object):
 
 						if iter > 50:
 							if iter % 50 == 0:
-								plot_loss(np.array(train_loss), np.array(train_err), np.array(Val_err), start=0, per=1, save_file=plot_ckpt + "/loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+								plot_loss(np.array(train_loss), np.array(train_err), np.array(Val_error), start=0, per=1, save_file=plot_ckpt + "/loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+								print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_error)))
+
 						else:
-								plot_loss(np.array(train_loss), np.array(train_err), np.array(Val_err), start=0, per=1, save_file=plot_ckpt + "/loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+								plot_loss(np.array(train_loss), np.array(train_err), np.array(Val_error), start=0, per=1, save_file=plot_ckpt + "/loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+								print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_error)))
 
 						if iter_start:
 							print ('10 iters runtime: %.1fs' % (timeit.default_timer() - iter_start))
@@ -405,8 +408,7 @@ class EyeTracker(object):
 				val_err_history.extend(Val_err)
 
 				# if n_epoch % print_per_epoch == 0:
-				print ('Epoch %s/%s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f' % \
-											(n_epoch, max_epoch, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
+				print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_error)))
 
 				# if n_incr_error >= patience:
 				# 	print ('Early stopping occured. Optimization Finished!')
