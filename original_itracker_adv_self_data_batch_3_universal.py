@@ -471,10 +471,13 @@ def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
 	MaxTestIters = int(val_num/batch_size)
 	print ("MaxTestIters: ", MaxTestIters)
 
-	val_loss = []
 	val_err = []
 
 	iter_start = None
+
+	eye_left, eye_right, face, face_mask, pred = val_ops
+	y = tf.placeholder(tf.float32, [None, 2], name='pos')
+	err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred, y), axis=1)))
 
 	for iterTest in range(MaxTestIters):
 		test_start=iterTest * batch_size
@@ -484,19 +487,18 @@ def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
 
 		batch_val_data = prepare_data(batch_val_data)
 
-		val_batch_loss, val_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_val_data[0], \
-						self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
-						self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
+		val_batch_err = session.run(err, feed_dict={eye_left: batch_val_data[0], \
+									eye_right: batch_val_data[1], face: batch_val_data[2], \
+									face_mask: batch_val_data[3], y: batch_val_data[4]})
 
-		val_loss.append(val_batch_loss)
 		val_err.append(val_batch_err)
 
 
 		if iterTest % 10 == 0:
-			print ('IterTest %s, val loss: %.5f, val error: %.5f' % \
-										(iterTest, np.mean(val_loss), np.mean(val_err)))
+			print ('IterTest %s, val error: %.5f' % \
+										(iterTest, np.mean(val_err)))
 
-			plot_loss(np.array(train_loss), np.array(train_err), np.array(Val_err), start=0, per=1, save_file=plot_ckpt + "/testing_loss_" + str(n_epoch) + "_" + str(iterTest) + ".png")
+			# plot_loss(np.array(train_loss), np.array(train_err), np.array(Val_err), start=0, per=1, save_file=plot_ckpt + "/testing_loss_" + str(n_epoch) + "_" + str(iterTest) + ".png")
 
 			if iter_start:
 				print ('10 iters runtime: %.1fs' % (timeit.default_timer() - iter_start))
