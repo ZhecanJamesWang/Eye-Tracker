@@ -570,7 +570,7 @@ def test(args):
 	# Load and validate the network.
 	with tf.Session() as sess:
 		val_ops = load_model(sess, args.load_model)
-		error = validate_model(sess, val_name, val_ops, plot_ckpt, batch_size=args.batch_size)
+		error = validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=args.batch_size)
 		print ('Overall validation error: %f' % error)
 
 def main():
