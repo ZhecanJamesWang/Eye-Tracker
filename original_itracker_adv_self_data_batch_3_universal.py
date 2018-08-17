@@ -468,9 +468,8 @@ def validate_model(session, val_names, val_ops, plot_ckpt, batch_size=200):
 	val_err = []
 
 	iter_start = None
-
+	
 	for iterTest range(MaxTestIters):
-
 		test_start=iterTest * batch_size
 		test_end = (iterTest+1) * batch_size
 
