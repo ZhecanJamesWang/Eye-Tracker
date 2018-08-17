@@ -468,7 +468,7 @@ def validate_model(session, val_names, val_ops, plot_ckpt, batch_size=200):
 	val_num = len(val_names)
 	print ("test_num: ", val_num)
 
-	MaxTestIters = val_num/batch_size
+	MaxTestIters = int(val_num/batch_size)
 	print ("MaxTestIters: ", MaxTestIters)
 
 	val_loss = []
