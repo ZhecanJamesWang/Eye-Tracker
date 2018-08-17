@@ -390,12 +390,12 @@ class EyeTracker(object):
 							iter_start = timeit.default_timer()
 
 					if val_loss - min_delta < best_loss:
-
 						best_loss = val_loss
 						save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_%s"%(np.mean(train_err)) + "_val_error_%s"%(np.mean(val_err))
 
 						# , global_step=n_epoch
 						save_path = saver.save(sess, save_path)
+						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
 						print ("Model saved in file: %s" % save_path)
 						# n_incr_error = 0
 
