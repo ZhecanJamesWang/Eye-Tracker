@@ -533,7 +533,7 @@ def train(args):
 
 	out_model = "my_model"
 	print ("out_model: ", out_model.split())
-	ckpt = os.path.join(os.path.abspath(out_model), date)
+	ckpt = out_model + "/" + date + "/"
 	print ("ckpt: ", ckpt)
 	if not os.path.exists(ckpt):
 		os.makedirs(ckpt)
