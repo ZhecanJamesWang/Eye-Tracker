@@ -566,6 +566,7 @@ def test(args):
 	if not os.path.exists(plot_ckpt):
 		os.makedirs(plot_ckpt)
 
+	val_names = load_data_names(val_path)[:2000]
 	# Load and validate the network.
 	with tf.Session() as sess:
 		val_ops = load_model(sess, args.load_model)
