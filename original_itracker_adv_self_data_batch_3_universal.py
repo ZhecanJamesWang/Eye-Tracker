@@ -538,12 +538,10 @@ def train(args):
 
 
 	et = EyeTracker()
-	train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(ckpt, plot_ckpt, lr=args.learning_rate, batch_size=args.batch_size, \
-											max_epoch=args.max_epoch, \
+	train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(ckpt, plot_ckpt, lr=args.learning_rate, batch_size=args.batch_size, max_epoch=args.max_epoch, \
 											min_delta=1e-4, \
 											patience=args.patience, \
-											print_per_epoch=args.print_per_epoch, \
-											out_model=args.save_model)
+											print_per_epoch=args.print_per_epoch)
 
 	print ('Total training runtime: %.1fs' % (timeit.default_timer() - start))
 
