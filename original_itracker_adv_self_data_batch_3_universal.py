@@ -587,12 +587,12 @@ def main():
 	parser.add_argument('-sl', '--save_loss', type=str, default='loss.npz', help='save loss')
 	args = parser.parse_args()
 
-	# if args.train:
-	train(args)
-	# else:
-	# 	if not args.load_model:
-	# 		raise Exception('load_model arg needed in test phase')
-	# 	test(args)
+	if args.train:
+		train(args)
+	else:
+		if not args.load_model:
+			raise Exception('load_model arg needed in test phase')
+		test(args)
 
 if __name__ == '__main__':
 	main()
