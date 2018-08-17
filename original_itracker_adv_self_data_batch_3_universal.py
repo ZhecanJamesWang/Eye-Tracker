@@ -286,10 +286,12 @@ class EyeTracker(object):
 
 		# Evaluate model
 		self.err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(self.pred, self.y), axis=1)))
-		train_loss_history = []
-		train_err_history = []
-		val_loss_history = []
-		val_err_history = []
+
+		train_loss = []
+		train_err = []
+		Val_loss = []
+		Val_err = []
+
 
 		# n_incr_error = 0  # nb. of consecutive increase in error
 		best_loss = np.Inf
@@ -322,10 +324,6 @@ class EyeTracker(object):
 				epoch_start = timeit.default_timer()
 				iter_start = None
 				# n_incr_error += 1
-				train_loss = []
-				train_err = []
-				Val_loss = []
-				Val_err = []
 
 				# train_data = shuffle_data(train_data)
 
@@ -412,10 +410,6 @@ class EyeTracker(object):
 
 				print ('epoch runtime: %.1fs' % (timeit.default_timer() - epoch_start))
 
-				train_loss_history.extend(train_loss)
-				train_err_history.extend(train_err)
-				val_loss_history.extend(Val_loss)
-				val_err_history.extend(Val_err)
 
 				# if n_epoch % print_per_epoch == 0:
 				print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
@@ -424,7 +418,8 @@ class EyeTracker(object):
 				# 	print ('Early stopping occured. Optimization Finished!')
 				# 	return train_loss_history, train_err_history, val_loss_history, val_err_history
 
-			return train_loss_history, train_err_history, val_loss_history, val_err_history
+			return train_loss, train_err, Val_loss, Val_err
+
 
 def extract_validation_handles(session):
 	""" Extracts the input and predict_op handles that we use for validation.
