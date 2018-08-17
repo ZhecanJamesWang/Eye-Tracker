@@ -254,6 +254,8 @@ class EyeTracker(object):
 
 	def train(self, ckpt, plot_ckpt, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10):
 
+		ifCheck = False
+		
 		# limit = 1000
 		train_names = load_data_names(train_path)[:1000]
 		# [:limit]
@@ -351,7 +353,15 @@ class EyeTracker(object):
 					train_loss.append(train_batch_loss)
 					train_err.append(train_batch_err)
 
-					if iter % 10 == 0:
+
+					if iter > 50:
+						if iter % 50 == 0:
+							ifCheck = True
+					else:
+						if iter % 10 == 0:
+							ifCheck = True
+
+					if ifCheck:
 						test_start=iterTest * val_chunk_size
 						test_end = (iterTest+1) * val_chunk_size
 
@@ -375,30 +385,27 @@ class EyeTracker(object):
 						iterTest += 1
 						iterTest %= MaxTestIters
 
-						if iter > 50:
-							if iter % 50 == 0:
-								plot_loss(np.array(train_loss), np.array(train_err), np.array(Val_err), start=0, per=1, save_file=plot_ckpt + "/loss_" + str(n_epoch) + "_" + str(iter) + ".png")
-								print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
+						plot_loss(np.array(train_loss), np.array(train_err), np.array(Val_err), start=0, per=1, save_file=plot_ckpt + "/loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
 
-						else:
-								plot_loss(np.array(train_loss), np.array(train_err), np.array(Val_err), start=0, per=1, save_file=plot_ckpt + "/loss_" + str(n_epoch) + "_" + str(iter) + ".png")
-								print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
 
 						if iter_start:
-							print ('10 iters runtime: %.1fs' % (timeit.default_timer() - iter_start))
+							print ('batch iters runtime: %.1fs' % (timeit.default_timer() - iter_start))
 						else:
 							iter_start = timeit.default_timer()
 
-					if val_loss - min_delta < best_loss:
-						best_loss = val_loss
-						save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_%s"%(np.mean(train_err)) + "_val_error_%s"%(np.mean(val_err))
+						if val_loss - min_delta < best_loss:
+							best_loss = val_loss
+							save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_%s"%(np.mean(train_err)) + "_val_error_%s"%(np.mean(val_err))
 
-						# , global_step=n_epoch
-						save_path = saver.save(sess, save_path)
-						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
-						print ("Model saved in file: %s" % save_path)
-						# n_incr_error = 0
-						val_loss = None
+							# , global_step=n_epoch
+							save_path = saver.save(sess, save_path)
+							print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
+							print ("Model saved in file: %s" % save_path)
+							# n_incr_error = 0
+							val_loss = None
+
+						ifCheck = False
 
 				print ('epoch runtime: %.1fs' % (timeit.default_timer() - epoch_start))
 
