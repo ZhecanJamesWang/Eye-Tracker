@@ -398,7 +398,7 @@ class EyeTracker(object):
 						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
 						print ("Model saved in file: %s" % save_path)
 						# n_incr_error = 0
-
+						val_loss = None
 
 				print ('epoch runtime: %.1fs' % (timeit.default_timer() - epoch_start))
 
