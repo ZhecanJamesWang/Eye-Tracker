@@ -487,7 +487,7 @@ def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
 
 		batch_val_data = prepare_data(batch_val_data)
 
-		val_batch_err = session.run(err, feed_dict={eye_left: batch_val_data[0], \
+		val_batch_err = sess.run(err, feed_dict={eye_left: batch_val_data[0], \
 									eye_right: batch_val_data[1], face: batch_val_data[2], \
 									face_mask: batch_val_data[3], y: batch_val_data[4]})
 
