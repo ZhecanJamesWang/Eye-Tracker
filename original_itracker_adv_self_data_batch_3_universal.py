@@ -455,7 +455,7 @@ def load_model(session, save_path):
 	# Check that we have the handles we expected.
 	return extract_validation_handles(session)
 
-def validate_model(session, val_names, val_ops, plot_ckpt, batch_size=200):
+def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
 	""" Validates the model stored in a session.
 	Args:
 		session: The session where the model is loaded.
