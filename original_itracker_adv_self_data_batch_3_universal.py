@@ -343,9 +343,7 @@ class EyeTracker(object):
 					sess.run(self.optimizer, feed_dict={self.eye_left: batch_train_data[0], \
 								self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
 								self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
-					train_batch_loss, train_batch_err =
-
-					sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_train_data[0], \
+					train_batch_loss, train_batch_err =sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_train_data[0], \
 								self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
 								self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
 
