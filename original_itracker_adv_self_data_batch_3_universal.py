@@ -257,9 +257,11 @@ class EyeTracker(object):
 		ifCheck = False
 
 		# limit = 1000
-		train_names = load_data_names(train_path)[:1000]
+		train_names = load_data_names(train_path)
+		# [:1000]
 		# [:limit]
-		val_names = load_data_names(val_path)[:1000]
+		val_names = load_data_names(val_path)
+		# [:1000]
 		# [:limit]
 
 		train_num = len(train_names)
