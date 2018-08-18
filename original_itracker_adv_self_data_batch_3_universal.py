@@ -392,13 +392,22 @@ class EyeTracker(object):
 						else:
 							iter_start = timeit.default_timer()
 
+						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
+
+						train_loss_history.append(np.mean(train_loss))
+						train_err_history.append(np.mean(train_err))
+						val_loss_history.append(np.mean(Val_loss))
+						val_err_history.append(np.mean(Val_err))
+
+						plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+
 						if val_loss - min_delta < best_loss:
 							best_loss = val_loss
 							save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_%s"%(np.mean(train_err)) + "_val_error_%s"%(np.mean(val_err))
 
 							# , global_step=n_epoch
 							save_path = saver.save(sess, save_path)
-							print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
+
 							print ("Model saved in file: %s" % save_path)
 							# n_incr_error = 0
 							val_loss = None
@@ -407,12 +416,12 @@ class EyeTracker(object):
 
 				print ('epoch runtime: %.1fs' % (timeit.default_timer() - epoch_start))
 
-				train_loss_history.append(np.mean(train_loss))
-				train_err_history.append(np.mean(train_err))
-				val_loss_history.append(np.mean(Val_loss))
-				val_err_history.append(np.mean(Val_err))
+				# train_loss_history.append(np.mean(train_loss))
+				# train_err_history.append(np.mean(train_err))
+				# val_loss_history.append(np.mean(Val_loss))
+				# val_err_history.append(np.mean(Val_err))
 
-				plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + ".png")
+				# plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + ".png")
 
 				# if n_epoch % print_per_epoch == 0:
 				print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
