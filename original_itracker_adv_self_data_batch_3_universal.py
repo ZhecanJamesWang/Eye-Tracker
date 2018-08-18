@@ -307,7 +307,7 @@ class EyeTracker(object):
 		tf.add_to_collection("validation_nodes", self.face)
 		tf.add_to_collection("validation_nodes", self.face_mask)
 		tf.add_to_collection("validation_nodes", self.pred)
-		saver = tf.train.Saver(keep_checkpoint_every_n_hours = 1)
+		saver = tf.train.Saver(max_to_keep = 0)
 
 		# Initializing the variables
 		init = tf.global_variables_initializer()
