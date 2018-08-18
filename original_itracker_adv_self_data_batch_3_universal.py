@@ -356,7 +356,7 @@ class EyeTracker(object):
 					train_err.append(train_batch_err)
 
 
-					if iter > 50:
+					if iter > 1000:
 						if iter % 50 == 0:
 							ifCheck = True
 					else:
