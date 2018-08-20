@@ -334,7 +334,7 @@ class EyeTracker(object):
 				Val_loss = []
 				Val_err = []
 
-				train_data = shuffle_data(train_data)
+				train_names = shuffle_data(train_names)
 
 				iterTest=0
 
