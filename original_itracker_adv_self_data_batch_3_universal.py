@@ -356,6 +356,7 @@ class EyeTracker(object):
 								self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
 								self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
 
+					print ("train_batch_loss: ", train_batch_loss, "train_batch_err: ", train_batch_err)
 
 					train_loss.append(train_batch_loss)
 					train_err.append(train_batch_err)
