@@ -320,7 +320,7 @@ class EyeTracker(object):
 			writer = tf.summary.FileWriter("logs", sess.graph)
 
 			# saver = tf.train.import_meta_graph('my_model/2018-08-17-23-17/model_1_140_train_error_14.236069_val_error_7.756780624389648.meta')
-			saver.restore(sess, "./my_model/2018-08-17-23-17/model_1_140_train_error_14.236069_val_error_7.756780624389648")
+			saver.restore(sess, "./my_model/2018-08-20-00-33/model_1_140_train_error_12.50638_val_error_7.419147491455078")
 
 			# Keep training until reach max iterations
 			for n_epoch in range(1, max_epoch + 1):
