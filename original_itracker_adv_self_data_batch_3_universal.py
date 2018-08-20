@@ -119,12 +119,12 @@ def prepare_data(data):
 	y = y.astype('float32')
 	return [eye_left, eye_right, face, face_mask, y]
 
-# def shuffle_data(data):
-# 	idx = np.arange(data[0].shape[0])
-# 	np.random.shuffle(idx)
-# 	for i in range(len(data)):
-# 		data[i] = data[i][idx]
-# 	return data
+def shuffle_data(data):
+	idx = np.arange(data[0].shape[0])
+	np.random.shuffle(idx)
+	for i in range(len(data)):
+		data[i] = data[i][idx]
+	return data
 
 def next_batch(data, batch_size):
 	for i in np.arange(0, data[0].shape[0], batch_size):
@@ -334,7 +334,7 @@ class EyeTracker(object):
 				Val_loss = []
 				Val_err = []
 
-				# train_data = shuffle_data(train_data)
+				train_data = shuffle_data(train_data)
 
 				iterTest=0
 
