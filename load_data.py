@@ -247,11 +247,14 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 	print ("int(train_start),int(train_end: ", int(train_start),int(train_end))
 
 	for i in range(int(train_start),int(train_end)):
-		# lottery
-		# i = np.random.randint(0, len(names))
+		try:
+			# lottery
+			# i = np.random.randint(0, len(names))
 
-		# get the lucky one
-		img_name = names[i]
+			# get the lucky one
+			img_name = names[i]
+		except Exception as e:
+			print (e)
 
 		# directory
 		dir = img_name[:5]

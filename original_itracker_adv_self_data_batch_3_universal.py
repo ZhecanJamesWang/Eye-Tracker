@@ -310,12 +310,15 @@ class EyeTracker(object):
 		saver = tf.train.Saver(max_to_keep = 0)
 
 		# Initializing the variables
-		init = tf.global_variables_initializer()
+		# init = tf.global_variables_initializer()     TODO://////
 
 		# Launch the graph
 		with tf.Session() as sess:
-			sess.run(init)
+			# sess.run(init)     TODO://////
 			writer = tf.summary.FileWriter("logs", sess.graph)
+
+			saver = tf.train.import_meta_graph('my_test_model-1000.meta')
+			saver.restore(sess,tf.train.latest_checkpoint('./'))
 
 			# Keep training until reach max iterations
 			for n_epoch in range(1, max_epoch + 1):
@@ -364,6 +367,10 @@ class EyeTracker(object):
 							ifCheck = True
 
 					if ifCheck:
+
+						if 	iterTest + 1 >= MaxTestIters:
+							iterTest = 0
+
 						test_start=iterTest * val_chunk_size
 						test_end = (iterTest+1) * val_chunk_size
 
@@ -384,8 +391,9 @@ class EyeTracker(object):
 						Val_loss.append(val_loss)
 						Val_err.append(val_err)
 
+						print ("val_loss: ", val_loss, "val_err: ", val_err)
 						iterTest += 1
-						iterTest %= MaxTestIters
+
 
 						if iter_start:
 							print ('batch iters runtime: %.1fs' % (timeit.default_timer() - iter_start))
@@ -410,7 +418,6 @@ class EyeTracker(object):
 
 							print ("Model saved in file: %s" % save_path)
 							# n_incr_error = 0
-							val_loss = None
 
 						ifCheck = False
 
