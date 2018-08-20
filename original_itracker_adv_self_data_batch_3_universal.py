@@ -6,6 +6,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from load_data import load_data_names, load_batch_from_data
 import datetime
+import random
 
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
@@ -334,7 +335,8 @@ class EyeTracker(object):
 				Val_loss = []
 				Val_err = []
 
-				train_names = shuffle_data(train_names)
+				# train_names = shuffle_data(train_names)
+				random.shuffle(train_names)
 
 				iterTest=0
 
