@@ -412,15 +412,16 @@ class EyeTracker(object):
 
 						plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
 
-						if val_loss - min_delta < best_loss:
-							best_loss = val_loss
-							save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_%s"%(np.mean(train_err)) + "_val_error_%s"%(np.mean(val_err))
+						# if val_loss - min_delta < best_loss:
+						# if val_err - min_delta < best_loss:
+							# best_loss = val_err
+						save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_%s"%(np.mean(train_err)) + "_val_error_%s"%(np.mean(val_err))
 
-							# , global_step=n_epoch
-							save_path = saver.save(sess, save_path)
+						# , global_step=n_epoch
+						save_path = saver.save(sess, save_path)
 
-							print ("Model saved in file: %s" % save_path)
-							# n_incr_error = 0
+						print ("Model saved in file: %s" % save_path)
+						# n_incr_error = 0
 
 						ifCheck = False
 
