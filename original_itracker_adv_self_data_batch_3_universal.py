@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from load_data import load_data_names, load_batch_from_data
 import datetime
 import random
-# loading : -----
+# loading models with iterations of: -----
 # 140
 # 3700
 
