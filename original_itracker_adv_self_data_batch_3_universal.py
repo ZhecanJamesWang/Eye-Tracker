@@ -377,10 +377,10 @@ class EyeTracker(object):
 					print ('Training on batch: %.1fs' % (timeit.default_timer() - start))
 
 					if iter > 1000:
-						if iter % 50 == 0:
+						if iter % 60 == 0:
 							ifCheck = True
 					else:
-						if iter % 10 == 0:
+						if iter % 30 == 0:
 							ifCheck = True
 
 					if ifCheck:
