@@ -373,19 +373,19 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 # 		# save images (for debug)
 # # /////////////////////////////////////////////////////////
 # 		# if save_img:
-		increase = 3
-		y_x, y_y = - int(y_x * increase), int(y_y * increase)
-		# print (px, py)
-		h, w, _ = face.shape
-		cx, cy = w/2.0, h/2.0
-		cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
-		cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
-
-		cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
-		cv2.imwrite("images/" + dir + "_" + frame + "_right.png", right_eye)
-		cv2.imwrite("images/" + dir + "_" + frame + "_left.png", left_eye)
-		cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid.png", face_grid)
-		cv2.imwrite("images/" + dir + "_" + frame + "_image.png", img)
+		# increase = 3
+		# y_x, y_y = - int(y_x * increase), int(y_y * increase)
+		# # print (px, py)
+		# h, w, _ = face.shape
+		# cx, cy = w/2.0, h/2.0
+		# cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
+		# cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
+		#
+		# cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
+		# cv2.imwrite("images/" + dir + "_" + frame + "_right.png", right_eye)
+		# cv2.imwrite("images/" + dir + "_" + frame + "_left.png", left_eye)
+		# cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid.png", face_grid)
+		# cv2.imwrite("images/" + dir + "_" + frame + "_image.png", img)
 
 		# print ("face.shape: ", face.shape)
 		# print ("left_eye.shape: ", left_eye.shape)
