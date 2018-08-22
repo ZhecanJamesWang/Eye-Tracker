@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 from load_data import load_data_names, load_batch_from_data
 import datetime
 import random
+# loading : -----
+# 140
+# 3700
 
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
@@ -283,6 +286,7 @@ class EyeTracker(object):
 
 		print ('Train on %s samples, validate on %s samples' % (train_num, val_num))
 
+
 		# Define loss and optimizer
 		self.cost = tf.losses.mean_squared_error(self.y, self.pred)
 		self.optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost)
@@ -315,6 +319,7 @@ class EyeTracker(object):
 		 # TODO://////
 		# tf.reset_default_graph()
 		# Launch the graph
+
 		with tf.Session() as sess:
 			# sess.run(init)
 			 # TODO://////
@@ -341,6 +346,9 @@ class EyeTracker(object):
 				iterTest=0
 
 				for iter in range (int(MaxIters)):
+
+					start = timeit.default_timer()
+
 					# print ("--------------------------------")
 					# print ("iter: ", iter)
 					train_start=iter * batch_size
@@ -349,6 +357,9 @@ class EyeTracker(object):
 					batch_train_data = load_batch_from_data(train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
 					batch_train_data = prepare_data(batch_train_data)
+
+					print ('Loading and preparing training data: %.1fs' % (timeit.default_timer() - start))
+					start = timeit.default_timer()
 
 					# Run optimization op (backprop)
 					sess.run(self.optimizer, feed_dict={self.eye_left: batch_train_data[0], \
@@ -363,6 +374,7 @@ class EyeTracker(object):
 					train_loss.append(train_batch_loss)
 					train_err.append(train_batch_err)
 
+					print ('Training on batch: %.1fs' % (timeit.default_timer() - start))
 
 					if iter > 1000:
 						if iter % 50 == 0:
@@ -372,6 +384,8 @@ class EyeTracker(object):
 							ifCheck = True
 
 					if ifCheck:
+
+						start = timeit.default_timer()
 
 						if 	iterTest + 1 >= MaxTestIters:
 							iterTest = 0
@@ -384,6 +398,9 @@ class EyeTracker(object):
 						val_n_batches = val_data[0].shape[0] / batch_size + (val_data[0].shape[0] % batch_size != 0)
 
 						val_data = prepare_data(val_data)
+
+						print ('Loading and preparing val data: %.1fs' % (timeit.default_timer() - start))
+						start = timeit.default_timer()
 
 						val_loss = 0.
 						val_err = 0
@@ -399,6 +416,8 @@ class EyeTracker(object):
 						print ("val_loss: ", val_loss, "val_err: ", val_err)
 						iterTest += 1
 
+						print ('Testing on chunk: %.1fs' % (timeit.default_timer() - start))
+						start = timeit.default_timer()
 
 						if iter_start:
 							print ('batch iters runtime: %.1fs' % (timeit.default_timer() - iter_start))
@@ -426,6 +445,9 @@ class EyeTracker(object):
 						# n_incr_error = 0
 
 						ifCheck = False
+
+						print ('Saving models and plotting loss: %.1fs' % (timeit.default_timer() - start))
+
 
 				print ('epoch runtime: %.1fs' % (timeit.default_timer() - epoch_start))
 
