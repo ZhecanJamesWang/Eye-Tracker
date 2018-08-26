@@ -10,6 +10,7 @@ import random
 # loading models with iterations of: -----
 # 140
 # 3700
+# 8 epochs and 840 (20840)
 
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
@@ -326,7 +327,7 @@ class EyeTracker(object):
 			writer = tf.summary.FileWriter("logs", sess.graph)
 
 			# saver = tf.train.import_meta_graph('my_model/2018-08-17-23-17/model_1_140_train_error_14.236069_val_error_7.756780624389648.meta')
-			saver.restore(sess, "./my_model/2018-08-20-00-33/model_1_140_train_error_12.50638_val_error_7.419147491455078")
+			saver.restore(sess, "./my_model/2018-08-22-00-33/model_8_840_train_error_3.5212839_val_error_2.7497661113739014")
 
 			# Keep training until reach max iterations
 			for n_epoch in range(1, max_epoch + 1):
