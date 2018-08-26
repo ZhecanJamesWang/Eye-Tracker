@@ -626,7 +626,9 @@ def main():
 	parser.add_argument('--train', action='store_true', help='train flag')
 	# parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=60, help='max number of iterations')
-	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
+	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0001, help='learning rate')
+	# 0.0025
+	# 0.0001
 	parser.add_argument('-bs', '--batch_size', type=int, default=500, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
