@@ -8,9 +8,11 @@ from load_data import load_data_names, load_batch_from_data
 import datetime
 import random
 # loading models with iterations of: -----
-# 140
-# 3700
-# 8 epochs and 840 (20840)
+# 140 iters                                                    lr 0.0025
+# 3700 iters                                2018-08-20-02-25   lr 0.0025
+# 7 epochs and 840 iters (17640)            2018-08-22-00-33   lr 0.0025
+# 930 iters                                 2018-08-26-19-51   lr 0.0001
+
 
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
@@ -627,7 +629,7 @@ def main():
 	parser.add_argument('--train', action='store_true', help='train flag')
 	# parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=60, help='max number of iterations')
-	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0001, help='learning rate')
+	parser.add_argument('-lr', '--learning_rate', type=float, default=0.00001, help='learning rate')
 	# 0.0025
 	# 0.0001
 	parser.add_argument('-bs', '--batch_size', type=int, default=500, help='batch size')
