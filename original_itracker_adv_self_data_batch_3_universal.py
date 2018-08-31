@@ -12,7 +12,7 @@ import random
 # 3700 iters                                2018-08-20-02-25   lr 0.0025
 # 7 epochs and 840 iters (17640)            2018-08-22-00-33   lr 0.0025
 # 930 iters                                 2018-08-26-19-51   lr 0.0001
-
+# 4 epochs and 1200 iters                   2018-08-29-00-04   lr 0.00001
 
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
@@ -329,7 +329,8 @@ class EyeTracker(object):
 			writer = tf.summary.FileWriter("logs", sess.graph)
 
 			# saver = tf.train.import_meta_graph('my_model/2018-08-17-23-17/model_1_140_train_error_14.236069_val_error_7.756780624389648.meta')
-			saver.restore(sess, "./my_model/2018-08-22-00-33/model_8_840_train_error_3.5212839_val_error_2.7497661113739014")
+			# saver.restore(sess, "./my_model/2018-08-22-00-33/model_8_840_train_error_3.5212839_val_error_2.7497661113739014")
+			saver.restore(sess, "./my_model/2018-08-29-00-04/model_4_1200_train_error_3.5212839_val_error_2.7497661113739014")
 
 			# Keep training until reach max iterations
 			for n_epoch in range(1, max_epoch + 1):
@@ -629,9 +630,10 @@ def main():
 	parser.add_argument('--train', action='store_true', help='train flag')
 	# parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=60, help='max number of iterations')
-	parser.add_argument('-lr', '--learning_rate', type=float, default=0.00001, help='learning rate')
+	parser.add_argument('-lr', '--learning_rate', type=float, default=0.000001, help='learning rate')
 	# 0.0025
 	# 0.0001
+	# 0.00001
 	parser.add_argument('-bs', '--batch_size', type=int, default=500, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
