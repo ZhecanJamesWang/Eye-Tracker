@@ -12,7 +12,7 @@ import random
 # 3700 iters                                2018-08-20-02-25   lr 0.0025
 # 7 epochs and 840 iters (17640)            2018-08-22-00-33   lr 0.0025
 # 930 iters                                 2018-08-26-19-51   lr 0.0001
-# 4 epochs and 1200 iters                   2018-08-29-00-04   lr 0.00001
+# 4 epochs and 1800 iters                   2018-08-29-00-04   lr 0.00001
 
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
