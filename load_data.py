@@ -349,15 +349,28 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		# print ("y_y: ", y_y)
 		# print (y_x, y_y)
 
+
+		cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
+		cv2.imwrite("images/" + dir + "_" + frame + "_right.png", right_eye)
+		cv2.imwrite("images/" + dir + "_" + frame + "_left.png", left_eye)
+		cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid.png", face_grid)
+		cv2.imwrite("images/" + dir + "_" + frame + "_image.png", img)
+
+		print ("face.shape: ", face.shape)
+		print ("left_eye.shape: ", left_eye.shape)
+		print ("right_eye.shape: ", right_eye.shape)
+
+
 # ///////////////////////////////////////////////////
 		# resize images
 		# h, w, _ = face.shape
 		# print ("vvvvvvvvvvvvvvvvvvv")
 		# print ("face.shape: ", face.shape)
 
-		# face = cv2.resize(face, (img_cols, img_rows))
-		# left_eye = cv2.resize(left_eye, (img_cols, img_rows))
-		# right_eye = cv2.resize(right_eye, (img_cols, img_rows))
+
+		face = cv2.resize(face, (img_cols, img_rows))
+		left_eye = cv2.resize(left_eye, (img_cols, img_rows))
+		right_eye = cv2.resize(right_eye, (img_cols, img_rows))
 
 		# scale = img_cols/w
 		#
@@ -382,16 +395,6 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		# cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
 		# cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
 		#
-		cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
-		cv2.imwrite("images/" + dir + "_" + frame + "_right.png", right_eye)
-		cv2.imwrite("images/" + dir + "_" + frame + "_left.png", left_eye)
-		cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid.png", face_grid)
-		cv2.imwrite("images/" + dir + "_" + frame + "_image.png", img)
-
-		# print ("face.shape: ", face.shape)
-		# print ("left_eye.shape: ", left_eye.shape)
-		# print ("right_eye.shape: ", right_eye.shape)
-
 
 		# normalization
 		# face = image_normalization(face)
