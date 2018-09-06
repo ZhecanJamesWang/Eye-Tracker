@@ -345,10 +345,6 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		y_x = dot_json["XCam"][idx]
 		y_y = dot_json["YCam"][idx]
 
-		# print ("y_x: ", y_x)
-		# print ("y_y: ", y_y)
-		# print (y_x, y_y)
-
 
 		cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
 		cv2.imwrite("images/" + dir + "_" + frame + "_right.png", right_eye)
@@ -366,7 +362,6 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		# h, w, _ = face.shape
 		# print ("vvvvvvvvvvvvvvvvvvv")
 		# print ("face.shape: ", face.shape)
-
 
 		face = cv2.resize(face, (img_cols, img_rows))
 		left_eye = cv2.resize(left_eye, (img_cols, img_rows))

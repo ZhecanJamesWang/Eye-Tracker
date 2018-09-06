@@ -12,7 +12,11 @@ import random
 # 3700 iters                                2018-08-20-02-25   lr 0.0025
 # 7 epochs and 840 iters (17640)            2018-08-22-00-33   lr 0.0025
 # 930 iters                                 2018-08-26-19-51   lr 0.0001
-# 4 epochs and 1800 iters                   2018-08-29-00-04   lr 0.00001
+# 3 epochs and 1800 iters                   2018-08-29-00-04   lr 0.00001
+# 2 epochs and  630 iters                   2018-08-30-23-11   lr 0.000001
+
+# -----------------------------------------------------------------------
+#                                                              lr 0.001
 
 os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
@@ -630,10 +634,12 @@ def main():
 	parser.add_argument('--train', action='store_true', help='train flag')
 	# parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=60, help='max number of iterations')
-	parser.add_argument('-lr', '--learning_rate', type=float, default=0.000001, help='learning rate')
+	parser.add_argument('-lr', '--learning_rate', type=float, default=0.001, help='learning rate')
 	# 0.0025
 	# 0.0001
 	# 0.00001
+	# 0.000001
+
 	parser.add_argument('-bs', '--batch_size', type=int, default=500, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
