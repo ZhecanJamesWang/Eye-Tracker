@@ -1,3 +1,4 @@
+import os
 import argparse
 import timeit
 import numpy as np
@@ -17,23 +18,15 @@ import random
 # -----------------------------------------------------------------------
 #                                                              lr 0.001
 
-import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
-# os.environ["CUDA_VISIBLE_DEVICES"]="1"
-
+os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
 now = datetime.datetime.now()
 date = now.strftime("%Y-%m-%d-%H-%M")
 
-# dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
-# train_path = dataset_path + '\ '.strip() + "train"
-# val_path = dataset_path + '\ '.strip() + "validation"
-# test_path = dataset_path + '\ '.strip() + "test"
-
-dataset_path = "../data/GazeCapture"
-train_path = dataset_path + '/' + "train"
-val_path = dataset_path + '/' + "validation"
-test_path = dataset_path + '/' + "test"
+dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
+train_path = dataset_path + '\ '.strip() + "train"
+val_path = dataset_path + '\ '.strip() + "validation"
+test_path = dataset_path + '\ '.strip() + "test"
 
 img_cols = 64
 img_rows = 64
@@ -335,13 +328,13 @@ class EyeTracker(object):
 		# Launch the graph
 
 		with tf.Session() as sess:
-			sess.run(init)
+			# sess.run(init)
 			 # TODO://////
 			writer = tf.summary.FileWriter("logs", sess.graph)
 
 			# saver = tf.train.import_meta_graph('my_model/2018-08-17-23-17/model_1_140_train_error_14.236069_val_error_7.756780624389648.meta')
 			# saver.restore(sess, "./my_model/2018-08-22-00-33/model_8_840_train_error_3.5212839_val_error_2.7497661113739014")
-			# saver.restore(sess, "./my_model/2018-08-29-00-04/model_4_1200_train_error_3.5212839_val_error_2.7497661113739014")
+			saver.restore(sess, "./my_model/2018-08-29-00-04/model_4_1200_train_error_3.5212839_val_error_2.7497661113739014")
 
 			# Keep training until reach max iterations
 			for n_epoch in range(1, max_epoch + 1):
@@ -489,13 +482,9 @@ def extract_validation_handles(session):
 	Returns:
 		validation handles.
 	"""
-	# valid_nodes = tf.get_collection_ref("validation_nodes")
-	print tf.get_default_graph().get_all_collection_keys()
-
-	valid_nodes = tf.get_collection("validation_nodes")
-	print "len(valid_nodes): ", len(valid_nodes)
-	# if len(valid_nodes) != 5:
-	# 	raise Exception("ERROR: Expected 5 items in validation_nodes, got %d." % len(valid_nodes))
+	valid_nodes = tf.get_collection_ref("validation_nodes")
+	if len(valid_nodes) != 5:
+		raise Exception("ERROR: Expected 5 items in validation_nodes, got %d." % len(valid_nodes))
 	return valid_nodes
 
 def load_model(session, save_path):
@@ -518,7 +507,6 @@ def load_model(session, save_path):
 	saver.restore(session, save_path)
 
 	# Check that we have the handles we expected.
-	print ("Successfully loaded !!!")
 	return extract_validation_handles(session)
 
 def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
@@ -541,13 +529,9 @@ def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
 
 	iter_start = None
 
-	print ("len(val_ops): ", len(val_ops))
-	# eye_left, eye_right, face, face_mask, pred = val_ops
-	eye_left, eye_right, face, face_mask, pred_xy, pred_ang_left,  pred_ang_right = val_ops
-
+	eye_left, eye_right, face, face_mask, pred = val_ops
 	y = tf.placeholder(tf.float32, [None, 2], name='pos')
-	# err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred, y), axis=1)))
-	err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred_xy, y), axis=1)))
+	err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred, y), axis=1)))
 
 	for iterTest in range(MaxTestIters):
 		test_start=iterTest * batch_size
@@ -626,20 +610,19 @@ def train(args):
 
 	plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file= plot_ckpt + "/total_loss.png")
 
-	if args.save_loss:
-		with open(plot_ckpt + "/" + args.save_loss, 'w') as outfile:
-			np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
-									val_loss_history=val_loss_history, val_err_history=val_err_history)
-
+	# if args.save_loss:
+	# 	with open(args.save_loss, 'w') as outfile:
+	# 		np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
+	# 								val_loss_history=val_loss_history, val_err_history=val_err_history)
+	#
 
 def test(args):
 	print ("--------testing---------")
 	plot_ckpt = "plots/" + date
-	# if not os.path.exists(plot_ckpt):
-	# 	os.makedirs(plot_ckpt)
+	if not os.path.exists(plot_ckpt):
+		os.makedirs(plot_ckpt)
 
-	val_names = load_data_names(val_path)
-	# [:2000]
+	val_names = load_data_names(val_path)[:2000]
 	# Load and validate the network.
 	with tf.Session() as sess:
 		val_ops = load_model(sess, args.load_model)
@@ -657,21 +640,17 @@ def main():
 	# 0.00001
 	# 0.000001
 
-	# default = "pretrained_models/itracker_adv/model-23",
-	# default = "my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684"
-	# default ='my_model/2018-09-06-23-11/model_1_1500_train_error_2.3585315_val_error_2.000537872314453'
-	# default='my_model/2018-09-07-11-15/model_4_420_train_error_2.2030365_val_error_1.8307928442955017'
 	parser.add_argument('-bs', '--batch_size', type=int, default=500, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
-	parser.add_argument('-lm', '--load_model', type=str, default='my_model/2018-09-08-23-32/model_1_25_train_error_2.202213_val_error_2.193189859390259')
+	parser.add_argument('-lm', '--load_model', type=str, default ="my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684", help='path to the loaded model')
 	parser.add_argument('-pl', '--plot_loss', type=str, default='loss.png', help='plot loss')
 	parser.add_argument('-sl', '--save_loss', type=str, default='loss.npz', help='save loss')
 	args = parser.parse_args()
 
 	# if args.train:
-	train(args)
+	# train(args)
 	# else:
 	# 	if not args.load_model:
 	# 		raise Exception('load_model arg needed in test phase')

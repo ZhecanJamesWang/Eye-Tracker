@@ -1,3 +1,4 @@
+import os
 import argparse
 import timeit
 import numpy as np
@@ -11,29 +12,17 @@ import random
 # 3700 iters                                2018-08-20-02-25   lr 0.0025
 # 7 epochs and 840 iters (17640)            2018-08-22-00-33   lr 0.0025
 # 930 iters                                 2018-08-26-19-51   lr 0.0001
-# 3 epochs and 1800 iters                   2018-08-29-00-04   lr 0.00001
-# 2 epochs and  630 iters                   2018-08-30-23-11   lr 0.000001
+# 4 epochs and 1800 iters                   2018-08-29-00-04   lr 0.00001
 
-# -----------------------------------------------------------------------
-#                                                              lr 0.001
-
-import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
-# os.environ["CUDA_VISIBLE_DEVICES"]="1"
-
+os.environ["CUDA_VISIBLE-DEVICES"] = "1"
 
 now = datetime.datetime.now()
 date = now.strftime("%Y-%m-%d-%H-%M")
 
-# dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
-# train_path = dataset_path + '\ '.strip() + "train"
-# val_path = dataset_path + '\ '.strip() + "validation"
-# test_path = dataset_path + '\ '.strip() + "test"
-
-dataset_path = "../data/GazeCapture"
-train_path = dataset_path + '/' + "train"
-val_path = dataset_path + '/' + "validation"
-test_path = dataset_path + '/' + "test"
+dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
+train_path = dataset_path + '\ '.strip() + "train"
+val_path = dataset_path + '\ '.strip() + "validation"
+test_path = dataset_path + '\ '.strip() + "test"
 
 img_cols = 64
 img_rows = 64
@@ -98,28 +87,6 @@ fc_face_mask_size = 256
 face_face_mask_size = 128
 fc_size = 128
 fc2_size = 2
-
-
-# # Import data
-# def load_data(file):
-# 	npzfile = np.load(file)
-#
-# 	limit = 1000
-# 	train_eye_left = npzfile["train_eye_left"][:limit]
-# 	train_eye_right = npzfile["train_eye_right"][:limit]
-# 	train_face = npzfile["train_face"][:limit]
-# 	train_face_mask = npzfile["train_face_mask"][:limit]
-# 	train_y = npzfile["train_y"][:limit]
-#
-# 	limit = 1000
-# 	val_eye_left = npzfile["val_eye_left"][:limit]
-# 	val_eye_right = npzfile["val_eye_right"][:limit]
-# 	val_face = npzfile["val_face"][:limit]
-# 	val_face_mask = npzfile["val_face_mask"][:limit]
-# 	val_y = npzfile["val_y"][:limit]
-#
-# 	return [train_eye_left, train_eye_right, train_face, train_face_mask, train_y], [val_eye_left, val_eye_right, val_face, val_face_mask, val_y]
-#
 
 def normalize(data):
 	shape = data.shape
@@ -192,7 +159,8 @@ class EyeTracker(object):
 		}
 
 		# Construct model
-		self.pred = self.itracker_nets(self.eye_left, self.eye_right, self.face, self.face_mask, self.weights, self.biases)
+		# self.pred = self.itracker_nets(self.eye_left, self.eye_right, self.face, self.face_mask, self.weights, self.biases)
+		self.pred = self.itracker_nets(self.eye_left, self.eye_right, self.weights, self.biases)
 
 	# Create some wrappers for simplicity
 	def conv2d(self, x, W, b, strides=1):
@@ -207,7 +175,9 @@ class EyeTracker(object):
 							  padding='VALID')
 
 	# Create model
-	def itracker_nets(self, eye_left, eye_right, face, face_mask, weights, biases):
+	# def itracker_nets(self, eye_left, eye_right, face, face_mask, weights, biases):
+	def itracker_nets(self, eye_left, eye_right, weights, biases):
+
 		# pathway: left eye
 		eye_left = self.conv2d(eye_left, weights['conv1_eye'], biases['conv1_eye'], strides=1)
 		eye_left = self.maxpool2d(eye_left, k=pool1_eye_size, strides=pool1_eye_stride)
@@ -221,53 +191,55 @@ class EyeTracker(object):
 		eye_left = self.conv2d(eye_left, weights['conv4_eye'], biases['conv4_eye'], strides=1)
 		eye_left = self.maxpool2d(eye_left, k=pool4_eye_size, strides=pool4_eye_stride)
 
-		# pathway: right eye
-		eye_right = self.conv2d(eye_right, weights['conv1_eye'], biases['conv1_eye'], strides=1)
-		eye_right = self.maxpool2d(eye_right, k=pool1_eye_size, strides=pool1_eye_stride)
+		# # pathway: right eye
+		# eye_right = self.conv2d(eye_right, weights['conv1_eye'], biases['conv1_eye'], strides=1)
+		# eye_right = self.maxpool2d(eye_right, k=pool1_eye_size, strides=pool1_eye_stride)
+		#
+		# eye_right = self.conv2d(eye_right, weights['conv2_eye'], biases['conv2_eye'], strides=1)
+		# eye_right = self.maxpool2d(eye_right, k=pool2_eye_size, strides=pool2_eye_stride)
+		#
+		# eye_right = self.conv2d(eye_right, weights['conv3_eye'], biases['conv3_eye'], strides=1)
+		# eye_right = self.maxpool2d(eye_right, k=pool3_eye_size, strides=pool3_eye_stride)
+		#
+		# eye_right = self.conv2d(eye_right, weights['conv4_eye'], biases['conv4_eye'], strides=1)
+		# eye_right = self.maxpool2d(eye_right, k=pool4_eye_size, strides=pool4_eye_stride)
 
-		eye_right = self.conv2d(eye_right, weights['conv2_eye'], biases['conv2_eye'], strides=1)
-		eye_right = self.maxpool2d(eye_right, k=pool2_eye_size, strides=pool2_eye_stride)
-
-		eye_right = self.conv2d(eye_right, weights['conv3_eye'], biases['conv3_eye'], strides=1)
-		eye_right = self.maxpool2d(eye_right, k=pool3_eye_size, strides=pool3_eye_stride)
-
-		eye_right = self.conv2d(eye_right, weights['conv4_eye'], biases['conv4_eye'], strides=1)
-		eye_right = self.maxpool2d(eye_right, k=pool4_eye_size, strides=pool4_eye_stride)
-
-		# pathway: face
-		face = self.conv2d(face, weights['conv1_face'], biases['conv1_face'], strides=1)
-		face = self.maxpool2d(face, k=pool1_face_size, strides=pool1_face_stride)
-
-		face = self.conv2d(face, weights['conv2_face'], biases['conv2_face'], strides=1)
-		face = self.maxpool2d(face, k=pool2_face_size, strides=pool2_face_stride)
-
-		face = self.conv2d(face, weights['conv3_face'], biases['conv3_face'], strides=1)
-		face = self.maxpool2d(face, k=pool3_face_size, strides=pool3_face_stride)
-
-		face = self.conv2d(face, weights['conv4_face'], biases['conv4_face'], strides=1)
-		face = self.maxpool2d(face, k=pool4_face_size, strides=pool4_face_stride)
+		# # pathway: face
+		# face = self.conv2d(face, weights['conv1_face'], biases['conv1_face'], strides=1)
+		# face = self.maxpool2d(face, k=pool1_face_size, strides=pool1_face_stride)
+		#
+		# face = self.conv2d(face, weights['conv2_face'], biases['conv2_face'], strides=1)
+		# face = self.maxpool2d(face, k=pool2_face_size, strides=pool2_face_stride)
+		#
+		# face = self.conv2d(face, weights['conv3_face'], biases['conv3_face'], strides=1)
+		# face = self.maxpool2d(face, k=pool3_face_size, strides=pool3_face_stride)
+		#
+		# face = self.conv2d(face, weights['conv4_face'], biases['conv4_face'], strides=1)
+		# face = self.maxpool2d(face, k=pool4_face_size, strides=pool4_face_stride)
 
 		# fc layer
 		# eye
 		eye_left = tf.reshape(eye_left, [-1, int(np.prod(eye_left.get_shape()[1:]))])
-		eye_right = tf.reshape(eye_right, [-1, int(np.prod(eye_right.get_shape()[1:]))])
-		eye = tf.concat([eye_left, eye_right], 1)
-		eye = tf.nn.relu(tf.add(tf.matmul(eye, weights['fc_eye']), biases['fc_eye']))
+		# eye_right = tf.reshape(eye_right, [-1, int(np.prod(eye_right.get_shape()[1:]))])
+		# eye = tf.concat([eye_left, eye_right], 1)
+		# eye = tf.nn.relu(tf.add(tf.matmul(eye, weights['fc_eye']), biases['fc_eye']))
+		eye = tf.nn.relu(tf.add(tf.matmul(eye_left, weights['fc_eye']), biases['fc_eye']))
 
-		# face
-		face = tf.reshape(face, [-1, int(np.prod(face.get_shape()[1:]))])
-		face = tf.nn.relu(tf.add(tf.matmul(face, weights['fc_face']), biases['fc_face']))
+		# # face
+		# face = tf.reshape(face, [-1, int(np.prod(face.get_shape()[1:]))])
+		# face = tf.nn.relu(tf.add(tf.matmul(face, weights['fc_face']), biases['fc_face']))
+		#
+		# # face mask
+		# face_mask = tf.nn.relu(tf.add(tf.matmul(face_mask, weights['fc_face_mask']), biases['fc_face_mask']))
 
-		# face mask
-		face_mask = tf.nn.relu(tf.add(tf.matmul(face_mask, weights['fc_face_mask']), biases['fc_face_mask']))
+		# face_face_mask = tf.concat([face, face_mask], 1)
+		# face_face_mask = tf.nn.relu(tf.add(tf.matmul(face_face_mask, weights['face_face_mask']), biases['face_face_mask']))
 
-		face_face_mask = tf.concat([face, face_mask], 1)
-		face_face_mask = tf.nn.relu(tf.add(tf.matmul(face_face_mask, weights['face_face_mask']), biases['face_face_mask']))
-
-		# all
-		fc = tf.concat([eye, face_face_mask], 1)
-		fc = tf.nn.relu(tf.add(tf.matmul(fc, weights['fc']), biases['fc']))
-		out = tf.add(tf.matmul(fc, weights['fc2']), biases['fc2'])
+		# # all
+		# fc = tf.concat([eye, face_face_mask], 1)
+		# fc = tf.nn.relu(tf.add(tf.matmul(fc, weights['fc']), biases['fc']))
+		# out = tf.add(tf.matmul(fc, weights['fc2']), biases['fc2'])
+		out = tf.add(tf.matmul(eye, weights['fc2']), biases['fc2'])
 		return out
 
 	def train(self, ckpt, plot_ckpt, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10):
@@ -307,6 +279,7 @@ class EyeTracker(object):
 
 		# Evaluate model
 		self.err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(self.pred, self.y), axis=1)))
+
 		train_loss_history = []
 		train_err_history = []
 		val_loss_history = []
@@ -317,15 +290,16 @@ class EyeTracker(object):
 
 		# n_batches = train_data[0].shape[0] / batch_size + (train_data[0].shape[0] % batch_size != 0)
 
-		# Create the collection
-		tf.get_collection("validation_nodes")
+		# # Create the collection
+		# tf.get_collection("validation_nodes")
+		#
+		# # Add stuff to the collection.
+		# tf.add_to_collection("validation_nodes", self.eye_left)
+		# tf.add_to_collection("validation_nodes", self.eye_right)
+		# tf.add_to_collection("validation_nodes", self.face)
+		# tf.add_to_collection("validation_nodes", self.face_mask)
+		# tf.add_to_collection("validation_nodes", self.pred)
 
-		# Add stuff to the collection.
-		tf.add_to_collection("validation_nodes", self.eye_left)
-		tf.add_to_collection("validation_nodes", self.eye_right)
-		tf.add_to_collection("validation_nodes", self.face)
-		tf.add_to_collection("validation_nodes", self.face_mask)
-		tf.add_to_collection("validation_nodes", self.pred)
 		saver = tf.train.Saver(max_to_keep = 0)
 
 		# Initializing the variables
@@ -335,13 +309,13 @@ class EyeTracker(object):
 		# Launch the graph
 
 		with tf.Session() as sess:
-			sess.run(init)
+			# sess.run(init)
 			 # TODO://////
 			writer = tf.summary.FileWriter("logs", sess.graph)
 
 			# saver = tf.train.import_meta_graph('my_model/2018-08-17-23-17/model_1_140_train_error_14.236069_val_error_7.756780624389648.meta')
 			# saver.restore(sess, "./my_model/2018-08-22-00-33/model_8_840_train_error_3.5212839_val_error_2.7497661113739014")
-			# saver.restore(sess, "./my_model/2018-08-29-00-04/model_4_1200_train_error_3.5212839_val_error_2.7497661113739014")
+			saver.restore(sess, "./my_model/2018-08-29-00-04/model_4_1200_train_error_3.5212839_val_error_2.7497661113739014")
 
 			# Keep training until reach max iterations
 			for n_epoch in range(1, max_epoch + 1):
@@ -489,13 +463,9 @@ def extract_validation_handles(session):
 	Returns:
 		validation handles.
 	"""
-	# valid_nodes = tf.get_collection_ref("validation_nodes")
-	print tf.get_default_graph().get_all_collection_keys()
-
-	valid_nodes = tf.get_collection("validation_nodes")
-	print "len(valid_nodes): ", len(valid_nodes)
-	# if len(valid_nodes) != 5:
-	# 	raise Exception("ERROR: Expected 5 items in validation_nodes, got %d." % len(valid_nodes))
+	valid_nodes = tf.get_collection_ref("validation_nodes")
+	if len(valid_nodes) != 5:
+		raise Exception("ERROR: Expected 5 items in validation_nodes, got %d." % len(valid_nodes))
 	return valid_nodes
 
 def load_model(session, save_path):
@@ -518,7 +488,6 @@ def load_model(session, save_path):
 	saver.restore(session, save_path)
 
 	# Check that we have the handles we expected.
-	print ("Successfully loaded !!!")
 	return extract_validation_handles(session)
 
 def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
@@ -541,13 +510,9 @@ def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
 
 	iter_start = None
 
-	print ("len(val_ops): ", len(val_ops))
-	# eye_left, eye_right, face, face_mask, pred = val_ops
-	eye_left, eye_right, face, face_mask, pred_xy, pred_ang_left,  pred_ang_right = val_ops
-
+	eye_left, eye_right, face, face_mask, pred = val_ops
 	y = tf.placeholder(tf.float32, [None, 2], name='pos')
-	# err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred, y), axis=1)))
-	err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred_xy, y), axis=1)))
+	err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred, y), axis=1)))
 
 	for iterTest in range(MaxTestIters):
 		test_start=iterTest * batch_size
@@ -626,20 +591,19 @@ def train(args):
 
 	plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file= plot_ckpt + "/total_loss.png")
 
-	if args.save_loss:
-		with open(plot_ckpt + "/" + args.save_loss, 'w') as outfile:
-			np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
-									val_loss_history=val_loss_history, val_err_history=val_err_history)
-
+	# if args.save_loss:
+	# 	with open(args.save_loss, 'w') as outfile:
+	# 		np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
+	# 								val_loss_history=val_loss_history, val_err_history=val_err_history)
+	#
 
 def test(args):
 	print ("--------testing---------")
 	plot_ckpt = "plots/" + date
-	# if not os.path.exists(plot_ckpt):
-	# 	os.makedirs(plot_ckpt)
+	if not os.path.exists(plot_ckpt):
+		os.makedirs(plot_ckpt)
 
-	val_names = load_data_names(val_path)
-	# [:2000]
+	val_names = load_data_names(val_path)[:2000]
 	# Load and validate the network.
 	with tf.Session() as sess:
 		val_ops = load_model(sess, args.load_model)
@@ -651,21 +615,15 @@ def main():
 	parser.add_argument('--train', action='store_true', help='train flag')
 	# parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=60, help='max number of iterations')
-	parser.add_argument('-lr', '--learning_rate', type=float, default=0.001, help='learning rate')
+	parser.add_argument('-lr', '--learning_rate', type=float, default=0.000001, help='learning rate')
 	# 0.0025
 	# 0.0001
 	# 0.00001
-	# 0.000001
-
-	# default = "pretrained_models/itracker_adv/model-23",
-	# default = "my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684"
-	# default ='my_model/2018-09-06-23-11/model_1_1500_train_error_2.3585315_val_error_2.000537872314453'
-	# default='my_model/2018-09-07-11-15/model_4_420_train_error_2.2030365_val_error_1.8307928442955017'
 	parser.add_argument('-bs', '--batch_size', type=int, default=500, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
-	parser.add_argument('-lm', '--load_model', type=str, default='my_model/2018-09-08-23-32/model_1_25_train_error_2.202213_val_error_2.193189859390259')
+	parser.add_argument('-lm', '--load_model', type=str, help='path to the loaded model')
 	parser.add_argument('-pl', '--plot_loss', type=str, default='loss.png', help='plot loss')
 	parser.add_argument('-sl', '--save_loss', type=str, default='loss.npz', help='save loss')
 	args = parser.parse_args()
@@ -675,7 +633,7 @@ def main():
 	# else:
 	# 	if not args.load_model:
 	# 		raise Exception('load_model arg needed in test phase')
-	test(args)
+	# test(args)
 
 if __name__ == '__main__':
 	main()

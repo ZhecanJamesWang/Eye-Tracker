@@ -4,8 +4,8 @@ import os
 import glob
 from os.path import join
 import json
-from data_utility import image_normalization
-
+from data_utility import image_normalization, resize
+from get_eyes import get_left_right_eyes
 
 # load data directly from the npz file (small dataset, 48k and 5k for train and test)
 def load_data_from_npz(file):
@@ -247,6 +247,8 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 	print ("int(train_start),int(train_end: ", int(train_start),int(train_end))
 
 	for i in range(int(train_start),int(train_end)):
+		if i % 50 == 0:
+			print i
 		try:
 			# lottery
 			# i = np.random.randint(0, len(names))
@@ -306,23 +308,30 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		br_y = tl_y_face + h
 		face = img[tl_y_face:br_y, tl_x_face:br_x]
 
-		# get left eye
-		tl_x = tl_x_face + int(left_json["X"][idx])
-		tl_y = tl_y_face + int(left_json["Y"][idx])
-		w = int(left_json["W"][idx])
-		h = int(left_json["H"][idx])
-		br_x = tl_x + w
-		br_y = tl_y + h
-		left_eye = img[tl_y:br_y, tl_x:br_x]
-
-		# get right eye
-		tl_x = tl_x_face + int(right_json["X"][idx])
-		tl_y = tl_y_face + int(right_json["Y"][idx])
-		w = int(right_json["W"][idx])
-		h = int(right_json["H"][idx])
-		br_x = tl_x + w
-		br_y = tl_y + h
-		right_eye = img[tl_y:br_y, tl_x:br_x]
+		rect = [tl_x_face, tl_y_face, br_x, br_y]
+		# try:
+		left_eye, right_eye = get_left_right_eyes(img, rect)
+		left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
+		# except Exception as e:
+		# 	print e
+		# 	print "could not find face and eye"
+		#  	# get left eye
+		# 	tl_x = tl_x_face + int(left_json["X"][idx])
+		# 	tl_y = tl_y_face + int(left_json["Y"][idx])
+		# 	w = int(left_json["W"][idx])
+		# 	h = int(left_json["H"][idx])
+		# 	br_x = tl_x + w
+		# 	br_y = tl_y + h
+		# 	left_eye = img[tl_y:br_y, tl_x:br_x]
+		#
+		# 	# get right eye
+		# 	tl_x = tl_x_face + int(right_json["X"][idx])
+		# 	tl_y = tl_y_face + int(right_json["Y"][idx])
+		# 	w = int(right_json["W"][idx])
+		# 	h = int(right_json["H"][idx])
+		# 	br_x = tl_x + w
+		# 	br_y = tl_y + h
+		# 	right_eye = img[tl_y:br_y, tl_x:br_x]
 
 		# get face grid (in ch, cols, rows convention)
 		# face_grid = np.zeros(shape=(25, 25, 1), dtype=np.float32)
@@ -337,6 +346,7 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		# print ("face_grid: ", face_grid.shape)
 		# face_grid[0, tl_y:br_y, tl_x:br_x] = 1
 		face_grid[tl_y:br_y, tl_x:br_x] = 1
+
 		# face_grid = cv2.resize(face_grid,(25, 25))
 		# face_grid = np.array(face_grid * 255, dtype = np.uint8)
 		# face_grid = face_grid.flatten()
@@ -346,15 +356,15 @@ def load_batch_from_data(names, path, batch_size, img_ch, img_cols, img_rows, tr
 		y_y = dot_json["YCam"][idx]
 
 
-		cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
-		cv2.imwrite("images/" + dir + "_" + frame + "_right.png", right_eye)
-		cv2.imwrite("images/" + dir + "_" + frame + "_left.png", left_eye)
-		cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid.png", face_grid)
-		cv2.imwrite("images/" + dir + "_" + frame + "_image.png", img)
+		# cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
+		# cv2.imwrite("images/" + dir + "_" + frame + "_right.png", right_eye)
+		# cv2.imwrite("images/" + dir + "_" + frame + "_left.png", left_eye)
+		# cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid.png", face_grid)
+		# cv2.imwrite("images/" + dir + "_" + frame + "_image.png", img)
 
-		print ("face.shape: ", face.shape)
-		print ("left_eye.shape: ", left_eye.shape)
-		print ("right_eye.shape: ", right_eye.shape)
+		# print ("face.shape: ", face.shape)
+		# print ("left_eye.shape: ", left_eye.shape)
+		# print ("right_eye.shape: ", right_eye.shape)
 
 
 # ///////////////////////////////////////////////////
