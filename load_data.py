@@ -4,8 +4,41 @@ import os
 import glob
 from os.path import join
 import json
-from utility.data_utility import image_normalization, resize
+from utility.data_utility import image_normalization, resize, check_dimension
 # from get_eyes import get_left_right_eyes
+
+def load_data_names_columbia(file_name):
+	fh = open(file_name, "r")
+	img_list = []
+	ang_list = []
+
+	for line in fh.readline():
+		print line
+		parts = line.split(" ")
+		print parts
+		raise "debug"
+
+		path = paths[0]
+		theta = paths[1]
+		alpha = paths[2]
+		img_list.append(path)
+		ang_list.append(path)
+
+	return img_list, ang_list
+
+def load_data_mpii(file):
+	npzfile = np.load(file)
+
+	left_images = npzfile["left_image"]
+	left_poses = npzfile["left_pose"]
+	left_gazes = npzfile["left_gaze"]
+
+	right_images = npzfile["right_image"]
+	right_poses = npzfile["right_pose"]
+	right_gazes = npzfile["right_gaze"]
+
+	return [left_images, left_poses, left_gazes, right_images, right_poses, right_gazes]
+
 
 # load data directly from the npz file (small dataset, 48k and 5k for train and test)
 def load_data_from_npz(file):
@@ -288,12 +321,12 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 			print("Error opening image: {}".format(join(path, dir, "frames", frame)))
 			continue
 
-		# if coordinates are negatives, skip (a lot of negative coords!)
-		if int(face_json["X"][idx]) < 0 or int(face_json["Y"][idx]) < 0 or \
-			int(left_json["X"][idx]) < 0 or int(left_json["Y"][idx]) < 0 or \
-			int(right_json["X"][idx]) < 0 or int(right_json["Y"][idx]) < 0:
-			print("Error with coordinates: {}".format(join(path, dir, "frames", frame)))
-			continue
+		# # if coordinates are negatives, skip (a lot of negative coords!)
+		# if int(face_json["X"][idx]) < 0 or int(face_json["Y"][idx]) < 0 or \
+		# 	int(left_json["X"][idx]) < 0 or int(left_json["Y"][idx]) < 0 or \
+		# 	int(right_json["X"][idx]) < 0 or int(right_json["Y"][idx]) < 0:
+		# 	print("Error with coordinates: {}".format(join(path, dir, "frames", frame)))
+		# 	continue
 
 		# get face
 		tl_x_face = int(face_json["X"][idx])
@@ -303,25 +336,32 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 		br_x = tl_x_face + w
 		br_y = tl_y_face + h
 		face = img[tl_y_face:br_y, tl_x_face:br_x]
-
+		try:
+			# print type(face)
+			# print face.shape
+			check_dimension(face)
+			face = resize(face, 64)
+		except Exception as e:
+			# print "check face check_dimension"
+			# print e
+			continue
 
 		try:
 			# rect = [tl_x_face, tl_y_face, br_x, br_y]
 			# left_eye, right_eye = get_left_right_eyes(img, rect)
-			# left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
 			result = mtcnn_h.run_mtcnn(img,  if_face = False, if_facemask = False, if_draw = False)
 			[_, _, _, left_eye, right_eye, _, left_eye_pts, right_eye_pts] = result
-			height, width, channels = left_eye.shape
-			if height != width:
-				raise "left_eye height != width"
-			height, width, channels = right_eye.shape
-			if height != width:
-				raise "right_eye height != width"
-			# mtcnn_flag = "True"
+			left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
+			check_dimension(left_eye, if_even = True)
+			check_dimension(right_eye, if_even = True)
+			# print right_eye.shape
+			# print left_eye.shape
+			mtcnn_flag = "True"
 
 		except Exception as e:
+			# print "check eyes check_dimension"
 			# print e
-			# mtcnn_flag = "False"
+			mtcnn_flag = "False"
 			# cv2.imshow('img', img)
 			# cv2.waitKey(0)
 
@@ -342,6 +382,14 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 			br_x = tl_x + w
 			br_y = tl_y + h
 			right_eye = img[tl_y:br_y, tl_x:br_x]
+			try:
+				check_dimension(left_eye)
+				left_eye = resize(left_eye, 64)
+				check_dimension(right_eye)
+				right_eye = resize(right_eye, 64)
+			except Exception as e:
+				# print e
+				continue
 
 		# get face grid (in ch, cols, rows convention)
 		face_grid = np.zeros(shape=(25, 25), dtype=np.float32)
@@ -372,22 +420,31 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 
 
 		try:
+			# print type(right_eye)
+			# print type(left_eye)
+			# print type(face)
+			#
+			# print right_eye.shape
+			# print left_eye.shape
+			# print face.shape
+
 			face = cv2.resize(face, (img_cols, img_rows))
 			left_eye = cv2.resize(left_eye, (img_cols, img_rows))
 			right_eye = cv2.resize(right_eye, (img_cols, img_rows))
 		except Exception as e:
-			print type(right_eye)
-			print right_eye.shape
+			print "checking resizing"
+			print e
 
- 		# save images (for debug)
-		if save_img:
-			increase = 3
-			y_x, y_y = - int(y_x * increase), int(y_y * increase)
-			print (px, py)
-			h, w, _ = face.shape
-			cx, cy = w/2.0, h/2.0
-			cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
-			cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
+
+ 		# # save images (for debug)
+		# if save_img:
+		# 	increase = 3
+		# 	y_x, y_y = - int(y_x * increase), int(y_y * increase)
+		# 	print (px, py)
+		# 	h, w, _ = face.shape
+		# 	cx, cy = w/2.0, h/2.0
+		# 	cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
+		# 	cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
 
 		# normalization
 		# face = image_normalization(face)

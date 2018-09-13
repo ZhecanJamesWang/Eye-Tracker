@@ -2,6 +2,17 @@ import numpy as np
 import random
 import cv2
 
+def check_dimension(img, if_even = False):
+	height, width, channels = img.shape
+	if height == 0:
+		raise "left_eye height != width or height == 0 or width == 0"
+	if width == 0:
+		raise "left_eye height != width or height == 0 or width == 0"
+
+	if if_even:
+		if height != width:
+			raise "left_eye height != width or height == 0 or width == 0"
+
 def resize(im, desired_size = None):
 	old_size = im.shape[:2] # old_size is in (height, width) format
 
