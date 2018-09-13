@@ -6,6 +6,10 @@ others/
 pretrained_models/
 SavedModel/
 
+*.jpeg
+*.jpg
+*.png
+*.dat
 *.pyc
 *.npz
 
