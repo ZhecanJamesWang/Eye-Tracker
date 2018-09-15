@@ -342,7 +342,9 @@ class EyeTracker(object):
 
 			# saver = tf.train.import_meta_graph('my_model/2018-08-17-23-17/model_1_140_train_error_14.236069_val_error_7.756780624389648.meta')
 			# saver.restore(sess, "./my_model/2018-08-22-00-33/model_8_840_train_error_3.5212839_val_error_2.7497661113739014")
-			# saver.restore(sess, "./my_model/2018-08-29-00-04/model_4_1200_train_error_3.5212839_val_error_2.7497661113739014")
+			saver.restore(sess, "./my_model/2018-08-29-00-04/model_4_1200_train_error_3.5212839_val_error_2.7497661113739014")
+
+			random.shuffle(val_names)
 
 			# Keep training until reach max iterations
 			for n_epoch in range(1, max_epoch + 1):
@@ -406,8 +408,10 @@ class EyeTracker(object):
 						if 	iterTest + 1 >= MaxTestIters:
 							iterTest = 0
 
-						test_start=iterTest * val_chunk_size
-						test_end = (iterTest+1) * val_chunk_size
+						# test_start = iterTest * val_chunk_size
+						# test_end = (iterTest+1) * val_chunk_size
+						test_start = 0
+						test_end = val_chunk_size
 
 						val_data = load_batch_from_data(mtcnn_h, val_names, dataset_path, val_chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 

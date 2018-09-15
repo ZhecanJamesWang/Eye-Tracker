@@ -12,18 +12,15 @@ def load_data_names_columbia(file_name):
 	img_list = []
 	ang_list = []
 
-	for line in fh.readline():
+	for line in fh.readlines():
 		print line
 		parts = line.split(" ")
-		print parts
-		raise "debug"
 
-		path = paths[0]
-		theta = paths[1]
-		alpha = paths[2]
+		path = parts[0]
+		theta = parts[1]
+		alpha = parts[2].replace('\n', '')
 		img_list.append(path)
 		ang_list.append(path)
-
 	return img_list, ang_list
 
 def load_data_mpii(file):
@@ -263,6 +260,92 @@ def load_batch_from_names(names, path, img_ch, img_cols, img_rows):
 
 	return [right_eye_batch, left_eye_batch, face_batch, face_grid_batch], y_batch
 
+def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, img_rows):
+	save_img = False
+
+	img_list, ang_list = data
+
+	# data structures for batches
+	left_eye_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
+	right_eye_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
+	face_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
+	face_grid_batch = np.zeros(shape=(batch_size, 25, 25), dtype=np.float32)
+	y_batch = np.zeros((batch_size, 2), dtype=np.float32)
+
+	# counter for check the size of loading batch
+	b = 0
+
+
+	for index in range(len(img_list)):
+		img_name = img_list[index]
+		angle = angle_list[index]
+
+		# directory
+		dir = img_name
+
+		# open image
+		img = cv2.imread(join(path, dir, "frames", frame))
+
+		# if image is null, skip
+		if img is None:
+			print("Error opening image: {}".format(join(path, dir, "frames", frame)))
+			continue
+
+		result = mtcnn_h.run_mtcnn(img,  if_face = True, if_facemask = True, if_draw = False)
+		[original, draw, face, left_eye, right_eye, face_mask, left_eye_pts, right_eye_pts] = result
+
+		check_dimension(face, if_even = False)
+		check_dimension(left_eye, if_even = True)
+		check_dimension(right_eye, if_even = True)
+
+		left_eye, right_eye， face = resize(left_eye, 64), resize(right_eye, 64), resize(face, 64)
+
+		print right_eye.shape
+		print left_eye.shape
+
+		theta, alpha = angle
+
+		if save_img:
+			cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
+			cv2.imwrite("images/" + dir + "_" + frame + "_right.png", right_eye)
+			cv2.imwrite("images/" + dir + "_" + frame + "_left.png", left_eye)
+			cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid.png", face_grid)
+			cv2.imwrite("images/" + dir + "_" + frame + "_image.png", img)
+
+			print ("face.shape: ", face.shape)
+			print ("left_eye.shape: ", left_eye.shape)
+			print ("right_eye.shape: ", right_eye.shape)
+
+
+
+ 		# save images (for debug)
+		if save_img:
+			increase = 3
+			y_x, y_y = - int(y_x * increase), int(y_y * increase)
+			print (px, py)
+			h, w, _ = face.shape
+			cx, cy = w/2.0, h/2.0
+			cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
+			cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
+
+		# check data types
+		face = face.astype('float32')
+		left_eye = left_eye.astype('float32')
+		right_eye = right_eye.astype('float32')
+
+		# add to the related batch
+		left_eye_batch[b] = left_eye
+		right_eye_batch[b] = right_eye
+		face_batch[b] = face
+		face_grid_batch[b] = face_mask
+		y_batch[b][0] = theta
+		y_batch[b][1] = alpha
+
+		# increase the size of the current batch
+		b += 1
+
+	return [right_eye_batch, left_eye_batch, face_batch, face_grid_batch, y_batch]
+
 def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img_rows, train_start = None, train_end = None):
 
 	save_img = False
@@ -351,9 +434,10 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 			# left_eye, right_eye = get_left_right_eyes(img, rect)
 			result = mtcnn_h.run_mtcnn(img,  if_face = False, if_facemask = False, if_draw = False)
 			[_, _, _, left_eye, right_eye, _, left_eye_pts, right_eye_pts] = result
-			left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
 			check_dimension(left_eye, if_even = True)
 			check_dimension(right_eye, if_even = True)
+			left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
+
 			# print right_eye.shape
 			# print left_eye.shape
 			mtcnn_flag = "True"

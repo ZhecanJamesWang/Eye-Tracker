@@ -12,7 +12,7 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
-
+mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
 date = now.strftime("%Y-%m-%d-%H-%M")
 
@@ -195,7 +195,6 @@ def organize_data_columbia(args):
 	file_name = "data/columbia_data.txt"
 	img_list, ang_list = load_data_names_columbia(file_name)
 	train_data, val_data = split_data(args, img_list, ang_list, split_ratio = 0.85)
-
 	return train_data, val_data
 
 def organize_data_mpii(args, direction):
@@ -251,9 +250,10 @@ class EyeTracker(object):
 			'fc_face_mask': tf.get_variable('fc_face_mask_w', shape=(mask_size * mask_size, fc_face_mask_size), initializer=tf.contrib.layers.xavier_initializer()),
 			'face_face_mask': tf.get_variable('face_face_mask_w', shape=(fc_face_size + fc_face_mask_size, face_face_mask_size), initializer=tf.contrib.layers.xavier_initializer()),
 			'fc': tf.get_variable('fc_w', shape=(fc_eye_size + face_face_mask_size, fc_size), initializer=tf.contrib.layers.xavier_initializer()),
+			'fc_columbia': tf.get_variable('fc_w_columbia', shape=(fc_eye_size + face_face_mask_size, fc_size), initializer=tf.contrib.layers.xavier_initializer()),
 			'fc2': tf.get_variable('fc2_w', shape=(fc_size, fc2_size), initializer=tf.contrib.layers.xavier_initializer()),
-			'fc2_angle': tf.get_variable('fc2_w_angle', shape=(fc_size, fc2_size), initializer=tf.contrib.layers.xavier_initializer())
-
+			'fc2_angle_eye': tf.get_variable('fc2_w_angle_eye', shape=(fc_size, fc2_size), initializer=tf.contrib.layers.xavier_initializer()),
+			'fc2_angle_columbia': tf.get_variable('fc2_w_angle_columbia', shape=(fc_size, fc2_size), initializer=tf.contrib.layers.xavier_initializer())
 		}
 		self.biases = {
 			'conv1_eye': tf.Variable(tf.constant(0.1, shape=[conv1_eye_out])),
@@ -270,8 +270,10 @@ class EyeTracker(object):
 			'fc_face_mask': tf.Variable(tf.constant(0.1, shape=[fc_face_mask_size])),
 			'face_face_mask': tf.Variable(tf.constant(0.1, shape=[face_face_mask_size])),
 			'fc': tf.Variable(tf.constant(0.1, shape=[fc_size])),
+			'fc_columbia': tf.Variable(tf.constant(0.1, shape=[fc_size])),
 			'fc2': tf.Variable(tf.constant(0.1, shape=[fc2_size])),
-			'fc2_angle': tf.Variable(tf.constant(0.1, shape=[fc2_size]))
+			'fc2_angle_eye': tf.Variable(tf.constant(0.1, shape=[fc2_size])),
+			'fc2_angle_columbia': tf.Variable(tf.constant(0.1, shape=[fc2_size]))
 		}
 
 		# Construct model
@@ -352,14 +354,18 @@ class EyeTracker(object):
 		face_face_mask = tf.nn.relu(tf.add(tf.matmul(face_face_mask, weights['face_face_mask']), biases['face_face_mask']))
 
 		# all
-		fc = tf.concat([eye, face_face_mask], 1)
-		fc = tf.nn.relu(tf.add(tf.matmul(fc, weights['fc']), biases['fc']))
+		fc_in = tf.concat([eye, face_face_mask], 1)
+		fc = tf.nn.relu(tf.add(tf.matmul(fc_in, weights['fc']), biases['fc']))
+		fc_columbia = tf.nn.relu(tf.add(tf.matmul(fc_in, weights['fc_columbia']), biases['fc_columbia']))
+
 		out_xy = tf.add(tf.matmul(fc, weights['fc2']), biases['fc2'])
-		out_ang1 = tf.add(tf.matmul(eye_left, weights['fc2_angle']), biases['fc2_angle'])
-		out_ang2 = tf.add(tf.matmul(eye_right, weights['fc2_angle']), biases['fc2_angle'])
 
+		out_ang_eye_left = tf.add(tf.matmul(eye_left, weights['fc2_angle_eye']), biases['fc2_angle_eye'])
+		out_ang_eye_right = tf.add(tf.matmul(eye_right, weights['fc2_angle_eye']), biases['fc2_angle_eye'])
 
-		return out_xy, out_ang1, out_ang2
+		out_ang_columbia = tf.add(tf.matmul(fc_columbia, weights['fc2_angle_columbia']), biases['fc2_angle_columbia'])
+
+		return out_xy, out_ang_eye_left, out_ang_eye_right, out_ang_columbia
 
 
 	def train(self, args, ckpt, plot_ckpt, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10):
@@ -396,10 +402,10 @@ class EyeTracker(object):
 
 
 		# Define loss and optimizer
-		pred_xy, pred_ang_left,  pred_ang_right = self.pred
+		pred_xy, pred_ang_eye_left,  pred_ang_eye_right, pred_ang_columbia = self.pred
 		self.cost1 = tf.losses.mean_squared_error(self.y, pred_xy)
-		self.cost2 = tf.losses.mean_squared_error(self.y, pred_ang_left)
-		self.cost3 = tf.losses.mean_squared_error(self.y, pred_ang_right)
+		self.cost2 = tf.losses.mean_squared_error(self.y, pred_ang_eye_left)
+		self.cost3 = tf.losses.mean_squared_error(self.y, pred_ang_eye_right)
 
 
 		self.optimizer1 = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost1)
@@ -462,7 +468,7 @@ class EyeTracker(object):
 			writer = tf.summary.FileWriter("logs", sess.graph)
 
 			# saver.restore(sess, "./my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684")
-			saver.restore(sess, "./my_model/2018-09-07-11-15/model_4_420_train_error_2.2030365_val_error_1.8307928442955017")
+			# saver.restore(sess, "./my_model/2018-09-07-11-15/model_4_420_train_error_2.2030365_val_error_1.8307928442955017")
 
 			# Keep training until reach max iterations
 			for n_epoch in range(1, max_epoch + 1):
@@ -504,10 +510,10 @@ class EyeTracker(object):
 					train_end = (iter+1) * batch_size
 
 					batch_train_data_columbia = next_batch_universal(train_data_columbia, batch_size, i_columbia)
-					batch_train_data_columbia = detect_data(batch_train_data_columbia)
+					batch_train_data_columbia = load_batch_from_data_columbia(mtcnn_h, batch_train_data_columbia, batch_size, img_ch, img_cols, img_rows)
 					batch_train_data_columbia = prepare_data(batch_train_data_columbia)
 
-					batch_train_data = load_batch_from_data(train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+					batch_train_data = load_batch_from_data(mtcnn_h, train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 					batch_train_data = prepare_data(batch_train_data)
 
 
@@ -580,7 +586,7 @@ class EyeTracker(object):
 						test_start=iterTest * val_chunk_size
 						test_end = (iterTest+1) * val_chunk_size
 
-						val_data = load_batch_from_data(val_names, dataset_path, val_chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+						val_data = load_batch_from_data(mtcnn_h, val_names, dataset_path, val_chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
 						val_n_batches = val_data[0].shape[0] / batch_size + (val_data[0].shape[0] % batch_size != 0)
 
@@ -764,7 +770,7 @@ def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
 		test_start=iterTest * batch_size
 		test_end = (iterTest+1) * batch_size
 
-		batch_val_data = load_batch_from_data(val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+		batch_val_data = load_batch_from_data(mtcnn_h, val_names, dataset_path, 1000, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
 		batch_val_data = prepare_data(batch_val_data)
 
