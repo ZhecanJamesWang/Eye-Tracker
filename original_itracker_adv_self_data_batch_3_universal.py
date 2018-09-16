@@ -19,8 +19,8 @@ from mtcnn.mtcnn import mtcnn_handle
 #                                                              lr 0.001
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
-# os.environ["CUDA_VISIBLE_DEVICES"]="1"
+# os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
@@ -340,9 +340,9 @@ class EyeTracker(object):
 			 # TODO://////
 			writer = tf.summary.FileWriter("logs", sess.graph)
 
-			# saver = tf.train.import_meta_graph('my_model/2018-08-17-23-17/model_1_140_train_error_14.236069_val_error_7.756780624389648.meta')
-			# saver.restore(sess, "./my_model/2018-08-22-00-33/model_8_840_train_error_3.5212839_val_error_2.7497661113739014")
-			saver.restore(sess, "./my_model/2018-08-29-00-04/model_4_1200_train_error_3.5212839_val_error_2.7497661113739014")
+			saver.restore(sess, "./my_model/2018-09-12-13-29/model_1_840_train_error_2.936149_val_error_2.877652645111084")
+
+			# saver.restore(sess, "./my_model/2018-09-13-13-22/model_2_600_train_error_2.0953462_val_error_2.081583857536316")
 
 			random.shuffle(val_names)
 
@@ -393,13 +393,13 @@ class EyeTracker(object):
 					train_err.append(train_batch_err)
 
 					print ('Training on batch: %.1fs' % (timeit.default_timer() - start))
-
-					if iter > 1000:
-						if iter % 60 == 0:
-							ifCheck = True
-					else:
-						if iter % 30 == 0:
-							ifCheck = True
+					#
+					# if iter > 1000:
+					# 	if iter % 60 == 0:
+					# 		ifCheck = True
+					# else:
+					if iter % 30 == 0:
+						ifCheck = True
 
 					if ifCheck:
 
@@ -444,6 +444,8 @@ class EyeTracker(object):
 						else:
 							iter_start = timeit.default_timer()
 
+						print "now: ", now
+						print "learning rate: ", lr
 						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
 
 						train_loss_history.append(np.mean(train_loss))
@@ -451,7 +453,7 @@ class EyeTracker(object):
 						val_loss_history.append(np.mean(Val_loss))
 						val_err_history.append(np.mean(Val_err))
 
-						plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+						plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
 
 						# if val_loss - min_delta < best_loss:
 						# if val_err - min_delta < best_loss:
@@ -582,29 +584,55 @@ def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
 
 	return np.mean(val_err)
 
-def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.png'):
-	assert len(train_err) == len(test_err)
+def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_file='loss.png'):
+	print ("----plot loss----")
+
 	idx = np.arange(start, len(train_loss), per)
+	idx_30 = np.arange(start, len(train_loss), per) * 30
 	fig, ax1 = plt.subplots()
-	lns1 = ax1.plot(idx, train_loss[idx], 'b-', alpha=1.0, label='train loss')
+	label='train loss'
+	lns1 = ax1.plot(idx_30, train_loss[idx], 'b-', alpha=1.0, label='train loss')
 	ax1.set_xlabel('epochs')
 	# Make the y-axis label, ticks and tick labels match the line color.
 	ax1.set_ylabel('loss', color='b')
 	ax1.tick_params('y', colors='b')
-
-	ax2 = ax1.twinx()
-	lns2 = ax2.plot(idx, train_err[idx], 'r-', alpha=1.0, label='train error')
-	lns3 = ax2.plot(idx, test_err[idx], 'g-', alpha=1.0, label='test error')
-	ax2.set_ylabel('error', color='r')
-	ax2.tick_params('y', colors='r')
-
-	# added these three lines
-	lns = lns1 + lns2 + lns3
-	labs = [l.get_label() for l in lns]
-	ax1.legend(lns, labs, loc=0)
+	ax1.legend(lns1, label, loc=0)
 
 	fig.tight_layout()
-	plt.savefig(save_file)
+	plt.savefig(save_file + "_train_loss" + ".png")
+
+	fig, ax2 = plt.subplots()
+	label='train_err'
+	lns2 = ax2.plot(idx_30, train_err[idx], 'r-', alpha=1.0, label='train_err')
+	ax2.set_ylabel('error', color='r')
+	ax2.tick_params('y', colors='r')
+	ax1.legend(lns2, label, loc=0)
+
+	fig.tight_layout()
+	plt.savefig(save_file + "_train_err" + ".png")
+
+	fig, ax1 = plt.subplots()
+	label='test loss'
+	lns3 = ax1.plot(idx_30, test_loss[idx], 'c-', alpha=1.0, label='test loss')
+	ax1.set_xlabel('epochs')
+	# Make the y-axis label, ticks and tick labels match the line color.
+	ax1.set_ylabel('loss', color='b')
+	ax1.tick_params('y', colors='b')
+	ax1.legend(lns3, label, loc=0)
+
+	fig.tight_layout()
+	plt.savefig(save_file + "_test_loss" + ".png")
+
+
+	fig, ax2 = plt.subplots()
+	label='test_err'
+	lns4 = ax2.plot(idx_30, test_err[idx], 'g-', alpha=1.0, label='test_err')
+	ax2.set_ylabel('error', color='r')
+	ax2.tick_params('y', colors='r')
+	ax1.legend(lns4, label, loc=0)
+
+	fig.tight_layout()
+	plt.savefig(save_file + "_test_err" + ".png")
 	# plt.show()
 
 def train(args):

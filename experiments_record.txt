@@ -9,4 +9,5 @@ right and left eye + EyeTracker          0 epoch  345 iters(batch_size 500)  201
 right and left eye + EyeTracker                                              2018-09-09-00-20 lr 0.00001
 --------------------------------------------------------------------------------------------------------
   mtcnn eye detect + EyeTracker          0 epoch  840 iters(batch_size 500)  2018-09-12-13-29 lr 0.001
-  mtcnn eye detect + EyeTracker                                              2018-09-13-13-22 lr 0.001
+  mtcnn eye detect + EyeTracker          1 epoch  600 iters(batch_size 500)  2018-09-13-13-22 lr 0.001
+  mtcnn eye detect + EyeTracker                            (batch_size 500)  2018-09-15-21-45 lr 0.001

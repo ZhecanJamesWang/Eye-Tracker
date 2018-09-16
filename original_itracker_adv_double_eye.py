@@ -646,6 +646,8 @@ class EyeTracker(object):
 						else:
 							iter_start = timeit.default_timer()
 
+						print "now: ", now
+						print "learning rate: ", lr
 						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
 						print ('Epoch %s/%s Iter %s, train val_loss_eye_left: %.5f, train error_eye_left: %.5f, val loss_eye_left: %.5f, val error_eye_left: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_eye_left), np.mean(train_err_eye_left), np.mean(Val_loss_eye_left), np.mean(Val_err_eye_left)))
 						print ('Epoch %s/%s Iter %s, train loss_eye_right: %.5f, train error_eye_right: %.5f, val loss_eye_right: %.5f, val error_eye_right: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_eye_right), np.mean(train_err_eye_right), np.mean(Val_loss_eye_right), np.mean(Val_err_eye_right)))
@@ -880,10 +882,10 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 	print ("----plot loss----")
 
 	idx = np.arange(start, len(train_loss), per)
-
+	idx_30 = np.arange(start, len(train_loss), per) * 30
 	fig, ax1 = plt.subplots()
 	label='train loss'
-	lns1 = ax1.plot(idx, train_loss[idx], 'b-', alpha=1.0, label='train loss')
+	lns1 = ax1.plot(idx_30, train_loss[idx], 'b-', alpha=1.0, label='train loss')
 	ax1.set_xlabel('epochs')
 	# Make the y-axis label, ticks and tick labels match the line color.
 	ax1.set_ylabel('loss', color='b')
@@ -895,7 +897,7 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 
 	fig, ax2 = plt.subplots()
 	label='train_err'
-	lns2 = ax2.plot(idx, train_err[idx], 'r-', alpha=1.0, label='train_err')
+	lns2 = ax2.plot(idx_30, train_err[idx], 'r-', alpha=1.0, label='train_err')
 	ax2.set_ylabel('error', color='r')
 	ax2.tick_params('y', colors='r')
 	ax1.legend(lns2, label, loc=0)
@@ -905,7 +907,7 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 
 	fig, ax1 = plt.subplots()
 	label='test loss'
-	lns3 = ax1.plot(idx, test_loss[idx], 'c-', alpha=1.0, label='test loss')
+	lns3 = ax1.plot(idx_30, test_loss[idx], 'c-', alpha=1.0, label='test loss')
 	ax1.set_xlabel('epochs')
 	# Make the y-axis label, ticks and tick labels match the line color.
 	ax1.set_ylabel('loss', color='b')
@@ -918,7 +920,7 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 
 	fig, ax2 = plt.subplots()
 	label='test_err'
-	lns4 = ax2.plot(idx, test_err[idx], 'g-', alpha=1.0, label='test_err')
+	lns4 = ax2.plot(idx_30, test_err[idx], 'g-', alpha=1.0, label='test_err')
 	ax2.set_ylabel('error', color='r')
 	ax2.tick_params('y', colors='r')
 	ax1.legend(lns4, label, loc=0)
