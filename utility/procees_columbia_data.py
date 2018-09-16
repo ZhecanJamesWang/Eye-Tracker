@@ -14,7 +14,9 @@ def write_to_file(file_name, content):
 	content = ""
 	return content
 
-path = "../../data/Columbia_Gaze_Data_Set/"
+# path = "../../data/Columbia_Gaze_Data_Set/"
+path = "..\..\data\Columbia_Gaze_Data_Set\"
+
 folders = os.listdir(path)
 # print folders
 
