@@ -49,7 +49,8 @@ for folder in folders:
 
 				if counter % 100 == 0:
 					content = write_to_file(file_name, content)
-					print （counter）
+
+					print (counter)
 	# outpath = os.path.join("./", "columbia_gaze_" + folder)
 	# np.savez(outpath, img_list = img_list, gaze_list=gaze_list)
 	# img_list = []
