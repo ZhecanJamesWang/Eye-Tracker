@@ -564,7 +564,7 @@ class EyeTracker(object):
 					# print ("train_batch_loss: ", train_batch_loss, "train_batch_err: ", train_batch_err)
 					# print ("train_batch_loss_eye: ", train_batch_loss_eye, "train_batch_err_eye: ", train_batch_err_eye)
 
-					train_loss_history.append(train_batch_loss))
+					train_loss_history.append(train_batch_loss)
 					train_err_history.append(train_batch_err)
 
 					train_loss_history_eye_left.append(train_batch_loss_eye_left)
