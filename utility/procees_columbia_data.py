@@ -15,6 +15,7 @@ def write_to_file(file_name, content):
 	return content
 
 # path = "../../data/Columbia_Gaze_Data_Set/"
+
 path = ".."+ '\ '.strip() + ".."+ '\ '.strip() + "data"+ '\ '.strip() + "Columbia_Gaze_Data_Set"
 
 folders = os.listdir(path)
