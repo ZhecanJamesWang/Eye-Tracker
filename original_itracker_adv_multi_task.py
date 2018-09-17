@@ -16,10 +16,14 @@ mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
 date = now.strftime("%Y-%m-%d-%H-%M")
 
-dataset_path = "../data/GazeCapture"
-train_path = dataset_path + '/' + "train"
-val_path = dataset_path + '/' + "validation"
-test_path = dataset_path + '/' + "test"
+dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
+train_path = dataset_path + '\ '.strip() + "train"
+val_path = dataset_path + '\ '.strip() + "validation"
+test_path = dataset_path + '\ '.strip() + "test"
+# dataset_path = "../data/GazeCapture"
+# train_path = dataset_path + '/' + "train"
+# val_path = dataset_path + '/' + "validation"
+# test_path = dataset_path + '/' + "test"
 
 img_cols = 64
 img_rows = 64
