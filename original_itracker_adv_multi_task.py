@@ -92,24 +92,24 @@ fc2_size = 2
 
 
 def convert_to_unit_vector(angles):
-    x = -tf.cos(angles[:, 0]) * tf.sin(angles[:, 1])
-    y = -tf.sin(angles[:, 0])
-    # z = -tf.cos(angles[:, 1]) * tf.cos(angles[:, 1])
-    z = -tf.cos(angles[:, 1])
+	x = -tf.cos(angles[:, 0]) * tf.sin(angles[:, 1])
+	y = -tf.sin(angles[:, 0])
+	# z = -tf.cos(angles[:, 1]) * tf.cos(angles[:, 1])
+	z = -tf.cos(angles[:, 1])
 	# * tf.cos(angles[:, 1])
 
-    norm = tf.sqrt(x**2 + y**2 + z**2)
-    x /= norm
-    y /= norm
-    z /= norm
-    return x, y, z
+	norm = tf.sqrt(x**2 + y**2 + z**2)
+	x /= norm
+	y /= norm
+	z /= norm
+	return x, y, z
 
 
 def compute_angle_error(labels, preds):
-    pred_x, pred_y, pred_z = convert_to_unit_vector(preds)
-    label_x, label_y, label_z = convert_to_unit_vector(labels)
-    angles = pred_x * label_x + pred_y * label_y + pred_z * label_z
-    return tf.reduce_mean(tf.acos(angles) * 180 / np.pi)
+	pred_x, pred_y, pred_z = convert_to_unit_vector(preds)
+	label_x, label_y, label_z = convert_to_unit_vector(labels)
+	angles = pred_x * label_x + pred_y * label_y + pred_z * label_z
+	return tf.reduce_mean(tf.acos(angles) * 180 / np.pi)
 
 
 def normalize(data):
@@ -570,11 +570,11 @@ class EyeTracker(object):
 					train_loss_history_eye_left.append(train_batch_loss_eye_left)
 					train_err_history_eye_left.append(train_batch_err_eye_left)
 
-                    train_loss_history_eye_right.append(train_batch_loss_eye_right)
-                    train_err_history_eye_right.append(train_batch_err_eye_right)
+					train_loss_history_eye_right.append(train_batch_loss_eye_right)
+					train_err_history_eye_right.append(train_batch_err_eye_right)
 
-                    train_loss_history_columbia.append(train_batch_loss_columbia)
-                    train_err_history_columbia.append(train_batch_err_columbia)
+					train_loss_history_columbia.append(train_batch_loss_columbia)
+					train_err_history_columbia.append(train_batch_err_columbia)
 
 					print ('Training on batch: %.1fs' % (timeit.default_timer() - start))
 
@@ -621,12 +621,12 @@ class EyeTracker(object):
 
 						i_val_left = 0
 						i_val_right = 0
-                        i_val_columbia  = 0
+						i_val_columbia  = 0
 
 						for batch_val_data in next_batch(val_data, batch_size):
 							batch_val_data_eye_left, i_val_left = next_batch_universal(val_data_eye_left, batch_size, i_val_left)
 							batch_val_data_eye_right, i_val_right = next_batch_universal(val_data_eye_right, batch_size, i_val_right)
-                            batch_val_data_columbia, i_val_columbia = next_batch_universal(val_data_eye_right, batch_size, i_val_right)
+							batch_val_data_columbia, i_val_columbia = next_batch_universal(val_data_eye_right, batch_size, i_val_right)
 
 							val_batch_loss, val_batch_err = sess.run([self.cost1, self.err1], feed_dict={self.eye_left: batch_val_data[0], \
 											self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
