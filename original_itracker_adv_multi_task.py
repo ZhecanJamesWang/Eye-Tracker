@@ -3,7 +3,7 @@ import timeit
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
-from load_data import load_data_names, load_batch_from_data, load_data_mpii, load_data_names_columbia
+from load_data import load_data_names, load_batch_from_data, load_data_mpii, load_data_names_
 import datetime
 import random
 
@@ -176,7 +176,7 @@ def split_data(args, x, y, split_ratio = 0.85):
 
 	print ("len(train_data): ", len(train_x))
 	print ("len(val_data): ", len(val_x))
-    
+
 
 	train_x = remove_left_over(train_x, args.batch_size)
 	train_y = remove_left_over(train_y, args.batch_size)
@@ -184,17 +184,17 @@ def split_data(args, x, y, split_ratio = 0.85):
 	val_x = remove_left_over(val_x, args.batch_size)
 	val_y = remove_left_over(val_y, args.batch_size)
 
-	print （"len(train_data): ", len(train_x)）
-	print （"len(val_data): ", len(val_x)）
+	print ("len(train_data): ", len(train_x))
+	print ("len(val_data): ", len(val_x))
 
 	train_data = [train_x, train_y]
 	val_data = [val_x, val_y]
 
 	return train_data, val_data
 
-def organize_data_columbia(args):
-	file_name = "data/columbia_data.txt"
-	img_list, ang_list = load_data_names_columbia(file_name)
+def organize_data_(args):
+	file_name = "data/_data.txt"
+	img_list, ang_list = load_data_names_(file_name)
 	train_data, val_data = split_data(args, img_list, ang_list, split_ratio = 0.85)
 	return train_data, val_data
 
@@ -251,10 +251,10 @@ class EyeTracker(object):
 			'fc_face_mask': tf.get_variable('fc_face_mask_w', shape=(mask_size * mask_size, fc_face_mask_size), initializer=tf.contrib.layers.xavier_initializer()),
 			'face_face_mask': tf.get_variable('face_face_mask_w', shape=(fc_face_size + fc_face_mask_size, face_face_mask_size), initializer=tf.contrib.layers.xavier_initializer()),
 			'fc': tf.get_variable('fc_w', shape=(fc_eye_size + face_face_mask_size, fc_size), initializer=tf.contrib.layers.xavier_initializer()),
-			'fc_columbia': tf.get_variable('fc_w_columbia', shape=(fc_eye_size + face_face_mask_size, fc_size), initializer=tf.contrib.layers.xavier_initializer()),
+			'fc_': tf.get_variable('fc_w_', shape=(fc_eye_size + face_face_mask_size, fc_size), initializer=tf.contrib.layers.xavier_initializer()),
 			'fc2': tf.get_variable('fc2_w', shape=(fc_size, fc2_size), initializer=tf.contrib.layers.xavier_initializer()),
 			'fc2_angle_eye': tf.get_variable('fc2_w_angle_eye', shape=(fc_size, fc2_size), initializer=tf.contrib.layers.xavier_initializer()),
-			'fc2_angle_columbia': tf.get_variable('fc2_w_angle_columbia', shape=(fc_size, fc2_size), initializer=tf.contrib.layers.xavier_initializer())
+			'fc2_angle_': tf.get_variable('fc2_w_angle_', shape=(fc_size, fc2_size), initializer=tf.contrib.layers.xavier_initializer())
 		}
 		self.biases = {
 			'conv1_eye': tf.Variable(tf.constant(0.1, shape=[conv1_eye_out])),
@@ -271,10 +271,10 @@ class EyeTracker(object):
 			'fc_face_mask': tf.Variable(tf.constant(0.1, shape=[fc_face_mask_size])),
 			'face_face_mask': tf.Variable(tf.constant(0.1, shape=[face_face_mask_size])),
 			'fc': tf.Variable(tf.constant(0.1, shape=[fc_size])),
-			'fc_columbia': tf.Variable(tf.constant(0.1, shape=[fc_size])),
+			'fc_': tf.Variable(tf.constant(0.1, shape=[fc_size])),
 			'fc2': tf.Variable(tf.constant(0.1, shape=[fc2_size])),
 			'fc2_angle_eye': tf.Variable(tf.constant(0.1, shape=[fc2_size])),
-			'fc2_angle_columbia': tf.Variable(tf.constant(0.1, shape=[fc2_size]))
+			'fc2_angle_': tf.Variable(tf.constant(0.1, shape=[fc2_size]))
 		}
 
 		# Construct model
@@ -357,22 +357,22 @@ class EyeTracker(object):
 		# all
 		fc_in = tf.concat([eye, face_face_mask], 1)
 		fc = tf.nn.relu(tf.add(tf.matmul(fc_in, weights['fc']), biases['fc']))
-		fc_columbia = tf.nn.relu(tf.add(tf.matmul(fc_in, weights['fc_columbia']), biases['fc_columbia']))
+		fc_ = tf.nn.relu(tf.add(tf.matmul(fc_in, weights['fc_']), biases['fc_']))
 
 		out_xy = tf.add(tf.matmul(fc, weights['fc2']), biases['fc2'])
 
 		out_ang_eye_left = tf.add(tf.matmul(eye_left, weights['fc2_angle_eye']), biases['fc2_angle_eye'])
 		out_ang_eye_right = tf.add(tf.matmul(eye_right, weights['fc2_angle_eye']), biases['fc2_angle_eye'])
 
-		out_ang_columbia = tf.add(tf.matmul(fc_columbia, weights['fc2_angle_columbia']), biases['fc2_angle_columbia'])
+		out_ang_ = tf.add(tf.matmul(fc_, weights['fc2_angle_']), biases['fc2_angle_'])
 
-		return out_xy, out_ang_eye_left, out_ang_eye_right, out_ang_columbia
+		return out_xy, out_ang_eye_left, out_ang_eye_right, out_ang_
 
 
 	def train(self, args, ckpt, plot_ckpt, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10):
 		ifCheck = False
 
-		train_data_columbia, val_data_columbia = organize_data_columbia(args)
+		train_data_, val_data_ = organize_data_(args)
 		# --------------------------
 		train_data_eye_left, val_data_eye_left = organize_data_mpii(args, "left")
 		train_data_eye_right, val_data_eye_right = organize_data_mpii(args, "right")
@@ -403,7 +403,7 @@ class EyeTracker(object):
 
 
 		# Define loss and optimizer
-		pred_xy, pred_ang_eye_left,  pred_ang_eye_right, pred_ang_columbia = self.pred
+		pred_xy, pred_ang_eye_left,  pred_ang_eye_right, pred_ang_ = self.pred
 		self.cost1 = tf.losses.mean_squared_error(self.y, pred_xy)
 		self.cost2 = tf.losses.mean_squared_error(self.y, pred_ang_eye_left)
 		self.cost3 = tf.losses.mean_squared_error(self.y, pred_ang_eye_right)
@@ -499,7 +499,7 @@ class EyeTracker(object):
 				iterTest=0
 				i_left = 0
 				i_right = 0
-				i_columbia = 0
+				i_ = 0
 
 				for iter in range (int(MaxIters)):
 
@@ -510,9 +510,9 @@ class EyeTracker(object):
 					train_start=iter * batch_size
 					train_end = (iter+1) * batch_size
 
-					batch_train_data_columbia = next_batch_universal(train_data_columbia, batch_size, i_columbia)
-					batch_train_data_columbia = load_batch_from_data_columbia(mtcnn_h, batch_train_data_columbia, batch_size, img_ch, img_cols, img_rows)
-					batch_train_data_columbia = prepare_data(batch_train_data_columbia)
+					batch_train_data_ = next_batch_universal(train_data_, batch_size, i_)
+					batch_train_data_ = load_batch_from_data_(mtcnn_h, batch_train_data_, batch_size, img_ch, img_cols, img_rows)
+					batch_train_data_ = prepare_data(batch_train_data_)
 
 					batch_train_data = load_batch_from_data(mtcnn_h, train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 					batch_train_data = prepare_data(batch_train_data)
@@ -651,8 +651,8 @@ class EyeTracker(object):
 						else:
 							iter_start = timeit.default_timer()
 
-						print （"now: ", now）
-						print （"learning rate: ", lr）
+						print ("now: ", now)
+						print ("learning rate: ", lr)
 						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
 						print ('Epoch %s/%s Iter %s, train val_loss_eye_left: %.5f, train error_eye_left: %.5f, val loss_eye_left: %.5f, val error_eye_left: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_eye_left), np.mean(train_err_eye_left), np.mean(Val_loss_eye_left), np.mean(Val_err_eye_left)))
 						print ('Epoch %s/%s Iter %s, train loss_eye_right: %.5f, train error_eye_right: %.5f, val loss_eye_right: %.5f, val error_eye_right: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_eye_right), np.mean(train_err_eye_right), np.mean(Val_loss_eye_right), np.mean(Val_err_eye_right)))
