@@ -209,18 +209,18 @@ def organize_data_mpii(args, direction):
 		x = right_images
 		y = right_gazes
 
-	print "len(data): ", len(x)
+	print ("len(data): ", len(x))
 
 
 	train_data, val_data = split_data(args, x, y, split_ratio = 0.85)
 
 	train_data = prepare_data_mpii(train_data)
 	val_data = prepare_data_mpii(val_data)
-	print train_data[0][10:30]
-	print "train_data[0].shape: ", train_data[0].shape
-	print "train_data[1].shape: ", train_data[1].shape
+	print (train_data[0][10:30])
+	print ("train_data[0].shape: ", train_data[0].shape)
+	print ("train_data[1].shape: ", train_data[1].shape)
 
-	print "train_data[0][0].shape: ", train_data[0][0].shape
+	print ("train_data[0][0].shape: ", train_data[0][0].shape)
 
 	return train_data, val_data
 
@@ -650,8 +650,8 @@ class EyeTracker(object):
 						else:
 							iter_start = timeit.default_timer()
 
-						print "now: ", now
-						print "learning rate: ", lr
+						print （"now: ", now）
+						print （"learning rate: ", lr）
 						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
 						print ('Epoch %s/%s Iter %s, train val_loss_eye_left: %.5f, train error_eye_left: %.5f, val loss_eye_left: %.5f, val error_eye_left: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_eye_left), np.mean(train_err_eye_left), np.mean(Val_loss_eye_left), np.mean(Val_err_eye_left)))
 						print ('Epoch %s/%s Iter %s, train loss_eye_right: %.5f, train error_eye_right: %.5f, val loss_eye_right: %.5f, val error_eye_right: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_eye_right), np.mean(train_err_eye_right), np.mean(Val_loss_eye_right), np.mean(Val_err_eye_right)))
