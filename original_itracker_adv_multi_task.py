@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from load_data import load_data_names, load_batch_from_data, load_data_mpii, load_data_names_columbia
 import datetime
 import random
-
+from mtcnn.mtcnn import mtcnn_handle
 
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
