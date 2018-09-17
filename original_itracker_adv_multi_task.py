@@ -376,7 +376,7 @@ class EyeTracker(object):
 	def train(self, args, ckpt, plot_ckpt, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10):
 		ifCheck = False
 
-		train_data_, val_data_ = organize_data_(args)
+		train_data_columbia, val_data_columbia = organize_data_(args)
 		# --------------------------
 		train_data_eye_left, val_data_eye_left = organize_data_mpii(args, "left")
 		train_data_eye_right, val_data_eye_right = organize_data_mpii(args, "right")
@@ -407,7 +407,7 @@ class EyeTracker(object):
 
 
 		# Define loss and optimizer
-		pred_xy, pred_ang_eye_left,  pred_ang_eye_right, pred_ang_ = self.pred
+		pred_xy, pred_ang_eye_left,  pred_ang_eye_right, pred_ang_columbia = self.pred
 		self.cost1 = tf.losses.mean_squared_error(self.y, pred_xy)
 		self.cost2 = tf.losses.mean_squared_error(self.y, pred_ang_eye_left)
 		self.cost3 = tf.losses.mean_squared_error(self.y, pred_ang_eye_right)
@@ -499,7 +499,7 @@ class EyeTracker(object):
 				iterTest=0
 				i_left = 0
 				i_right = 0
-				i_ = 0
+				i_columbia = 0
 
 				for iter in range (int(MaxIters)):
 
@@ -510,9 +510,9 @@ class EyeTracker(object):
 					train_start=iter * batch_size
 					train_end = (iter+1) * batch_size
 
-					batch_train_data_ = next_batch_universal(train_data_, batch_size, i_)
-					batch_train_data_ = load_batch_from_data_(mtcnn_h, batch_train_data_, batch_size, img_ch, img_cols, img_rows)
-					batch_train_data_ = prepare_data(batch_train_data_)
+					batch_train_data_columbia = next_batch_universal(train_data_columbia, batch_size, i_columbia)
+					batch_train_data_columbia = load_batch_from_data_columbia(mtcnn_h, batch_train_data_columbia, batch_size, img_ch, img_cols, img_rows)
+					batch_train_data_columbia = prepare_data(batch_train_data_columbia)
 
 					batch_train_data = load_batch_from_data(mtcnn_h, train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 					batch_train_data = prepare_data(batch_train_data)
@@ -669,8 +669,8 @@ class EyeTracker(object):
 						else:
 							iter_start = timeit.default_timer()
 
-						print （"now: ", now）
-						print （"learning rate: ", lr）
+						print ("now: ", now)
+						print ("learning rate: ", lr)
 
 						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history), np.mean(train_err_history), np.mean(val_loss_history), np.mean(val_err_history)))
 
