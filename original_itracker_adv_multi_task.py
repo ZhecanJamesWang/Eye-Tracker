@@ -3,7 +3,7 @@ import timeit
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
-from load_data import load_data_names, load_batch_from_data, load_data_mpii, load_data_names_
+from load_data import load_data_names, load_batch_from_data, load_data_mpii, load_data_names_columbia
 import datetime
 import random
 
