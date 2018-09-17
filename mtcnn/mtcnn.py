@@ -1,5 +1,5 @@
 import cv2
-from mtccn import detect_face
+import mtccn.detect_face
 import tensorflow as tf
 import numpy as np
 
