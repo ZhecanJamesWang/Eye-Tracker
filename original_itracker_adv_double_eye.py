@@ -5,10 +5,11 @@ import tensorflow as tf
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
 from load_data import load_data_names, load_batch_from_data
 import datetime
 import random
+from mtcnn.mtcnn import mtcnn_handle
+
 # loading models with iterations of: -----
 # right and left eye + EyeTracker          1 epoch  810 iters  2018-09-05-23-44 lr 0.001
 # right and left eye + EyeTracker          0 epoch 1500 iters  2018-09-06-23-11 lr 0.0001
@@ -18,7 +19,7 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
-
+mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
 date = now.strftime("%Y-%m-%d-%H-%M")
 
@@ -378,7 +379,7 @@ class EyeTracker(object):
 
 
 		# -----------------------------
-		print ("------ processing extra data 1 --------")
+		print ("------ finish processing extra data  --------")
 
 		train_names = load_data_names(train_path)
 		val_names = load_data_names(val_path)
@@ -469,7 +470,9 @@ class EyeTracker(object):
 
 			# saver.restore(sess, "./my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684")
 
-			saver.restore(sess, "./my_model/2018-09-08-17-36/model_1_345_train_error_2.1934447_val_error_3.610280990600586")
+			saver.restore(sess, "./my_model/2018-09-09-00-20/model_6_660_train_error_2.1624763_val_error_2.3266205191612244")
+
+			random.shuffle(val_names)
 
 			# Keep training until reach max iterations
 			for n_epoch in range(1, max_epoch + 1):
@@ -477,21 +480,7 @@ class EyeTracker(object):
 				print ("n_epoch: ", n_epoch)
 				epoch_start = timeit.default_timer()
 				iter_start = None
-				# n_incr_error += 1
-				train_loss = []
-				train_err = []
-				Val_loss = []
-				Val_err = []
 
-				train_loss_eye_left = []
-				train_err_eye_left = []
-				Val_loss_eye_left = []
-				Val_err_eye_left = []
-
-				train_loss_eye_right = []
-				train_err_eye_right = []
-				Val_loss_eye_right = []
-				Val_err_eye_right = []
 
 				# train_names = shuffle_data(train_names)
 				random.shuffle(train_names)
@@ -509,7 +498,7 @@ class EyeTracker(object):
 					train_start=iter * batch_size
 					train_end = (iter+1) * batch_size
 
-					batch_train_data = load_batch_from_data(train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+					batch_train_data = load_batch_from_data(mtcnn_h, train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 					batch_train_data = prepare_data(batch_train_data)
 
 
@@ -547,30 +536,30 @@ class EyeTracker(object):
 					# print ("train_batch_loss: ", train_batch_loss, "train_batch_err: ", train_batch_err)
 					# print ("train_batch_loss_eye: ", train_batch_loss_eye, "train_batch_err_eye: ", train_batch_err_eye)
 
-					train_loss.append(train_batch_loss)
-					train_err.append(train_batch_err)
+					train_loss_history.append(train_batch_loss)
+					train_err_history.append(train_batch_err)
 
-					train_loss_eye_left.append(train_batch_loss_eye_left)
-					train_err_eye_left.append(train_batch_err_eye_left)
+					train_loss_history_eye_left.append(train_batch_loss_eye_left)
+					train_err_history_eye_left.append(train_batch_err_eye_left)
 
-					train_loss_eye_right.append(train_batch_loss_eye_right)
-					train_err_eye_right.append(train_batch_err_eye_right)
+					train_loss_history_eye_right.append(train_batch_loss_eye_right)
+					train_err_history_eye_right.append(train_batch_err_eye_right)
 
 
 					print ('Training on batch: %.1fs' % (timeit.default_timer() - start))
 
-					if iter > 1000:
-						if iter % 60 == 0:
-							ifCheck = True
-					elif iter > 500:
-						if iter % 30 == 0:
-							ifCheck = True
-					elif iter > 200:
-						if iter % 15 == 0:
-							ifCheck = True
-					else:
-						if iter % 5 == 0:
-							ifCheck = True
+					# if iter > 1000:
+					# 	if iter % 60 == 0:
+					# 		ifCheck = True
+					# elif iter > 500:
+					if iter % 30 == 0:
+						ifCheck = True
+					# elif iter > 200:
+					# 	if iter % 15 == 0:
+					# 		ifCheck = True
+					# else:
+					# 	if iter % 5 == 0:
+					# 		ifCheck = True
 
 					if ifCheck:
 
@@ -579,10 +568,12 @@ class EyeTracker(object):
 						if 	iterTest + 1 >= MaxTestIters:
 							iterTest = 0
 
-						test_start=iterTest * val_chunk_size
-						test_end = (iterTest+1) * val_chunk_size
+						# test_start = iterTest * val_chunk_size
+						# test_end = (iterTest+1) * val_chunk_size
+						test_start = 0
+						test_end = val_chunk_size
 
-						val_data = load_batch_from_data(val_names, dataset_path, val_chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+						val_data = load_batch_from_data(mtcnn_h, val_names, dataset_path, val_chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
 
 						val_n_batches = val_data[0].shape[0] / batch_size + (val_data[0].shape[0] % batch_size != 0)
 
@@ -624,13 +615,6 @@ class EyeTracker(object):
 							val_loss_eye_right += val_batch_loss_eye_right / val_n_batches
 							val_err_eye_right += val_batch_err_eye_right / val_n_batches
 
-						Val_loss.append(val_loss)
-						Val_err.append(val_err)
-						Val_loss_eye_left.append(val_loss_eye_left)
-						Val_err_eye_left.append(val_err_eye_left)
-						Val_loss_eye_right.append(val_loss_eye_right)
-						Val_err_eye_right.append(val_err_eye_right)
-
 						print ("val_loss: ", val_loss, "val_err: ", val_err)
 						print ("val_loss_left: ", val_loss_eye_left, "val_err_left: ", val_err_eye_left)
 						print ("val_loss_right: ", val_loss_eye_right, "val_err_right: ", val_err_eye_right)
@@ -646,26 +630,23 @@ class EyeTracker(object):
 						else:
 							iter_start = timeit.default_timer()
 
-						print "now: ", now
-						print "learning rate: ", lr
-						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
-						print ('Epoch %s/%s Iter %s, train val_loss_eye_left: %.5f, train error_eye_left: %.5f, val loss_eye_left: %.5f, val error_eye_left: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_eye_left), np.mean(train_err_eye_left), np.mean(Val_loss_eye_left), np.mean(Val_err_eye_left)))
-						print ('Epoch %s/%s Iter %s, train loss_eye_right: %.5f, train error_eye_right: %.5f, val loss_eye_right: %.5f, val error_eye_right: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_eye_right), np.mean(train_err_eye_right), np.mean(Val_loss_eye_right), np.mean(Val_err_eye_right)))
+						print （"now: ", now）
+						print （"learning rate: ", lr）
 
-						train_loss_history.append(np.mean(train_loss))
-						train_err_history.append(np.mean(train_err))
-						val_loss_history.append(np.mean(Val_loss))
-						val_err_history.append(np.mean(Val_err))
+						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history), np.mean(train_err_history), np.mean(val_loss_history), np.mean(val_err_history)))
 
-						train_loss_history_eye_left.append(np.mean(train_loss_eye_left))
-						train_err_history_eye_left.append(np.mean(train_err_eye_left))
-						val_loss_history_eye_left.append(np.mean(Val_loss_eye_left))
-						val_err_history_eye_left.append(np.mean(Val_err_eye_left))
+						print ('Epoch %s/%s Iter %s, train val_loss_eye_left: %.5f, train error_eye_left: %.5f, val loss_eye_left: %.5f, val error_eye_left: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history_eye_left), np.mean(train_err_history_eye_left), np.mean(val_loss_history_eye_left), np.mean(val_err_history_eye_left)))
 
-						train_loss_history_eye_right.append(np.mean(train_loss_eye_right))
-						train_err_history_eye_right.append(np.mean(train_err_eye_right))
-						val_loss_history_eye_right.append(np.mean(Val_loss_eye_right))
-						val_err_history_eye_right.append(np.mean(Val_err_eye_right))
+						print ('Epoch %s/%s Iter %s, train loss_eye_right: %.5f, train error_eye_right: %.5f, val loss_eye_right: %.5f, val error_eye_right: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history_eye_right), np.mean(train_err_history_eye_right), np.mean(val_loss_history_eye_right), np.mean(val_err_history_eye_right)))
+
+						val_loss_history.append(val_loss)
+						val_err_history.append(val_err)
+
+						val_loss_history_eye_left.append(val_loss_eye_left)
+						val_err_history_eye_left.append(val_err_eye_left)
+
+						val_loss_history_eye_right.append(val_loss_eye_right)
+						val_err_history_eye_right.append(val_err_eye_right)
 
 						plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
 						plot_loss(np.array(train_loss_history_eye_left), np.array(train_err_history_eye_left), np.array(val_loss_history_eye_left), np.array(val_err_history_eye_left), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + "_eye_left.png")
@@ -690,19 +671,6 @@ class EyeTracker(object):
 
 				print ('epoch runtime: %.1fs' % (timeit.default_timer() - epoch_start))
 
-				# train_loss_history.append(np.mean(train_loss))
-				# train_err_history.append(np.mean(train_err))
-				# val_loss_history.append(np.mean(Val_loss))
-				# val_err_history.append(np.mean(Val_err))
-
-				# plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + ".png")
-
-				# if n_epoch % print_per_epoch == 0:
-				print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
-
-				# if n_incr_error >= patience:
-				# 	print ('Early stopping occured. Optimization Finished!')
-				# 	return train_loss_history, train_err_history, val_loss_history, val_err_history
 
 			return train_loss_history, train_err_history, val_loss_history, val_err_history
 
@@ -882,10 +850,9 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 	print ("----plot loss----")
 
 	idx = np.arange(start, len(train_loss), per)
-	idx_30 = np.arange(start, len(train_loss), per) * 30
 	fig, ax1 = plt.subplots()
 	label='train loss'
-	lns1 = ax1.plot(idx_30, train_loss[idx], 'b-', alpha=1.0, label='train loss')
+	lns1 = ax1.plot(idx, train_loss[idx], 'b-', alpha=1.0, label='train loss')
 	ax1.set_xlabel('epochs')
 	# Make the y-axis label, ticks and tick labels match the line color.
 	ax1.set_ylabel('loss', color='b')
@@ -897,7 +864,7 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 
 	fig, ax2 = plt.subplots()
 	label='train_err'
-	lns2 = ax2.plot(idx_30, train_err[idx], 'r-', alpha=1.0, label='train_err')
+	lns2 = ax2.plot(idx, train_err[idx], 'r-', alpha=1.0, label='train_err')
 	ax2.set_ylabel('error', color='r')
 	ax2.tick_params('y', colors='r')
 	ax1.legend(lns2, label, loc=0)
@@ -905,6 +872,8 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 	fig.tight_layout()
 	plt.savefig(save_file + "_train_err" + ".png")
 
+	idx = np.arange(start, len(test_loss), per)
+	idx_30 = np.arange(start, len(test_loss), per) * 30
 	fig, ax1 = plt.subplots()
 	label='test loss'
 	lns3 = ax1.plot(idx_30, test_loss[idx], 'c-', alpha=1.0, label='test loss')
@@ -928,31 +897,6 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 	fig.tight_layout()
 	plt.savefig(save_file + "_test_err" + ".png")
 	# plt.show()
-
-# def plot_loss(train_loss, train_err, test_err, start=0, per=1, save_file='loss.png'):
-# 	assert len(train_err) == len(test_err)
-# 	idx = np.arange(start, len(train_loss), per)
-# 	fig, ax1 = plt.subplots()
-# 	lns1 = ax1.plot(idx, train_loss[idx], 'b-', alpha=1.0, label='train loss')
-# 	ax1.set_xlabel('epochs')
-# 	# Make the y-axis label, ticks and tick labels match the line color.
-# 	ax1.set_ylabel('loss', color='b')
-# 	ax1.tick_params('y', colors='b')
-#
-# 	ax2 = ax1.twinx()
-# 	lns2 = ax2.plot(idx, train_err[idx], 'r-', alpha=1.0, label='train error')
-# 	lns3 = ax2.plot(idx, test_err[idx], 'g-', alpha=1.0, label='test error')
-# 	ax2.set_ylabel('error', color='r')
-# 	ax2.tick_params('y', colors='r')
-#
-# 	# added these three lines
-# 	lns = lns1 + lns2 + lns3
-# 	labs = [l.get_label() for l in lns]
-# 	ax1.legend(lns, labs, loc=0)
-#
-# 	fig.tight_layout()
-# 	plt.savefig(save_file)
-# 	# plt.show()
 
 def train(args):
 	start = timeit.default_timer()

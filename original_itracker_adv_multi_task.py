@@ -383,7 +383,7 @@ class EyeTracker(object):
 		train_data_eye_right, val_data_eye_right = organize_data_mpii(args, "right")
 
 		# -----------------------------
-		print ("------ fnish processing extra data  --------")
+		print ("------ finish processing extra data  --------")
 
 		train_names = load_data_names(train_path)
 		val_names = load_data_names(val_path)
@@ -485,13 +485,14 @@ class EyeTracker(object):
 			# saver.restore(sess, "./my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684")
 			# saver.restore(sess, "./my_model/2018-09-07-11-15/model_4_420_train_error_2.2030365_val_error_1.8307928442955017")
 
+			random.shuffle(val_names)
+
 			# Keep training until reach max iterations
 			for n_epoch in range(1, max_epoch + 1):
 				print ("vvvvvvvvvvvvvvvvvvv")
 				print ("n_epoch: ", n_epoch)
 				epoch_start = timeit.default_timer()
 				iter_start = None
-				# n_incr_error += 1
 
 
 				# train_names = shuffle_data(train_names)
@@ -721,19 +722,6 @@ class EyeTracker(object):
 
 				print ('epoch runtime: %.1fs' % (timeit.default_timer() - epoch_start))
 
-				# train_loss_history.append(np.mean(train_loss))
-				# train_err_history.append(np.mean(train_err))
-				# val_loss_history.append(np.mean(Val_loss))
-				# val_err_history.append(np.mean(Val_err))
-
-				# plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + ".png")
-
-				# if n_epoch % print_per_epoch == 0:
-				print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
-
-				# if n_incr_error >= patience:
-				# 	print ('Early stopping occured. Optimization Finished!')
-				# 	return train_loss_history, train_err_history, val_loss_history, val_err_history
 
 			return train_loss_history, train_err_history, val_loss_history, val_err_history
 
