@@ -15,7 +15,6 @@ def write_to_file(file_name, content):
 	return content
 
 # path = "../../data/Columbia_Gaze_Data_Set/"
-# path = ".."+ '\ '.strip() + ".."+ '\ '.strip() + "data"+ '\ '.strip() + "Columbia_Gaze_Data_Set"
 path="..\..\data\Columbia_Gaze_Data_Set"
 folders = os.listdir(path)
 print (folders)
@@ -28,7 +27,9 @@ file_name = "columbia_data.txt"
 counter = 0
 for folder in folders:
 	if ".DS_Store" not in folder:
-		files = os.listdir(path + folder)
+		# files = os.listdir(path + folder)
+		files = os.listdir(path + "\ ".strip() + folder)
+
 		# print files
 		for file in files:
 			if ".jpg" in file:
@@ -40,7 +41,8 @@ for folder in folders:
 				# print theta
 				# print alpha
 				# img = cv2.imread(path + folder + "/" + file)
-				img_path = os.path.abspath(path + folder + "/" + file)
+				# img_path = os.path.abspath(path + folder + "/" + file)
+				img_path = os.path.abspath(path + "\ ".strip() + folder + "\ ".strip() + file)
 
 				# print img.shape
 				# img_list.append(img)
