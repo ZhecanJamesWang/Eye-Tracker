@@ -162,7 +162,8 @@ def next_batch_universal(data, batch_size, i):
 	for each in data:
 		output.append(each[i: i + batch_size])
 	i += 1
-	if 	i + batch_size >= data[0].shape[0]:
+	# if 	i + batch_size >= data[0].shape[0]:
+	if 	i + batch_size >= len(data[0]):
 		i = 0
 	assert (len(output) == 2)
 
