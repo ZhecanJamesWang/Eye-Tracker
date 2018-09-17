@@ -411,17 +411,21 @@ class EyeTracker(object):
 		self.cost1 = tf.losses.mean_squared_error(self.y, pred_xy)
 		self.cost2 = tf.losses.mean_squared_error(self.y, pred_ang_eye_left)
 		self.cost3 = tf.losses.mean_squared_error(self.y, pred_ang_eye_right)
+		self.cost4 = tf.losses.mean_squared_error(self.y, pred_ang_columbia)
+
 
 
 		self.optimizer1 = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost1)
 		self.optimizer2 = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost2)
 		self.optimizer3 = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost3)
+		self.optimizer4 = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost4)
 
 
 		# Evaluate model
 		self.err1 = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred_xy, self.y), axis=1)))
-		self.err2 = compute_angle_error(self.y, pred_ang_left)
-		self.err3 = compute_angle_error(self.y, pred_ang_right)
+		self.err2 = compute_angle_error(self.y, pred_ang_eye_left)
+		self.err3 = compute_angle_error(self.y, pred_ang_eye_right)
+		self.err4 = compute_angle_error(self.y, pred_ang_columbia)
 
 
 		train_loss_history = []
@@ -438,6 +442,11 @@ class EyeTracker(object):
 		train_err_history_eye_right = []
 		val_loss_history_eye_right = []
 		val_err_history_eye_right = []
+
+		train_loss_history_columbia = []
+		train_err_history_columbia = []
+		val_loss_history_columbia = []
+		val_err_history_columbia = []
 
 		# n_incr_error = 0  # nb. of consecutive increase in error
 		best_loss = np.Inf
@@ -482,20 +491,7 @@ class EyeTracker(object):
 				epoch_start = timeit.default_timer()
 				iter_start = None
 				# n_incr_error += 1
-				train_loss = []
-				train_err = []
-				Val_loss = []
-				Val_err = []
 
-				train_loss_eye_left = []
-				train_err_eye_left = []
-				Val_loss_eye_left = []
-				Val_err_eye_left = []
-
-				train_loss_eye_right = []
-				train_err_eye_right = []
-				Val_loss_eye_right = []
-				Val_err_eye_right = []
 
 				# train_names = shuffle_data(train_names)
 				random.shuffle(train_names)
@@ -553,18 +549,32 @@ class EyeTracker(object):
 					train_batch_loss_eye_right, train_batch_err_eye_right = sess.run([self.cost3, self.err3], feed_dict={self.eye_right: batch_train_data_eye_right[0], \
 								self.y: batch_train_data_eye_right[1]})
 
+					batch_train_data_columbia, i_columbia = next_batch_universal(train_data_columbia, batch_size, i_columbia)
+
+					# Run optimization op (backprop)
+					sess.run(self.optimizer4, feed_dict={self.eye_left: batch_train_data_columbia[0], \
+								self.eye_right: batch_train_data_columbia[1], self.face: batch_train_data_columbia[2], \
+								self.face_mask: batch_train_data_columbia[3], self.y: batch_train_data_columbia[4]})
+
+					train_batch_loss_columbia, train_batch_err_columbia = sess.run([self.cost4, self.err4], feed_dict={self.eye_left: batch_train_data_columbia[0], \
+								self.eye_right: batch_train_data_columbia[1], self.face: batch_train_data_columbia[2], \
+								self.face_mask: batch_train_data_columbia[3], self.y: batch_train_data_columbia[4]})
+
+
 					# print ("train_batch_loss: ", train_batch_loss, "train_batch_err: ", train_batch_err)
 					# print ("train_batch_loss_eye: ", train_batch_loss_eye, "train_batch_err_eye: ", train_batch_err_eye)
 
-					train_loss.append(train_batch_loss)
-					train_err.append(train_batch_err)
+					train_loss_history.append(train_batch_loss))
+					train_err_history.append(train_batch_err)
 
-					train_loss_eye_left.append(train_batch_loss_eye_left)
-					train_err_eye_left.append(train_batch_err_eye_left)
+					train_loss_history_eye_left.append(train_batch_loss_eye_left)
+					train_err_history_eye_left.append(train_batch_err_eye_left)
 
-					train_loss_eye_right.append(train_batch_loss_eye_right)
-					train_err_eye_right.append(train_batch_err_eye_right)
+                    train_loss_history_eye_right.append(train_batch_loss_eye_right)
+                    train_err_history_eye_right.append(train_batch_err_eye_right)
 
+                    train_loss_history_columbia.append(train_batch_loss_columbia)
+                    train_err_history_columbia.append(train_batch_err_columbia)
 
 					print ('Training on batch: %.1fs' % (timeit.default_timer() - start))
 
@@ -606,13 +616,17 @@ class EyeTracker(object):
 						val_err_eye_left = 0.
 						val_loss_eye_right = 0.
 						val_err_eye_right = 0.
+						val_loss_columbia = 0.
+						val_err_columbia = 0.
 
 						i_val_left = 0
 						i_val_right = 0
+                        i_val_columbia  = 0
 
 						for batch_val_data in next_batch(val_data, batch_size):
 							batch_val_data_eye_left, i_val_left = next_batch_universal(val_data_eye_left, batch_size, i_val_left)
 							batch_val_data_eye_right, i_val_right = next_batch_universal(val_data_eye_right, batch_size, i_val_right)
+                            batch_val_data_columbia, i_val_columbia = next_batch_universal(val_data_eye_right, batch_size, i_val_right)
 
 							val_batch_loss, val_batch_err = sess.run([self.cost1, self.err1], feed_dict={self.eye_left: batch_val_data[0], \
 											self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
@@ -626,19 +640,19 @@ class EyeTracker(object):
 											feed_dict={self.eye_right: batch_val_data_eye_right[0], \
 											self.y: batch_val_data_eye_right[1]})
 
+							val_batch_loss_columbia, val_batch_err_columbia = sess.run([self.cost4, self.err4], feed_dict={self.eye_left: batch_val_data_columbia[0], \
+											self.eye_right: batch_val_data_columbia[1], self.face: batch_val_data_columbia[2], \
+											self.face_mask: batch_val_data_columbia[3], self.y: batch_val_data_columbia[4]})
+
 							val_loss += val_batch_loss / val_n_batches
 							val_err += val_batch_err / val_n_batches
 							val_loss_eye_left += val_batch_loss_eye_left / val_n_batches
 							val_err_eye_left += val_batch_err_eye_left / val_n_batches
 							val_loss_eye_right += val_batch_loss_eye_right / val_n_batches
 							val_err_eye_right += val_batch_err_eye_right / val_n_batches
+							val_loss_columbia += val_batch_loss_columbia / val_n_batches
+							val_err_columbia += val_batch_err_columbia/ val_n_batches
 
-						Val_loss.append(val_loss)
-						Val_err.append(val_err)
-						Val_loss_eye_left.append(val_loss_eye_left)
-						Val_err_eye_left.append(val_err_eye_left)
-						Val_loss_eye_right.append(val_loss_eye_right)
-						Val_err_eye_right.append(val_err_eye_right)
 
 						print ("val_loss: ", val_loss, "val_err: ", val_err)
 						print ("val_loss_left: ", val_loss_eye_left, "val_err_left: ", val_err_eye_left)
@@ -657,28 +671,35 @@ class EyeTracker(object):
 
 						print （"now: ", now）
 						print （"learning rate: ", lr）
-						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
-						print ('Epoch %s/%s Iter %s, train val_loss_eye_left: %.5f, train error_eye_left: %.5f, val loss_eye_left: %.5f, val error_eye_left: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_eye_left), np.mean(train_err_eye_left), np.mean(Val_loss_eye_left), np.mean(Val_err_eye_left)))
-						print ('Epoch %s/%s Iter %s, train loss_eye_right: %.5f, train error_eye_right: %.5f, val loss_eye_right: %.5f, val error_eye_right: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_eye_right), np.mean(train_err_eye_right), np.mean(Val_loss_eye_right), np.mean(Val_err_eye_right)))
 
-						train_loss_history.append(np.mean(train_loss))
-						train_err_history.append(np.mean(train_err))
-						val_loss_history.append(np.mean(Val_loss))
-						val_err_history.append(np.mean(Val_err))
+						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history), np.mean(train_err_history), np.mean(val_loss_history), np.mean(val_err_history)))
 
-						train_loss_history_eye_left.append(np.mean(train_loss_eye_left))
-						train_err_history_eye_left.append(np.mean(train_err_eye_left))
-						val_loss_history_eye_left.append(np.mean(Val_loss_eye_left))
-						val_err_history_eye_left.append(np.mean(Val_err_eye_left))
+						print ('Epoch %s/%s Iter %s, train val_loss_eye_left: %.5f, train error_eye_left: %.5f, val loss_eye_left: %.5f, val error_eye_left: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history_eye_left), np.mean(train_err_history_eye_left), np.mean(val_loss_history_eye_left), np.mean(val_err_history_eye_left)))
 
-						train_loss_history_eye_right.append(np.mean(train_loss_eye_right))
-						train_err_history_eye_right.append(np.mean(train_err_eye_right))
-						val_loss_history_eye_right.append(np.mean(Val_loss_eye_right))
-						val_err_history_eye_right.append(np.mean(Val_err_eye_right))
+						print ('Epoch %s/%s Iter %s, train loss_eye_right: %.5f, train error_eye_right: %.5f, val loss_eye_right: %.5f, val error_eye_right: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history_eye_right), np.mean(train_err_history_eye_right), np.mean(val_loss_history_eye_right), np.mean(val_err_history_eye_right)))
+
+						print ('Epoch %s/%s Iter %s, train loss_columbia: %.5f, train error_columbia: %.5f, val loss_columbia: %.5f, val error_columbia: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history_columbia), np.mean(train_err_history_columbia), np.mean(val_loss_history_columbia), np.mean(val_err_history_columbia)))
+
+
+						val_loss_history.append(val_loss)
+						val_err_history.append(val_err)
+
+						val_loss_history_eye_left.append(val_loss_eye_left)
+						val_err_history_eye_left.append(val_err_eye_left)
+
+						val_loss_history_eye_right.append(val_loss_eye_right)
+						val_err_history_eye_right.append(val_err_eye_right)
+
+						val_loss_history_columbia.append(val_loss_columbia)
+						val_err_history_columbia.append(val_err_columbia)
 
 						plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+
 						plot_loss(np.array(train_loss_history_eye_left), np.array(train_err_history_eye_left), np.array(val_loss_history_eye_left), np.array(val_err_history_eye_left), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + "_eye_left.png")
+
 						plot_loss(np.array(train_loss_history_eye_right), np.array(train_err_history_eye_right), np.array(val_loss_history_eye_right), np.array(val_err_history_eye_right), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + "_eye_right.png")
+
+						plot_loss(np.array(train_loss_history_columbia), np.array(train_err_history_columbia), np.array(val_loss_history_columbia), np.array(val_err_history_columbia), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + "_columbia.png")
 
 						# if val_loss - min_delta < best_loss:
 						# if val_err - min_delta < best_loss:
@@ -801,15 +822,13 @@ def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
 
 	return np.mean(val_err)
 
-
 def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_file='loss.png'):
 	print ("----plot loss----")
 
 	idx = np.arange(start, len(train_loss), per)
-	idx_30 = np.arange(start, len(train_loss), per) * 30
 	fig, ax1 = plt.subplots()
 	label='train loss'
-	lns1 = ax1.plot(idx_30, train_loss[idx], 'b-', alpha=1.0, label='train loss')
+	lns1 = ax1.plot(idx, train_loss[idx], 'b-', alpha=1.0, label='train loss')
 	ax1.set_xlabel('epochs')
 	# Make the y-axis label, ticks and tick labels match the line color.
 	ax1.set_ylabel('loss', color='b')
@@ -821,7 +840,7 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 
 	fig, ax2 = plt.subplots()
 	label='train_err'
-	lns2 = ax2.plot(idx_30, train_err[idx], 'r-', alpha=1.0, label='train_err')
+	lns2 = ax2.plot(idx, train_err[idx], 'r-', alpha=1.0, label='train_err')
 	ax2.set_ylabel('error', color='r')
 	ax2.tick_params('y', colors='r')
 	ax1.legend(lns2, label, loc=0)
@@ -829,6 +848,8 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 	fig.tight_layout()
 	plt.savefig(save_file + "_train_err" + ".png")
 
+	idx = np.arange(start, len(test_loss), per)
+	idx_30 = np.arange(start, len(test_loss), per) * 30
 	fig, ax1 = plt.subplots()
 	label='test loss'
 	lns3 = ax1.plot(idx_30, test_loss[idx], 'c-', alpha=1.0, label='test loss')

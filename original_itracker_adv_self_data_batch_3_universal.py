@@ -353,10 +353,10 @@ class EyeTracker(object):
 				epoch_start = timeit.default_timer()
 				iter_start = None
 				# n_incr_error += 1
-				train_loss = []
-				train_err = []
-				Val_loss = []
-				Val_err = []
+				# train_loss = []
+				# train_err = []
+				# Val_loss = []
+				# Val_err = []
 
 				# train_names = shuffle_data(train_names)
 				random.shuffle(train_names)
@@ -389,8 +389,10 @@ class EyeTracker(object):
 
 					print ("train_batch_loss: ", train_batch_loss, "train_batch_err: ", train_batch_err)
 
-					train_loss.append(train_batch_loss)
-					train_err.append(train_batch_err)
+					# train_loss.append(train_batch_loss)
+					# train_err.append(train_batch_err)
+					train_loss_history.append(train_batch_loss)
+					train_err_history.append(train_batch_err)
 
 					print ('Training on batch: %.1fs' % (timeit.default_timer() - start))
 					#
@@ -430,8 +432,8 @@ class EyeTracker(object):
 											self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
 							val_loss += val_batch_loss / val_n_batches
 							val_err += val_batch_err / val_n_batches
-						Val_loss.append(val_loss)
-						Val_err.append(val_err)
+						# Val_loss.append(val_loss)
+						# Val_err.append(val_err)
 
 						print ("val_loss: ", val_loss, "val_err: ", val_err)
 						iterTest += 1
@@ -448,10 +450,8 @@ class EyeTracker(object):
 						print "learning rate: ", lr
 						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
 
-						train_loss_history.append(np.mean(train_loss))
-						train_err_history.append(np.mean(train_err))
-						val_loss_history.append(np.mean(Val_loss))
-						val_err_history.append(np.mean(Val_err))
+						val_loss_history.append(val_loss)
+						val_err_history.append(val_err)
 
 						plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
 
@@ -588,10 +588,9 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 	print ("----plot loss----")
 
 	idx = np.arange(start, len(train_loss), per)
-	idx_30 = np.arange(start, len(train_loss), per) * 30
 	fig, ax1 = plt.subplots()
 	label='train loss'
-	lns1 = ax1.plot(idx_30, train_loss[idx], 'b-', alpha=1.0, label='train loss')
+	lns1 = ax1.plot(idx, train_loss[idx], 'b-', alpha=1.0, label='train loss')
 	ax1.set_xlabel('epochs')
 	# Make the y-axis label, ticks and tick labels match the line color.
 	ax1.set_ylabel('loss', color='b')
@@ -603,7 +602,7 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 
 	fig, ax2 = plt.subplots()
 	label='train_err'
-	lns2 = ax2.plot(idx_30, train_err[idx], 'r-', alpha=1.0, label='train_err')
+	lns2 = ax2.plot(idx, train_err[idx], 'r-', alpha=1.0, label='train_err')
 	ax2.set_ylabel('error', color='r')
 	ax2.tick_params('y', colors='r')
 	ax1.legend(lns2, label, loc=0)
@@ -611,6 +610,8 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 	fig.tight_layout()
 	plt.savefig(save_file + "_train_err" + ".png")
 
+	idx = np.arange(start, len(test_loss), per)
+	idx_30 = np.arange(start, len(test_loss), per) * 30
 	fig, ax1 = plt.subplots()
 	label='test loss'
 	lns3 = ax1.plot(idx_30, test_loss[idx], 'c-', alpha=1.0, label='test loss')
