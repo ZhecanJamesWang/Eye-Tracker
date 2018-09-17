@@ -193,8 +193,8 @@ def split_data(args, x, y, split_ratio = 0.85):
 	return train_data, val_data
 
 def organize_data_(args):
-	file_name = "data/_data.txt"
-	img_list, ang_list = load_data_names_(file_name)
+	file_name = "data/columbia_data.txt"
+	img_list, ang_list = load_data_names_columbia(file_name)
 	train_data, val_data = split_data(args, img_list, ang_list, split_ratio = 0.85)
 	return train_data, val_data
 
