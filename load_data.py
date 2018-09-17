@@ -338,7 +338,7 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 		right_eye_batch[b] = right_eye
 		face_batch[b] = face
 		face_grid_batch[b] = face_mask
-		y_batch[b][0] = theta
+		y_batch[b][0] = - theta
 		y_batch[b][1] = alpha
 
 		# increase the size of the current batch
