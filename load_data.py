@@ -13,7 +13,7 @@ def load_data_names_columbia(file_name):
 	ang_list = []
 
 	for line in fh.readlines():
-		print line
+		print (line)
 		parts = line.split(" ")
 
 		path = parts[0]
@@ -300,8 +300,8 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 
 		left_eye, right_eye, face = resize(left_eye, 64), resize(right_eye, 64), resize(face, 64)
 
-		print right_eye.shape
-		print left_eye.shape
+		print (right_eye.shape)
+		print (left_eye.shape)
 
 		theta, alpha = angle
 
@@ -516,8 +516,8 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 			left_eye = cv2.resize(left_eye, (img_cols, img_rows))
 			right_eye = cv2.resize(right_eye, (img_cols, img_rows))
 		except Exception as e:
-			print "checking resizing"
-			print e
+			print ("checking resizing")
+			print (e)
 
 
  		# # save images (for debug)
