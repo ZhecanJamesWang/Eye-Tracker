@@ -174,8 +174,8 @@ def split_data(args, x, y, split_ratio = 0.85):
 	val_x = x[split:]
 	val_y = y[split:]
 
-	print （"len(train_data): ", len(train_x)）
-	print （"len(val_data): ", len(val_x)）
+	print ("len(train_data): ", len(train_x))
+	print ("len(val_data): ", len(val_x))
 
 	train_x = remove_left_over(train_x, args.batch_size)
 	train_y = remove_left_over(train_y, args.batch_size)
