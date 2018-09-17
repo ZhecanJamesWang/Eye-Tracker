@@ -470,7 +470,7 @@ class EyeTracker(object):
 
 			# saver.restore(sess, "./my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684")
 
-			saver.restore(sess, "./my_model/2018-09-09-00-20/model_6_660_train_error_2.1624763_val_error_2.3266205191612244")
+			saver.restore(sess, "./my_model/2018-09-08-17-36/model_1_345_train_error_2.1934447_val_error_3.610280990600586")
 
 			random.shuffle(val_names)
 
@@ -630,8 +630,8 @@ class EyeTracker(object):
 						else:
 							iter_start = timeit.default_timer()
 
-						print （"now: ", now）
-						print （"learning rate: ", lr）
+						print ("now: ", now)
+						print ("learning rate: ", lr)
 
 						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history), np.mean(train_err_history), np.mean(val_loss_history), np.mean(val_err_history)))
 

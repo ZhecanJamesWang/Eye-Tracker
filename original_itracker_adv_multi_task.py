@@ -671,8 +671,8 @@ class EyeTracker(object):
 						else:
 							iter_start = timeit.default_timer()
 
-						print （"now: ", now）
-						print （"learning rate: ", lr）
+						print ("now: ", now)
+						print ("learning rate: ", lr)
 
 						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history), np.mean(train_err_history), np.mean(val_loss_history), np.mean(val_err_history)))
 
