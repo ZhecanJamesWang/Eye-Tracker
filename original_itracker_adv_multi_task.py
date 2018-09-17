@@ -3,7 +3,7 @@ import timeit
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
-from load_data import load_data_names, load_batch_from_data, load_data_mpii, load_data_names_columbia
+from load_data import load_data_names, load_batch_from_data, load_data_mpii, load_data_names_columbia, load_batch_from_data_columbia
 import datetime
 import random
 from mtcnn.mtcnn import mtcnn_handle
@@ -201,10 +201,10 @@ def organize_data_(args):
 	file_name = "data/columbia_data.txt"
 	img_list, ang_list = load_data_names_columbia(file_name)
 	train_data, val_data = split_data(args, img_list, ang_list, split_ratio = 0.85)
+	print ("------ finish organize_data_columbia --------")
 	return train_data, val_data
 
 def organize_data_mpii(args, direction):
-	print ("------ organize_data_mpii --------")
 	file_name = "data/ptotal_rgb.npz"
 	left_images, left_poses, left_gazes, right_images, right_poses, right_gazes = load_data_mpii(file_name)
 
@@ -214,7 +214,7 @@ def organize_data_mpii(args, direction):
 	else:
 		x = right_images
 		y = right_gazes
-
+	print ("------ finish organize_data_mpii --------")
 	print ("len(data): ", len(x))
 
 
@@ -383,7 +383,7 @@ class EyeTracker(object):
 		train_data_eye_right, val_data_eye_right = organize_data_mpii(args, "right")
 
 		# -----------------------------
-		print ("------ processing extra data 1 --------")
+		print ("------ fnish processing extra data  --------")
 
 		train_names = load_data_names(train_path)
 		val_names = load_data_names(val_path)
