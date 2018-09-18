@@ -242,7 +242,7 @@ class EyeTracker(object):
 		# if not os.path.exists(ckpt):
 		#     os.makedirs(ckpt)
 
-		print ('Train on %s samples, validate on %s samples'%(train_data[0].shape[0], val_data[0].shape[0]))
+		# print ('Train on %s samples, validate on %s samples'%(train_data[0].shape[0], val_data[0].shape[0]))
 		# Define loss and optimizer
 		self.cost = tf.losses.mean_squared_error(self.y, self.pred)
 		self.optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost)
