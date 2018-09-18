@@ -295,7 +295,7 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 		dir = img_name
 
 		# open image
-		img = cv2.imread(join(path, dir, "frames", frame))
+		img = cv2.imread(dir)
 
 		# if image is null, skip
 		if img is None:
