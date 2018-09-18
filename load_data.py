@@ -288,6 +288,9 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 
 
 	for index in range(len(img_list)):
+		if index % 20 == 0:
+			print ("index: ", index)
+
 		img_name = img_list[index]
 		angle = ang_list[index]
 
