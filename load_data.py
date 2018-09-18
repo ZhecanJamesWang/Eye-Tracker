@@ -266,8 +266,8 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 	print ("len(data): ", len(data))
 	print ("len(data[0]): ", len(data[0]))
 	print (data)
-	
-	img_list, angle_list = data
+
+	img_list, ang_list = data
 
 	# data structures for batches
 	left_eye_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
@@ -282,7 +282,7 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 
 	for index in range(len(img_list)):
 		img_name = img_list[index]
-		angle = angle_list[index]
+		angle = ang_list[index]
 
 		# directory
 		dir = img_name

@@ -200,6 +200,9 @@ def split_data(args, x, y, split_ratio = 0.85):
 def organize_data_columbia(args):
 	file_name = "data/columbia_data.txt"
 	img_list, ang_list = load_data_names_columbia(file_name)
+	print ("img_list[:3]: ", img_list[:3])
+	print ("ang_list[:3]: ", ang_list[:3])
+
 	train_data, val_data = split_data(args, img_list, ang_list, split_ratio = 0.85)
 	print ("------ finish organize_data_columbia --------")
 	return train_data, val_data
