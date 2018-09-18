@@ -218,18 +218,18 @@ def organize_data_mpii(args, direction):
 		x = right_images
 		y = right_gazes
 	print ("------ finish organize_data_mpii --------")
-	print ("len(data): ", len(x))
+	# print ("len(data): ", len(x))
 
 
 	train_data, val_data = split_data(args, x, y, split_ratio = 0.85)
 
 	train_data = prepare_data_mpii(train_data)
 	val_data = prepare_data_mpii(val_data)
-	print (train_data[0][10:30])
-	print ("train_data[0].shape: ", train_data[0].shape)
-	print ("train_data[1].shape: ", train_data[1].shape)
-
-	print ("train_data[0][0].shape: ", train_data[0][0].shape)
+	# print (train_data[0][10:30])
+	# print ("train_data[0].shape: ", train_data[0].shape)
+	# print ("train_data[1].shape: ", train_data[1].shape)
+	#
+	# print ("train_data[0][0].shape: ", train_data[0][0].shape)
 
 	return train_data, val_data
 

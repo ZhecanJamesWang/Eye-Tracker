@@ -15,10 +15,14 @@ def load_data_names_columbia(file_name):
 	for line in fh.readlines():
 		print (line)
 		parts = line.split(" ")
-
+		print (parts）
 		path = parts[0]
 		theta = parts[1]
 		alpha = parts[2].replace('\n', '')
+		print (thea)
+		print (alpha)
+		raise "debug"
+
 		img_list.append(path)
 		ang_list.append(path)
 	return img_list, ang_list
@@ -265,7 +269,7 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 
 	print ("len(data): ", len(data))
 	print ("len(data[0]): ", len(data[0]))
-	print (data)
+	# print (data)
 
 	img_list, ang_list = data
 
