@@ -242,7 +242,7 @@ class EyeTracker(object):
 		# if not os.path.exists(ckpt):
 		#     os.makedirs(ckpt)
 
-		print ('Train on %s samples, validate on %s samples' % (train_data[0].shape[0], val_data[0].shape[0]))
+		print ('Train on %s samples, validate on %s samples'%(train_data[0].shape[0], val_data[0].shape[0]))
 		# Define loss and optimizer
 		self.cost = tf.losses.mean_squared_error(self.y, self.pred)
 		self.optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost)
@@ -445,12 +445,12 @@ def train(args):
 	plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file="test2/loss.png")
 
 	# if args.save_loss:
-	# 	with open(args.save_loss, 'w') as outfile:
-	# 		np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
-	# 								val_loss_history=val_loss_history, val_err_history=val_err_history)
+	#     with open(args.save_loss, 'w') as outfile:
+	#         np.savez(outfile, train_loss_history=train_loss_history, train_err_history=train_err_history, \
+	#                                 val_loss_history=val_loss_history, val_err_history=val_err_history)
 	#
 	# if args.plot_loss:
-	# 	plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=args.plot_loss)
+	#     plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=args.plot_loss)
 
 def test(args):
 	_, val_data = load_data(args.input)
@@ -482,10 +482,10 @@ def main():
 	args = parser.parse_args()
 
 	# if args.train:
-	# 	train(args)
+	#     train(args)
 	# else:
-	# 	if not args.load_model:
-	# 		raise Exception('load_model arg needed in test phase')
+	#     if not args.load_model:
+	#         raise Exception('load_model arg needed in test phase')
 	test(args)
 
 if __name__ == '__main__':
