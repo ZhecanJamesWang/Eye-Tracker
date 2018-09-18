@@ -16,10 +16,10 @@ from mtcnn.mtcnn import mtcnn_handle
 # right and left eye + EyeTracker          3 epoch   90 iters  2018-09-07-11-15 lr 0.0001
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 # os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
-mtcnn_h = mtcnn_handle()
+# mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
 date = now.strftime("%Y-%m-%d-%H-%M")
 
@@ -464,13 +464,18 @@ class EyeTracker(object):
 		# Launch the graph
 
 		with tf.Session() as sess:
-			sess.run(init)
+			# sess.run(init)
 			 # TODO://////
 			writer = tf.summary.FileWriter("logs", sess.graph)
 
 			# saver.restore(sess, "./my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684")
 
-			saver.restore(sess, "./my_model/2018-09-08-17-36/model_1_345_train_error_2.1934447_val_error_3.610280990600586")
+			saver.restore(sess, "./my_model/2018-09-09-00-20/model_6_660_train_error_2.1624763_val_error_2.3266205191612244")
+
+
+			print " pass the restoring !!!!"
+
+			mtcnn_h = mtcnn_handle()
 
 			random.shuffle(val_names)
 
@@ -655,7 +660,7 @@ class EyeTracker(object):
 						# if val_loss - min_delta < best_loss:
 						# if val_err - min_delta < best_loss:
 							# best_loss = val_err
-						save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_%s"%(np.mean(train_err)) + "_val_error_%s"%(np.mean(val_err))
+						save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_history_%s"%(np.mean(train_err_history)) + "_val_error_history_%s"%(np.mean(val_err_history))
 
 						# saver = tf.train.Saver(max_to_keep=0)
 						# , global_step=n_epoch

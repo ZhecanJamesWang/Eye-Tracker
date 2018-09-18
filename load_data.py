@@ -263,7 +263,7 @@ def load_batch_from_names(names, path, img_ch, img_cols, img_rows):
 def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, img_rows):
 	save_img = False
 
-	img_list, ang_list = data
+	img_list, angle_list = data
 
 	# data structures for batches
 	left_eye_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
