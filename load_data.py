@@ -308,7 +308,10 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 			result = mtcnn_h.run_mtcnn(img,  if_face = True, if_facemask = True, if_draw = False)
 		except Exception as e:
 			print (e)
+			cv2.imwrite("test.png", img)
+			raise "debug"
 			continue
+
 
 		[original, draw, face, left_eye, right_eye, face_mask, left_eye_pts, right_eye_pts] = result
 
