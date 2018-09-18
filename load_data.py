@@ -420,8 +420,7 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 
 		# open image
 		img = cv2.imread(join(path, dir, "frames", frame))
-		# img = resize(img, 100)
-		print ("img.shape: ", img.shape)
+		# print ("img.shape: ", img.shape)
 
 		# if image is null, skip
 		if img is None:
@@ -456,7 +455,7 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 		try:
 			# rect = [tl_x_face, tl_y_face, br_x, br_y]
 			# left_eye, right_eye = get_left_right_eyes(img, rect)
-			result = mtcnn_h.run_mtcnn(img,  if_face = False, if_facemask = False, if_draw = False)
+			result = mtcnn_h.run_mtcnn(resize_img,  if_face = False, if_facemask = False, if_draw = False)
 			[_, _, _, left_eye, right_eye, _, left_eye_pts, right_eye_pts] = result
 			check_dimension(left_eye, if_even = True)
 			check_dimension(right_eye, if_even = True)
