@@ -205,7 +205,7 @@ def organize_data_(args):
 
 	train_data, val_data = split_data(args, img_list, ang_list, split_ratio = 0.85)
 	print ("------ finish organize_data_columbia --------")
-	return train_data[:100], val_data[:100]
+	return train_data[:600], val_data[:600]
 
 def organize_data_mpii(args, direction):
 	file_name = "data/ptotal_rgb.npz"
@@ -231,7 +231,7 @@ def organize_data_mpii(args, direction):
 	#
 	# print ("train_data[0][0].shape: ", train_data[0][0].shape)
 
-	return train_data[:100], val_data[:100]
+	return train_data[:600], val_data[:600]
 
 
 
