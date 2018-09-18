@@ -306,7 +306,7 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 		except Exception as e:
 			print (e)
 			continue
-			
+
 		[original, draw, face, left_eye, right_eye, face_mask, left_eye_pts, right_eye_pts] = result
 
 		check_dimension(face, if_even = False)
@@ -315,8 +315,8 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 
 		left_eye, right_eye, face, face_mask = resize(left_eye, 64), resize(right_eye, 64), resize(face, 64), resize(face_mask, 25)
 
-		print (right_eye.shape)
-		print (left_eye.shape)
+		# print (right_eye.shape)
+		# print (left_eye.shape)
 
 		[theta, alpha] = angle
 
