@@ -19,7 +19,7 @@ def load_data_names_columbia(file_name):
 		path = parts[0]
 		theta = parts[1]
 		alpha = parts[2].replace('\n', '')
-		print (thea)
+		print (theta)
 		print (alpha)
 		raise "debug"
 
