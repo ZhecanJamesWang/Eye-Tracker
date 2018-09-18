@@ -381,7 +381,7 @@ class EyeTracker(object):
 	def train(self, args, ckpt, plot_ckpt, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10):
 		ifCheck = False
 
-		train_data_columbia, val_data_columbia = organize_data_(args)
+		train_data_columbia, val_data_columbia = organize_data_columbia(args)
 		# --------------------------
 		train_data_eye_left, val_data_eye_left = organize_data_mpii(args, "left")
 		train_data_eye_right, val_data_eye_right = organize_data_mpii(args, "right")
