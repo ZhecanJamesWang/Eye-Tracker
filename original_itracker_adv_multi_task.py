@@ -205,7 +205,7 @@ def organize_data_columbia(args):
 
 	train_data, val_data = split_data(args, img_list, ang_list, split_ratio = 0.85)
 	print ("------ finish organize_data_columbia --------")
-	return train_data, val_data
+	return train_data[:100], val_data[:100]
 
 def organize_data_mpii(args, direction):
 	file_name = "data/ptotal_rgb.npz"
@@ -231,7 +231,7 @@ def organize_data_mpii(args, direction):
 	#
 	# print ("train_data[0][0].shape: ", train_data[0][0].shape)
 
-	return train_data, val_data
+	return train_data[:100], val_data[:100]
 
 
 
@@ -388,8 +388,8 @@ class EyeTracker(object):
 		# -----------------------------
 		print ("------ finish processing extra data  --------")
 
-		train_names = load_data_names(train_path)
-		val_names = load_data_names(val_path)
+		train_names = load_data_names(train_path)[:1000]
+		val_names = load_data_names(val_path)[:1000]
 
 		train_num = len(train_names)
 		val_num = len(val_names)
@@ -519,7 +519,7 @@ class EyeTracker(object):
 					print ("len(train_data_columbia): ", len(train_data_columbia))
 					print ("len(train_data_columbia[0]): ", len(train_data_columbia[0]))
 
-					batch_train_data_columbia = next_batch_universal(train_data_columbia, batch_size, i_columbia)
+					batch_train_data_columbia, i_columbia = next_batch_universal(train_data_columbia, batch_size, i_columbia)
 					print ("len(batch_train_data_columbia): ", len(batch_train_data_columbia))
 					print ("len(batch_train_data_columbia[0]): ", len(batch_train_data_columbia[0]))
 
