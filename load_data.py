@@ -263,6 +263,9 @@ def load_batch_from_names(names, path, img_ch, img_cols, img_rows):
 def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, img_rows):
 	save_img = False
 
+	print ("len(data): ", len(data))
+	print ("len(data[0]): ", len(data[0]))
+
 	img_list, angle_list = data
 
 	# data structures for batches
