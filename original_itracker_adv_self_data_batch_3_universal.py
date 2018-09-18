@@ -131,9 +131,9 @@ def normalize(data):
 
 def prepare_data(data):
 	eye_left, eye_right, face, face_mask, y = data
-	eye_left = normalize(eye_left)
-	eye_right = normalize(eye_right)
-	face = normalize(face)
+	eye_left = normalize(eye_left).astype('float32')
+	eye_right = normalize(eye_right).astype('float32')
+	face = normalize(face).astype('float32')
 	face_mask = np.reshape(face_mask, (face_mask.shape[0], -1)).astype('float32')
 	y = y.astype('float32')
 	return [eye_left, eye_right, face, face_mask, y]

@@ -145,9 +145,9 @@ def normalize(data):
 
 def prepare_data(data):
 	eye_left, eye_right, face, face_mask, y = data
-	eye_left = normalize(eye_left)
-	eye_right = normalize(eye_right)
-	face = normalize(face)
+	eye_left = normalize(eye_left).astype('float32')
+	eye_right = normalize(eye_right).astype('float32')
+	face = normalize(face).astype('float32')
 	face_mask = np.reshape(face_mask, (face_mask.shape[0], -1)).astype('float32')
 	y = y.astype('float32')
 	return [eye_left, eye_right, face, face_mask, y]
@@ -156,7 +156,7 @@ def prepare_data_eye(data):
 	# eye_left, eye_right, face, face_mask, y = data
 	print len(data)
 	images, gazes = data
-
+	images = images.astype('float32')
 	# images = normalize(images)
 
 	y = gazes.astype('float32')
@@ -470,7 +470,7 @@ class EyeTracker(object):
 
 			# saver.restore(sess, "./my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684")
 
-			saver.restore(sess, "./my_model/2018-09-09-00-20/model_6_660_train_error_2.1624763_val_error_2.3266205191612244")
+			saver.restore(sess, "./my_model/2018-09-18-11-01/model_1_300_train_error_history_2.8944669_val_error_history_3.092479933391918")
 
 
 			print " pass the restoring !!!!"

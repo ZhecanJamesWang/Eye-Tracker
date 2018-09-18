@@ -121,15 +121,16 @@ def normalize(data):
 
 def prepare_data(data):
 	eye_left, eye_right, face, face_mask, y = data
-	eye_left = normalize(eye_left)
-	eye_right = normalize(eye_right)
-	face = normalize(face)
+	eye_left = normalize(eye_left).astype('float32')
+	eye_right = normalize(eye_right).astype('float32')
+	face = normalize(face).astype('float32')
 	face_mask = np.reshape(face_mask, (face_mask.shape[0], -1)).astype('float32')
 	y = y.astype('float32')
 	return [eye_left, eye_right, face, face_mask, y]
 
 def prepare_data_mpii(data):
 	images, gazes = data
+	images = images.astype('float32')
 	# images = normalize(images)
 
 	y = gazes.astype('float32')
@@ -197,7 +198,7 @@ def split_data(args, x, y, split_ratio = 0.85):
 
 	return train_data, val_data
 
-def organize_data_(args):
+def organize_data_columbia(args):
 	file_name = "data/columbia_data.txt"
 	img_list, ang_list = load_data_names_columbia(file_name)
 	print ("img_list[:3]: ", img_list[:3])
@@ -205,7 +206,7 @@ def organize_data_(args):
 
 	train_data, val_data = split_data(args, img_list, ang_list, split_ratio = 0.85)
 	print ("------ finish organize_data_columbia --------")
-	return train_data[:600], val_data[:600]
+	return train_data, val_data
 
 def organize_data_mpii(args, direction):
 	file_name = "data/ptotal_rgb.npz"
@@ -231,7 +232,7 @@ def organize_data_mpii(args, direction):
 	#
 	# print ("train_data[0][0].shape: ", train_data[0][0].shape)
 
-	return train_data[:600], val_data[:600]
+	return train_data, val_data
 
 
 
@@ -388,8 +389,8 @@ class EyeTracker(object):
 		# -----------------------------
 		print ("------ finish processing extra data  --------")
 
-		train_names = load_data_names(train_path)[:1000]
-		val_names = load_data_names(val_path)[:1000]
+		train_names = load_data_names(train_path)
+		val_names = load_data_names(val_path)
 
 		train_num = len(train_names)
 		val_num = len(val_names)
