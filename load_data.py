@@ -13,16 +13,16 @@ def load_data_names_columbia(file_name):
 	ang_list = []
 
 	for line in fh.readlines():
-		print (line)
+		# print (line)
 		parts = line.split(" ")
-		print ("parts: ", parts)
+		# print ("parts: ", parts)
 		path = parts[0] + " " + parts[1]
 		theta = parts[2]
 		alpha = parts[3].replace('\n', '')
-		print ("path: ", path)
-		print ("theta: ", theta)
-		print ("alpha: ", alpha)
-		raise "debug"
+		# print ("path: ", path)
+		# print ("theta: ", theta)
+		# print ("alpha: ", alpha)
+		# raise "debug"
 
 		img_list.append(path)
 		ang_list.append(path)
