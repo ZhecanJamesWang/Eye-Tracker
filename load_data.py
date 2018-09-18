@@ -15,7 +15,7 @@ def load_data_names_columbia(file_name):
 	for line in fh.readlines():
 		print (line)
 		parts = line.split(" ")
-		print ("parts: ", paths)
+		print ("parts: ", parts)
 		path = parts[0]
 		theta = parts[1]
 		alpha = parts[2].replace('\n', '')
