@@ -1,14 +1,14 @@
 import cv2
-import detect_face
-# from mtcnn import detect_face
+# import detect_face
+from mtcnn import detect_face
 import tensorflow as tf
 import numpy as np
 
 class mtcnn_handle(object):
 	def __init__(self):
 		sess = tf.Session()
-		# self.pnet, self.rnet, self.onet = detect_face.create_mtcnn(sess, "det/")
-		self.pnet, self.rnet, self.onet = detect_face.create_mtcnn(sess, "../det/")
+		self.pnet, self.rnet, self.onet = detect_face.create_mtcnn(sess, "det/")
+		# self.pnet, self.rnet, self.onet = detect_face.create_mtcnn(sess, "../det/")
 
 		# self.minsize = 40 # minimum size of face
 		self.minsize = 1 # minimum size of face
