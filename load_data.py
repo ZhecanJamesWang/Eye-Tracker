@@ -301,8 +301,12 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 		if img is None:
 			print("Error opening image: {}".format(join(path, dir, "frames", frame)))
 			continue
-
-		result = mtcnn_h.run_mtcnn(img,  if_face = True, if_facemask = True, if_draw = False)
+		try:
+			result = mtcnn_h.run_mtcnn(img,  if_face = True, if_facemask = True, if_draw = False)
+		except Exception as e:
+			print (e)
+			continue
+			
 		[original, draw, face, left_eye, right_eye, face_mask, left_eye_pts, right_eye_pts] = result
 
 		check_dimension(face, if_even = False)
