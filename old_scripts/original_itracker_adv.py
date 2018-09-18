@@ -482,7 +482,7 @@ def main():
 	args = parser.parse_args()
 
 	# if args.train:
-    train(args)
+	train(args)
 	# else:
 	#     if not args.load_model:
 	#         raise Exception('load_model arg needed in test phase')
