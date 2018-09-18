@@ -566,6 +566,9 @@ class EyeTracker(object):
 
 					batch_train_data_columbia, i_columbia = next_batch_universal(train_data_columbia, batch_size, i_columbia)
 
+					print ("len(batch_train_data_columbia): ", len(batch_train_data_columbia))
+					print ("len(batch_train_data_columbia[0]): ", len(batch_train_data_columbia[0]))
+
 					# Run optimization op (backprop)
 					sess.run(self.optimizer4, feed_dict={self.eye_left: batch_train_data_columbia[0], \
 								self.eye_right: batch_train_data_columbia[1], self.face: batch_train_data_columbia[2], \

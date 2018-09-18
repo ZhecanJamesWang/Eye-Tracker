@@ -1,15 +1,18 @@
 import cv2
-from mtcnn import detect_face
+import detect_face
+# from mtcnn import detect_face
 import tensorflow as tf
 import numpy as np
 
 class mtcnn_handle(object):
 	def __init__(self):
 		sess = tf.Session()
-		self.pnet, self.rnet, self.onet = detect_face.create_mtcnn(sess, "det/")
-		# self.pnet, self.rnet, self.onet = detect_face.create_mtcnn(sess, "../det/")
+		# self.pnet, self.rnet, self.onet = detect_face.create_mtcnn(sess, "det/")
+		self.pnet, self.rnet, self.onet = detect_face.create_mtcnn(sess, "../det/")
 
-		self.minsize = 40 # minimum size of face
+		# self.minsize = 40 # minimum size of face
+		self.minsize = 1 # minimum size of face
+
 		self.threshold = [ 0.6, 0.7, 0.9 ]  # three steps's threshold
 		self.factor = 0.709 # scale factor
 
@@ -73,8 +76,8 @@ class mtcnn_handle(object):
 			# cv2.namedWindow('Face Detection',cv2.WINDOW_NORMAL)
 			# cv2.resizeWindow('Face Detection', 1920, 1080)
 			cv2.imshow("face", face)
-			cv2.imshow("eye_left", eye_left)
-			cv2.imshow("eye_right", eye_right)
+			cv2.imshow("eye_left", left_eye)
+			cv2.imshow("eye_right", right_eye)
 			cv2.imshow("face_mask", face_mask)
 			cv2.imshow("original", original)
 			cv2.waitKey(0)
@@ -82,20 +85,25 @@ class mtcnn_handle(object):
 		return [original, draw, face, left_eye, right_eye, face_mask, left_eye_pts, right_eye_pts]
 
 def main():
-	mtcnn_h = mtcnn_handle()
-	cam = cv2.VideoCapture(0)
-	while 1:
-		ret, frame = cam.read()
-		result = mtcnn_h.run_mtcnn(frame,  if_face = True, if_facemask = True, if_draw = True)
+	# mtcnn_h = mtcnn_handle()
+	# cam = cv2.VideoCapture(0)
+	# while 1:
+	# 	ret, frame = cam.read()
+	# 	result = mtcnn_h.run_mtcnn(frame,  if_face = True, if_facemask = True, if_draw = True)
 
 	# ------------------------
-	# mtcnn_h = mtcnn_handle()
+	mtcnn_h = mtcnn_handle()
 	# img = cv2.imread("02426_00504.jpg_image.png")
-	# result = mtcnn_h.run_mtcnn(img,  if_face = True, if_facemask = True, if_draw = True)
-	# result = mtcnn_h.run_mtcnn(img,  if_face = False, if_facemask = False, if_draw = False)
-	# [_, draw, _, left_eye, right_eye, _, left_eye_pts, right_eye_pts] = result
-	# cv2.imshow('Face Detection',draw)
+	img = cv2.imread("../test.png")
+	img = cv2.resize(img, (200, 200))
+	# cv2.imshow("first", img)
 	# cv2.waitKey(0)
+
+	result = mtcnn_h.run_mtcnn(img,  if_face = True, if_facemask = True, if_draw = True)
+	# result = mtcnn_h.run_mtcnn(img,  if_face = False, if_facemask = False, if_draw = False)
+	[_, draw, _, left_eye, right_eye, _, left_eye_pts, right_eye_pts] = result
+	cv2.imshow('Face Detection',draw)
+	cv2.waitKey(0)
 
 if __name__ == '__main__':
 	main()
