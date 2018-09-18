@@ -516,6 +516,9 @@ class EyeTracker(object):
 					train_end = (iter+1) * batch_size
 
 					batch_train_data_columbia = next_batch_universal(train_data_columbia, batch_size, i_columbia)
+					print ("len(batch_train_data_columbia): ", len(batch_train_data_columbia))
+					print ("len(batch_train_data_columbia[0]): ", len(batch_train_data_columbia[0]))
+
 					batch_train_data_columbia = load_batch_from_data_columbia(mtcnn_h, batch_train_data_columbia, batch_size, img_ch, img_cols, img_rows)
 					batch_train_data_columbia = prepare_data(batch_train_data_columbia)
 
