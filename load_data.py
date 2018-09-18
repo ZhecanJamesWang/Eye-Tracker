@@ -273,7 +273,9 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 	# print (data)
 
 	img_list, ang_list = data
-
+	print ("img_list[:3]: ", img_list[:3])
+	print ("ang_list[:3]: ", ang_list[:3])
+	
 	# data structures for batches
 	left_eye_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
 	right_eye_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
