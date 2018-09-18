@@ -16,9 +16,9 @@ def load_data_names_columbia(file_name):
 		print (line)
 		parts = line.split(" ")
 		print ("parts: ", parts)
-		path = parts[0]
-		theta = parts[1]
-		alpha = parts[2].replace('\n', '')
+		path = parts[0] + " " + parts[1]
+		theta = parts[2]
+		alpha = parts[3].replace('\n', '')
 		print ("path: ", path)
 		print ("theta: ", theta)
 		print ("alpha: ", alpha)
