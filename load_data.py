@@ -17,15 +17,15 @@ def load_data_names_columbia(file_name):
 		parts = line.split(" ")
 		# print ("parts: ", parts)
 		path = parts[0] + " " + parts[1]
-		theta = parts[2]
-		alpha = parts[3].replace('\n', '')
+		theta = int(parts[2])
+		alpha = int(parts[3].replace('\n', ''))
 		# print ("path: ", path)
 		# print ("theta: ", theta)
 		# print ("alpha: ", alpha)
 		# raise "debug"
 
 		img_list.append(path)
-		ang_list.append(path)
+		ang_list.append([theta, alpha])
 	return img_list, ang_list
 
 def load_data_mpii(file):
@@ -312,7 +312,7 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 		print (right_eye.shape)
 		print (left_eye.shape)
 
-		theta, alpha = angle
+		[theta, alpha] = angle
 
 		if save_img:
 			cv2.imwrite("images/" + dir + "_" + frame + "_face.png", face)
