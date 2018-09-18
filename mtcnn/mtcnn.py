@@ -95,7 +95,7 @@ def main():
 	mtcnn_h = mtcnn_handle()
 	# img = cv2.imread("02426_00504.jpg_image.png")
 	img = cv2.imread("../test.png")
-	img = cv2.resize(img, (200, 200))
+	img = cv2.resize(img, (500, 500))
 	# cv2.imshow("first", img)
 	# cv2.waitKey(0)
 
