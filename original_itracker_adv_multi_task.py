@@ -529,8 +529,7 @@ class EyeTracker(object):
 					print ("len(batch_train_data_columbia[0]): ", len(batch_train_data_columbia[0]))
 
 					batch_train_data = load_batch_from_data(mtcnn_h, train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
-					batch_train_data = prepare_data(batch_train_data)
-
+					# batch_train_data = prepare_data(batch_train_data)
 
 					print ('Loading and preparing training data: %.1fs' % (timeit.default_timer() - start))
 					start = timeit.default_timer()
@@ -562,7 +561,6 @@ class EyeTracker(object):
 					# train_batch_loss_eye_right, train_batch_err_eye_right = sess.run([self.cost3, self.err3], feed_dict={self.eye_right: batch_train_data_eye_right[0], \
 					# 			self.y: batch_train_data_eye_right[1]})
 
-					batch_train_data_columbia, i_columbia = next_batch_universal(train_data_columbia, batch_size, i_columbia)
 					print (4)
 					print ("len(batch_train_data_columbia): ", len(batch_train_data_columbia))
 					print ("len(batch_train_data_columbia[0]): ", len(batch_train_data_columbia[0]))
@@ -633,7 +631,10 @@ class EyeTracker(object):
 						for batch_val_data in next_batch(val_data, batch_size):
 							# batch_val_data_eye_left, i_val_left = next_batch_universal(val_data_eye_left, batch_size, i_val_left)
 							# batch_val_data_eye_right, i_val_right = next_batch_universal(val_data_eye_right, batch_size, i_val_right)
-							batch_val_data_columbia, i_val_columbia = next_batch_universal(val_data_eye_right, batch_size, i_val_right)
+							batch_val_data_columbia, i_val_columbia = next_batch_universal(val_data_columbia, batch_size, i_val_right)
+
+							batch_val_data_columbia = load_batch_from_data_columbia(mtcnn_h, batch_val_data_columbia, batch_size, img_ch, img_cols, img_rows)
+							batch_val_data_columbia = prepare_data(batch_val_data_columbia)
 
 							# val_batch_loss, val_batch_err = sess.run([self.cost1, self.err1], feed_dict={self.eye_left: batch_val_data[0], \
 							# 				self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
