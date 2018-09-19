@@ -436,10 +436,7 @@ class EyeTracker(object):
 		val_loss_history_eye_right = []
 		val_err_history_eye_right = []
 
-		# n_incr_error = 0  # nb. of consecutive increase in error
 		best_loss = np.Inf
-
-		# n_batches = train_data[0].shape[0] / batch_size + (train_data[0].shape[0] % batch_size != 0)
 
 		# Create the collection
 		tf.get_collection("validation_nodes")
@@ -487,7 +484,6 @@ class EyeTracker(object):
 				iter_start = None
 
 
-				# train_names = shuffle_data(train_names)
 				random.shuffle(train_names)
 
 				iterTest=0
@@ -504,7 +500,7 @@ class EyeTracker(object):
 					train_end = (iter+1) * batch_size
 
 					batch_train_data = load_batch_from_data(mtcnn_h, train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
-					# batch_train_data = prepare_data(batch_train_data)
+					batch_train_data = prepare_data(batch_train_data)
 
 
 
@@ -512,35 +508,35 @@ class EyeTracker(object):
 					start = timeit.default_timer()
 
 					# # Run optimization op (backprop)
-					# sess.run(self.optimizer1, feed_dict={self.eye_left: batch_train_data[0], \
-					# 			self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
-					# 			self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
-					#
-					# train_batch_loss, train_batch_err = sess.run([self.cost1, self.err1], feed_dict={self.eye_left: batch_train_data[0], \
-					# 			self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
-					# 			self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
+					sess.run(self.optimizer1, feed_dict={self.eye_left: batch_train_data[0], \
+								self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
+								self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
+
+					train_batch_loss, train_batch_err = sess.run([self.cost1, self.err1], feed_dict={self.eye_left: batch_train_data[0], \
+								self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
+								self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
 
 
-					# for time in range(5):
-					batch_train_data_eye_left, i_left = next_batch_universal(train_data_eye_left, batch_size, i_left)
+					for time in range(5):
+						batch_train_data_eye_left, i_left = next_batch_universal(train_data_eye_left, batch_size, i_left)
 
-					sess.run(self.optimizer2, feed_dict={self.eye_left: batch_train_data_eye_left[0], \
-								self.y: batch_train_data_eye_left[1]})
+						sess.run(self.optimizer2, feed_dict={self.eye_left: batch_train_data_eye_left[0], \
+									self.y: batch_train_data_eye_left[1]})
 
-					train_batch_loss_eye_left, train_batch_err_eye_left = sess.run([self.cost2, self.err2], feed_dict={self.eye_left: batch_train_data_eye_left[0], \
-								self.y: batch_train_data_eye_left[1]})
+						train_batch_loss_eye_left, train_batch_err_eye_left = sess.run([self.cost2, self.err2], feed_dict={self.eye_left: batch_train_data_eye_left[0], \
+									self.y: batch_train_data_eye_left[1]})
 
-					batch_train_data_eye_right, i_right = next_batch_universal(train_data_eye_right, batch_size, i_right)
+						batch_train_data_eye_right, i_right = next_batch_universal(train_data_eye_right, batch_size, i_right)
 
-					sess.run(self.optimizer3, feed_dict={self.eye_right: batch_train_data_eye_right[0], \
-								self.y: batch_train_data_eye_right[1]})
+						sess.run(self.optimizer3, feed_dict={self.eye_right: batch_train_data_eye_right[0], \
+									self.y: batch_train_data_eye_right[1]})
 
-					train_batch_loss_eye_right, train_batch_err_eye_right = sess.run([self.cost3, self.err3], feed_dict={self.eye_right: batch_train_data_eye_right[0], \
-								self.y: batch_train_data_eye_right[1]})
+						train_batch_loss_eye_right, train_batch_err_eye_right = sess.run([self.cost3, self.err3], feed_dict={self.eye_right: batch_train_data_eye_right[0], \
+									self.y: batch_train_data_eye_right[1]})
 
 
-					# train_loss_history.append(train_batch_loss)
-					# train_err_history.append(train_batch_err)
+					train_loss_history.append(train_batch_loss)
+					train_err_history.append(train_batch_err)
 
 					train_loss_history_eye_left.append(train_batch_loss_eye_left)
 					train_err_history_eye_left.append(train_batch_err_eye_left)
@@ -551,18 +547,9 @@ class EyeTracker(object):
 
 					print ('Training on batch: %.1fs' % (timeit.default_timer() - start))
 
-					# if iter > 1000:
-					# 	if iter % 60 == 0:
-					# 		ifCheck = True
-					# elif iter > 500:
+
 					if iter % 30 == 0:
 						ifCheck = True
-					# elif iter > 200:
-					# 	if iter % 15 == 0:
-					# 		ifCheck = True
-					# else:
-					# 	if iter % 5 == 0:
-					# 		ifCheck = True
 
 					if ifCheck:
 
@@ -581,7 +568,7 @@ class EyeTracker(object):
 						val_n_batches = val_chunk_size / batch_size
 						# val_n_batches = val_data[0].shape[0] / batch_size + (val_data[0].shape[0] % batch_size != 0)
 
-						# val_data = prepare_data(val_data)
+						val_data = prepare_data(val_data)
 
 						print ('Loading and preparing val data: %.1fs' % (timeit.default_timer() - start))
 						start = timeit.default_timer()
@@ -600,9 +587,9 @@ class EyeTracker(object):
 							batch_val_data_eye_left, i_val_left = next_batch_universal(val_data_eye_left, batch_size, i_val_left)
 							batch_val_data_eye_right, i_val_right = next_batch_universal(val_data_eye_right, batch_size, i_val_right)
 
-							# val_batch_loss, val_batch_err = sess.run([self.cost1, self.err1], feed_dict={self.eye_left: batch_val_data[0], \
-							# 				self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
-							# 				self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
+							val_batch_loss, val_batch_err = sess.run([self.cost1, self.err1], feed_dict={self.eye_left: batch_val_data[0], \
+											self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
+											self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
 
 							val_batch_loss_eye_left, val_batch_err_eye_left = sess.run([self.cost2, self.err2], \
 											feed_dict={self.eye_left: batch_val_data_eye_left[0], \
@@ -612,14 +599,14 @@ class EyeTracker(object):
 											feed_dict={self.eye_right: batch_val_data_eye_right[0], \
 											self.y: batch_val_data_eye_right[1]})
 
-							# val_loss += val_batch_loss / val_n_batches
-							# val_err += val_batch_err / val_n_batches
+							val_loss += val_batch_loss / val_n_batches
+							val_err += val_batch_err / val_n_batches
 							val_loss_eye_left += val_batch_loss_eye_left / val_n_batches
 							val_err_eye_left += val_batch_err_eye_left / val_n_batches
 							val_loss_eye_right += val_batch_loss_eye_right / val_n_batches
 							val_err_eye_right += val_batch_err_eye_right / val_n_batches
 
-						# print ("val_loss: ", val_loss, "val_err: ", val_err)
+						print ("val_loss: ", val_loss, "val_err: ", val_err)
 						print ("val_loss_left: ", val_loss_eye_left, "val_err_left: ", val_err_eye_left)
 						print ("val_loss_right: ", val_loss_eye_right, "val_err_right: ", val_err_eye_right)
 
@@ -637,31 +624,30 @@ class EyeTracker(object):
 						print ("now: ", now)
 						print ("learning rate: ", lr)
 
-						# print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history), np.mean(train_err_history), np.mean(val_loss_history), np.mean(val_err_history)))
+						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history), np.mean(train_err_history), np.mean(val_loss_history), np.mean(val_err_history)))
 
 						print ('Epoch %s/%s Iter %s, train val_loss_eye_left: %.5f, train error_eye_left: %.5f, val loss_eye_left: %.5f, val error_eye_left: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history_eye_left), np.mean(train_err_history_eye_left), np.mean(val_loss_history_eye_left), np.mean(val_err_history_eye_left)))
 
 						print ('Epoch %s/%s Iter %s, train loss_eye_right: %.5f, train error_eye_right: %.5f, val loss_eye_right: %.5f, val error_eye_right: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history_eye_right), np.mean(train_err_history_eye_right), np.mean(val_loss_history_eye_right), np.mean(val_err_history_eye_right)))
 
-						# val_loss_history.append(val_loss)
-						# val_err_history.append(val_err)
+						val_loss_history.append(val_loss)
+						val_err_history.append(val_err)
 
 						val_loss_history_eye_left.append(val_loss_eye_left)
 						val_err_history_eye_left.append(val_err_eye_left)
 
 						val_loss_history_eye_right.append(val_loss_eye_right)
 						val_err_history_eye_right.append(val_err_eye_right)
-						#
-						# plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+
+						plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
 						plot_loss(np.array(train_loss_history_eye_left), np.array(train_err_history_eye_left), np.array(val_loss_history_eye_left), np.array(val_err_history_eye_left), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + "_eye_left.png")
 						plot_loss(np.array(train_loss_history_eye_right), np.array(train_err_history_eye_right), np.array(val_loss_history_eye_right), np.array(val_err_history_eye_right), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + "_eye_right.png")
 
-						#
-						# save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_history_%s"%(np.mean(train_err_history)) + "_val_error_history_%s"%(np.mean(val_err_history))
-						#
-						# save_path = saver.save(sess, save_path)
-						# print ("args.learning_rate: ", args.learning_rate)
-						# print ("Model saved in file: %s" % save_path)
+						save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_history_%s"%(np.mean(train_err_history)) + "_val_error_history_%s"%(np.mean(val_err_history))
+
+						save_path = saver.save(sess, save_path)
+						print ("args.learning_rate: ", args.learning_rate)
+						print ("Model saved in file: %s" % save_path)
 
 						ifCheck = False
 
