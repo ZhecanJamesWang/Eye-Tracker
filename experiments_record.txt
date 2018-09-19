@@ -9,18 +9,21 @@ right and left eye + EyeTracker          0 epoch  345 iters(batch_size 500)  201
 right and left eye + EyeTracker          5 epochs 660 iters(batch_size 500)  2018-09-09-00-20 lr 0.00001
 right and left eye + EyeTracker          0 epoch  300 iters(batch_size 500)  2018-09-18-11-01 lr 0.00001
 right and left eye + EyeTracker                            (batch_size 500)  2018-09-18-17-23 lr 0.00001
-
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 right and left eye + EyeTracker                                              2018-09-19-12-14 lr 0.001
-
+(change cost function and add range(5))
 --------------------------------------------------------------------------------------------------------
-  mtcnn eye detect + EyeTracker          0 epoch  840 iters(batch_size 500)  2018-09-12-13-29 lr 0.001
-  mtcnn eye detect + EyeTracker          1 epoch  600 iters(batch_size 500)  2018-09-13-13-22 lr 0.001
-  mtcnn eye detect + EyeTracker          2 epochs 180 iters(batch_size 500)  2018-09-15-21-45 lr 0.001
-  （fixed test set）
-  mtcnn eye detect + EyeTracker                                              2018-09-18-17-29 lr 0.001
+mtcnn eye detect + EyeTracker          0 epoch  840 iters(batch_size 500)  2018-09-12-13-29 lr 0.001
+mtcnn eye detect + EyeTracker          1 epoch  600 iters(batch_size 500)  2018-09-13-13-22 lr 0.001
+mtcnn eye detect + EyeTracker          2 epochs 180 iters(batch_size 500)  2018-09-15-21-45 lr 0.001
+(fixed test set）
+mtcnn eye detect + EyeTracker                                              2018-09-18-17-29 lr 0.001
 
 -----------------------------------------------------------------------------------
+columbia
+columbia + double eyes + EyeTracker
+-----------------------------------------------------------------------------------
 mtcnn eye detect + EyeTracker                            (batch_size 500)  2018-09-15-23-38 lr 0.001
-（continue after 2018-09-12-13-29）
+(continue after 2018-09-12-13-29）
 -----------------------------------------------------------------------------------
 right and left eye                                                           2018-09-19-10-50 lr 0.001

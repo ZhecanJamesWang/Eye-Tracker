@@ -4,8 +4,9 @@ import timeit
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import time
 
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 # Network Parameters
 img_size = 64
@@ -70,15 +71,13 @@ fc2_size = 2
 # Import data
 def load_data(file):
 	npzfile = np.load(file)
-
-	limit = 30
+	limit = len(npzfile["train_eye_left"])
 	train_eye_left = npzfile["train_eye_left"][:limit]
 	train_eye_right = npzfile["train_eye_right"][:limit]
 	train_face = npzfile["train_face"][:limit]
 	train_face_mask = npzfile["train_face_mask"][:limit]
 	train_y = npzfile["train_y"][:limit]
 
-	limit = 30
 	val_eye_left = npzfile["val_eye_left"][:limit]
 	val_eye_right = npzfile["val_eye_right"][:limit]
 	val_face = npzfile["val_face"][:limit]
@@ -237,7 +236,7 @@ class EyeTracker(object):
 		out = tf.add(tf.matmul(fc, weights['fc2']), biases['fc2'])
 		return out
 
-	def train(self, train_data, val_data, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model'):
+	def train(self, train_data, val_data, lr=1e-3, batch_size=500, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10, out_model='my_model'):
 		# ckpt = os.path.split(out_model)[0]
 		# if not os.path.exists(ckpt):
 		#     os.makedirs(ckpt)
@@ -274,7 +273,7 @@ class EyeTracker(object):
 		with tf.Session() as sess:
 			sess.run(init)
 			writer = tf.summary.FileWriter("logs", sess.graph)
-
+			time_window = []
 			# Keep training until reach max iterations
 			for n_epoch in range(1, max_epoch + 1):
 				n_incr_error += 1
@@ -282,6 +281,7 @@ class EyeTracker(object):
 				train_err = 0.
 				train_data = shuffle_data(train_data)
 				for batch_train_data in next_batch(train_data, batch_size):
+					start = time.time()
 					# Run optimization op (backprop)
 					sess.run(self.optimizer, feed_dict={self.eye_left: batch_train_data[0], \
 								self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
@@ -291,6 +291,9 @@ class EyeTracker(object):
 								self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
 					train_loss += train_batch_loss / n_batches
 					train_err += train_batch_err / n_batches
+					time_window.append(time.time() - start)
+					print ("time for one iter(s): ", np.mean(time_window))
+					print ("len(batch_train_data[0] ): ", len(batch_train_data[0]))
 
 				val_loss = 0.
 				val_err = 0
@@ -472,7 +475,7 @@ def main():
 	parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
-	parser.add_argument('-bs', '--batch_size', type=int, default=5, help='batch size')
+	parser.add_argument('-bs', '--batch_size', type=int, default=500, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
