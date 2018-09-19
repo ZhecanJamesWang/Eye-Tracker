@@ -631,7 +631,7 @@ class EyeTracker(object):
 						for batch_val_data in next_batch(val_data, batch_size):
 							# batch_val_data_eye_left, i_val_left = next_batch_universal(val_data_eye_left, batch_size, i_val_left)
 							# batch_val_data_eye_right, i_val_right = next_batch_universal(val_data_eye_right, batch_size, i_val_right)
-							batch_val_data_columbia, i_val_columbia = next_batch_universal(val_data_columbia, batch_size, i_val_right)
+							batch_val_data_columbia, i_val_columbia = next_batch_universal(val_data_columbia, batch_size, i_val_columbia)
 
 							batch_val_data_columbia = load_batch_from_data_columbia(mtcnn_h, batch_val_data_columbia, batch_size, img_ch, img_cols, img_rows)
 							batch_val_data_columbia = prepare_data(batch_val_data_columbia)
