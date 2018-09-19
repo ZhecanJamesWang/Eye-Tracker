@@ -19,8 +19,8 @@ from mtcnn.mtcnn import mtcnn_handle
 #                                                              lr 0.001
 
 import os
-# os.environ["CUDA_VISIBLE_DEVICES"]="0"
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
+# os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
@@ -340,9 +340,7 @@ class EyeTracker(object):
 			 # TODO://////
 			writer = tf.summary.FileWriter("logs", sess.graph)
 
-			saver.restore(sess, "./my_model/2018-09-12-13-29/model_1_840_train_error_2.936149_val_error_2.877652645111084")
-
-			# saver.restore(sess, "./my_model/2018-09-13-13-22/model_2_600_train_error_2.0953462_val_error_2.081583857536316")
+			saver.restore(sess, "./my_model/2018-09-15-21-45/model_3_180_train_error_1.8261857_val_error_2.2103159427642822")
 
 			random.shuffle(val_names)
 
@@ -352,11 +350,7 @@ class EyeTracker(object):
 				print ("n_epoch: ", n_epoch)
 				epoch_start = timeit.default_timer()
 				iter_start = None
-				# n_incr_error += 1
-				# train_loss = []
-				# train_err = []
-				# Val_loss = []
-				# Val_err = []
+
 
 				# train_names = shuffle_data(train_names)
 				random.shuffle(train_names)
@@ -432,8 +426,7 @@ class EyeTracker(object):
 											self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
 							val_loss += val_batch_loss / val_n_batches
 							val_err += val_batch_err / val_n_batches
-						# Val_loss.append(val_loss)
-						# Val_err.append(val_err)
+
 
 						print ("val_loss: ", val_loss, "val_err: ", val_err)
 						iterTest += 1
@@ -446,9 +439,10 @@ class EyeTracker(object):
 						else:
 							iter_start = timeit.default_timer()
 
-						print "now: ", now
-						print "learning rate: ", lr
-						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
+						print ("now: ", now)
+						print ("learning rate: ", lr)
+
+						print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history), np.mean(train_err_history), np.mean(val_loss_history), np.mean(val_err_history)))
 
 						val_loss_history.append(val_loss)
 						val_err_history.append(val_err)
@@ -474,19 +468,6 @@ class EyeTracker(object):
 
 				print ('epoch runtime: %.1fs' % (timeit.default_timer() - epoch_start))
 
-				# train_loss_history.append(np.mean(train_loss))
-				# train_err_history.append(np.mean(train_err))
-				# val_loss_history.append(np.mean(Val_loss))
-				# val_err_history.append(np.mean(Val_err))
-
-				# plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + ".png")
-
-				# if n_epoch % print_per_epoch == 0:
-				print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss), np.mean(train_err), np.mean(Val_loss), np.mean(Val_err)))
-
-				# if n_incr_error >= patience:
-				# 	print ('Early stopping occured. Optimization Finished!')
-				# 	return train_loss_history, train_err_history, val_loss_history, val_err_history
 
 			return train_loss_history, train_err_history, val_loss_history, val_err_history
 

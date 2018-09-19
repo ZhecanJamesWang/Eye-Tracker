@@ -5,7 +5,7 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-os.environ["CUDA_VISIBLE-DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 # Network Parameters
 img_size = 64
@@ -71,14 +71,14 @@ fc2_size = 2
 def load_data(file):
 	npzfile = np.load(file)
 
-	limit = 1000
+	limit = 30
 	train_eye_left = npzfile["train_eye_left"][:limit]
 	train_eye_right = npzfile["train_eye_right"][:limit]
 	train_face = npzfile["train_face"][:limit]
 	train_face_mask = npzfile["train_face_mask"][:limit]
 	train_y = npzfile["train_y"][:limit]
 
-	limit = 1000
+	limit = 30
 	val_eye_left = npzfile["val_eye_left"][:limit]
 	val_eye_right = npzfile["val_eye_right"][:limit]
 	val_face = npzfile["val_face"][:limit]
@@ -472,7 +472,7 @@ def main():
 	parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
 	parser.add_argument('-max_epoch', '--max_epoch', type=int, default=100, help='max number of iterations')
 	parser.add_argument('-lr', '--learning_rate', type=float, default=0.0025, help='learning rate')
-	parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
+	parser.add_argument('-bs', '--batch_size', type=int, default=5, help='batch size')
 	parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
 	parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
 	parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
