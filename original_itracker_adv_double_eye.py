@@ -517,7 +517,7 @@ class EyeTracker(object):
 								self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
 
 
-					for time in range(5):
+					for _ in range(5):
 						batch_train_data_eye_left, i_left = next_batch_universal(train_data_eye_left, batch_size, i_left)
 
 						sess.run(self.optimizer2, feed_dict={self.eye_left: batch_train_data_eye_left[0], \
