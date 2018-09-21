@@ -3,6 +3,13 @@ import tensorflow as tf
 import time
 import os
 
+with tf.variable_scope('', reuse=tf.AUTO_REUSE):
+    a = tf.get_variable('v', shape=[2, 2], initializer=tf.contrib.layers.xavier_initializer())
+    b = tf.get_variable('v', shape=[2, 2], initializer=tf.contrib.layers.xavier_initializer())
+print(tf.GraphKeys.GLOBAL_VARIABLES)
+print(tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES))
+exit()
+
 image_paths = [k for k in os.listdir('.') if k.endswith('.png')]
 image_paths_tf = tf.constant(image_paths)
 # images = np.arange(50, dtype=np.float32).reshape([50, 1])
@@ -17,7 +24,7 @@ image_paths_tf = tf.constant(image_paths)
 #     return img
 
 length = len(image_paths)
-queue = tf.train.range_input_producer(length, shuffle = False, num_epochs=None)
+queue = tf.train.range_input_producer(length, shuffle = False, num_epochs=1)
 idx = queue.dequeue()
 
 # --------------------------------------

@@ -121,35 +121,6 @@ fc2_size = 2
 #
 #     return [train_eye_left, train_eye_right, train_face, train_face_mask, train_y], [val_eye_left, val_eye_right, val_face, val_face_mask, val_y]
 #
-def initialize_data(args):
-    train_names = load_data_names(train_path)
-    val_names = load_data_names(val_path)
-    test_names = load_data_names(test_path)
-
-    train_num = len(train_names)
-    val_num = len(val_names)
-    test_num = len(test_names)
-
-    print ("train_num: ", train_num)
-    print ("val_num: ", val_num)
-    print ("test_num: ", test_num)
-
-    MaxIters = train_num/args.batch_size
-    n_batches = MaxIters
-
-    val_chunk_size = 1000
-    MaxTestIters = val_num/val_chunk_size
-    val_n_batches = val_chunk_size/args.batch_size
-
-    print ("MaxIters: ", MaxIters)
-    print ("MaxTestIters: ", MaxTestIters)
-    print ('Train on %s samples, validate on %s samples' % (train_num, val_num))
-
-    random.shuffle(train_names)
-    random.shuffle(val_names)
-
-    save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, args.batch_size, img_ch, img_cols, img_rows)
-    save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, val_chunk_size, img_ch, img_cols, img_rows)
 
 def normalize(data):
     shape = data.shape
@@ -180,10 +151,14 @@ def next_batch(data, batch_size):
         yield [each[i: i + batch_size] for each in data]
 
 class EyeTracker(object):
-
-    def __init__(self, args):
-        self.batch_size = args.batch_size
-
+    def __init__(self):
+        # tf Graph input
+        self.eye_left = tf.placeholder(tf.float32, [None, img_size, img_size, n_channel], name='eye_left')
+        self.eye_right = tf.placeholder(tf.float32, [None, img_size, img_size, n_channel], name='eye_right')
+        self.face = tf.placeholder(tf.float32, [None, img_size, img_size, n_channel], name='face')
+        self.face_mask = tf.placeholder(tf.float32, [None, mask_size * mask_size], name='face_mask')
+        self.y = tf.placeholder(tf.float32, [None, 2], name='pos')
+        # Store layers weight & bias
         self.weights = {
             'conv1_eye': tf.get_variable('conv1_eye_w', shape=(conv1_eye_size, conv1_eye_size, n_channel, conv1_eye_out), initializer=tf.contrib.layers.xavier_initializer()),
             'conv2_eye': tf.get_variable('conv2_eye_w', shape=(conv2_eye_size, conv2_eye_size, conv1_eye_out, conv2_eye_out), initializer=tf.contrib.layers.xavier_initializer()),
@@ -217,120 +192,8 @@ class EyeTracker(object):
             'fc2': tf.Variable(tf.constant(0.1, shape=[fc2_size]))
         }
 
-        self.train_pipe()
-        self.test_pipe()
-
-    def train_pipe(self):
-        # --------------------------------------------------
-        data_path = 'train.tfrecords'
-
-        # Create a feature
-        feature = {'train/face': tf.FixedLenFeature([], tf.string),
-                   'train/face_grid': tf.FixedLenFeature([], tf.string),
-                   'train/left_eye': tf.FixedLenFeature([], tf.string),
-                   'train/right_eye': tf.FixedLenFeature([], tf.string),
-                   'train/y_x': tf.FixedLenFeature([], tf.float32),
-                   'train/y_y': tf.FixedLenFeature([], tf.float32)}
-
-        # Create a list of filenames and pass it to a queue
-        filename_queue = tf.train.string_input_producer([data_path], num_epochs=None)
-        # Define a reader and read the next record
-        reader = tf.TFRecordReader()
-        _, serialized_example = reader.read(filename_queue)
-        # Decode the record read by the reader
-        features = tf.parse_single_example(serialized_example, features=feature)
-        # Convert the image data from string back to the numbers
-
-        face = tf.decode_raw(features['train/face'], tf.float32)
-        face_grid = tf.decode_raw(features['train/face_grid'], tf.float32)
-        left_eye = tf.decode_raw(features['train/left_eye'], tf.float32)
-        right_eye = tf.decode_raw(features['train/right_eye'], tf.float32)
-
-        # Cast label data into int32
-        y_x = tf.cast(features['train/y_x'], tf.float32)
-        y_y = tf.cast(features['train/y_y'], tf.float32)
-
-        # Reshape image data into the original shape
-        face = tf.reshape(face, [64, 64, 3])
-        face_grid = tf.reshape(face_grid, [25 * 25])
-        left_eye = tf.reshape(left_eye, [64, 64, 3])
-        right_eye = tf.reshape(right_eye, [64, 64, 3])
-        label = (y_x, y_y)
-
-        # Any preprocessing here ...
-
-        # Creates batches by randomly shuffling tensors
-        self.faces_train, self.face_grids_train, self.left_eyes_train, self.right_eyes_train, self.labels_train = tf.train.shuffle_batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity=30, num_threads=10,
-                                                min_after_dequeue=10)
-
-        # tf Graph input
-        eye_left = left_eyes
-        eye_right = right_eyes
-        face = faces
-        face_mask = face_grids
-        y = labels
-        # Store layers weight & bias
-
-        print ("face_mask.shape: ", face_mask.shape)
-
         # Construct model
-        self.pred_train = self.itracker_nets(self.left_eyes_train, self.right_eyes_train, self.faces_train, self.face_grids_train, self.weights, self.biases)
-        self.cost_train = tf.losses.mean_squared_error(y, self.pred_train)
-        self.err_train = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(self.pred_train, y), axis=1)))
-
-    def test_pipe(self):
-        # --------------------------------------------------
-        data_path = 'test.tfrecords'
-
-        # Create a feature
-        feature = {'test/face': tf.FixedLenFeature([], tf.string),
-                   'test/face_grid': tf.FixedLenFeature([], tf.string),
-                   'test/left_eye': tf.FixedLenFeature([], tf.string),
-                   'test/right_eye': tf.FixedLenFeature([], tf.string),
-                   'test/y_x': tf.FixedLenFeature([], tf.float32),
-                   'test/y_y': tf.FixedLenFeature([], tf.float32)}
-
-        # Create a list of filenames and pass it to a queue
-        filename_queue = tf.train.string_input_producer([data_path], num_epochs=1)
-        # Define a reader and read the next record
-        reader = tf.TFRecordReader()
-        _, serialized_example = reader.read(filename_queue)
-        # Decode the record read by the reader
-        features = tf.parse_single_example(serialized_example, features=feature)
-        # Convert the image data from string back to the numbers
-
-        face = tf.decode_raw(features['test/face'], tf.float32)
-        face_grid = tf.decode_raw(features['test/face_grid'], tf.float32)
-        left_eye = tf.decode_raw(features['test/left_eye'], tf.float32)
-        right_eye = tf.decode_raw(features['test/right_eye'], tf.float32)
-
-        # Cast label data into int32
-        y_x = tf.cast(features['test/y_x'], tf.float32)
-        y_y = tf.cast(features['test/y_y'], tf.float32)
-
-        # Reshape image data into the original shape
-        face = tf.reshape(face, [64, 64, 3])
-        face_grid = tf.reshape(face_grid, [25 * 25])
-        left_eye = tf.reshape(left_eye, [64, 64, 3])
-        right_eye = tf.reshape(right_eye, [64, 64, 3])
-        label = (y_x, y_y)
-
-        # Any preprocessing here ...
-
-        # Creates batches by randomly shuffling tensors
-        faces, face_grids, left_eyes, right_eyes, labels = tf.train.batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, num_threads=10, capacity=30)
-
-        # tf Graph input
-        eye_left = left_eyes
-        eye_right = right_eyes
-        face = faces
-        face_mask = face_grids
-        y = labels
-
-        # Construct model
-        self.pred_test = self.itracker_nets(eye_left, eye_right, face, face_mask, self.weights, self.biases)
-        self.cost_test = tf.losses.mean_squared_error(y, self.pred_test)
-        self.err_test = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(self.pred_test, y), axis=1)))
+        self.pred = self.itracker_nets(self.eye_left, self.eye_right, self.face, self.face_mask, self.weights, self.biases)
 
     # Create some wrappers for simplicity
     def conv2d(self, x, W, b, strides=1):
@@ -396,8 +259,6 @@ class EyeTracker(object):
         face = tf.reshape(face, [-1, int(np.prod(face.get_shape()[1:]))])
         face = tf.nn.relu(tf.add(tf.matmul(face, weights['fc_face']), biases['fc_face']))
 
-        print ("inside eye tracker")
-        print ("face_mask.shape: ", face_mask.shape)
         # face mask
         face_mask = tf.nn.relu(tf.add(tf.matmul(face_mask, weights['fc_face_mask']), biases['fc_face_mask']))
 
@@ -412,17 +273,21 @@ class EyeTracker(object):
 
     def train(self, ckpt, plot_ckpt, lr=1e-3, batch_size=128, max_epoch=1000, min_delta=1e-4, patience=10, print_per_epoch=10):
 
+        ifCheck = False
+
+        # limit = 1000
         train_names = load_data_names(train_path)
+        # [:1000]
+        # [:limit]
         val_names = load_data_names(val_path)
-        test_names = load_data_names(test_path)
+        # [:1000]
+        # [:limit]
 
         train_num = len(train_names)
         val_num = len(val_names)
-        test_num = len(test_names)
 
         print ("train_num: ", train_num)
-        print ("val_num: ", val_num)
-        print ("test_num: ", test_num)
+        print ("test_num: ", val_num)
 
         MaxIters = train_num/batch_size
         n_batches = MaxIters
@@ -430,34 +295,28 @@ class EyeTracker(object):
         val_chunk_size = 1000
         MaxTestIters = val_num/val_chunk_size
         val_n_batches = val_chunk_size/batch_size
+
         print ("MaxIters: ", MaxIters)
         print ("MaxTestIters: ", MaxTestIters)
+
         print ('Train on %s samples, validate on %s samples' % (train_num, val_num))
 
-        # random.shuffle(train_names)
-        # random.shuffle(val_names)
 
-        # save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, batch_size, img_ch, img_cols, img_rows)
-        # save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, val_chunk_size, img_ch, img_cols, img_rows)
-
-        # raise ("debug")
-
-
-        ifCheck = False
-
-        # --------------------------------------------------
         # Define loss and optimizer
-        # global_step = tf.Variable(0, name='global_step', trainable=False)
-        # , global_step=global_step
-        self.optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost_train)
-        # train_op = self.optimizer
+        self.cost = tf.losses.mean_squared_error(self.y, self.pred)
+        self.optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost)
 
+        # Evaluate model
+        self.err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(self.pred, self.y), axis=1)))
         train_loss_history = []
         train_err_history = []
         val_loss_history = []
         val_err_history = []
 
+        # n_incr_error = 0  # nb. of consecutive increase in error
         best_loss = np.Inf
+
+        # n_batches = train_data[0].shape[0] / batch_size + (train_data[0].shape[0] % batch_size != 0)
 
         # Create the collection
         tf.get_collection("validation_nodes")
@@ -467,27 +326,28 @@ class EyeTracker(object):
         tf.add_to_collection("validation_nodes", self.eye_right)
         tf.add_to_collection("validation_nodes", self.face)
         tf.add_to_collection("validation_nodes", self.face_mask)
-        tf.add_to_collection("validation_nodes", [self.pred_train, self.pred_test])
-        # TODO
-
+        tf.add_to_collection("validation_nodes", self.pred)
         saver = tf.train.Saver(max_to_keep = 0)
 
+        # Initializing the variables
+        init = tf.global_variables_initializer()
+         # TODO://////
+        # tf.reset_default_graph()
         # Launch the graph
 
-        # Initialize all global and local variables
-        init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
-
         with tf.Session() as sess:
-
-            sess.run(init_op)
-            # Create a coordinator and run all QueueRunner objects
-            coord = tf.train.Coordinator()
-            threads = tf.train.start_queue_runners(coord=coord)
-
+            sess.run(init)
              # TODO://////
             writer = tf.summary.FileWriter("logs", sess.graph)
 
             # saver.restore(sess, "./my_model/2018-09-15-21-45/model_3_180_train_error_1.8261857_val_error_2.2103159427642822")
+
+            random.shuffle(train_names)
+            random.shuffle(val_names)
+
+            # save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, batch_size, img_ch, img_cols,
+                                                    img_rows)
+            # raise ("debug")
 
             # Keep training until reach max iterations
             for n_epoch in range(1, max_epoch + 1):
@@ -507,15 +367,20 @@ class EyeTracker(object):
                     train_start=iter * batch_size
                     train_end = (iter+1) * batch_size
 
-                    # batch_train_data = load_batch_from_data(mtcnn_h, train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
+                    batch_train_data = load_batch_from_data(mtcnn_h, train_names, dataset_path, batch_size, img_ch, img_cols, img_rows, train_start = train_start, train_end = train_end)
 
-                    # batch_train_data = prepare_data(batch_train_data)
+                    batch_train_data = prepare_data(batch_train_data)
 
                     print ('Loading and preparing training data: %.1fs' % (timeit.default_timer() - start))
                     start = timeit.default_timer()
 
                     # Run optimization op (backprop)
-                    train_batch_loss, train_batch_err, _ = sess.run([self.cost_train, self.err_train, self.optimizer])
+                    sess.run(self.optimizer, feed_dict={self.eye_left: batch_train_data[0], \
+                                self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
+                                self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
+                    train_batch_loss, train_batch_err =sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_train_data[0], \
+                                self.eye_right: batch_train_data[1], self.face: batch_train_data[2], \
+                                self.face_mask: batch_train_data[3], self.y: batch_train_data[4]})
 
                     print ("train_batch_loss: ", train_batch_loss, "train_batch_err: ", train_batch_err)
 
@@ -537,7 +402,7 @@ class EyeTracker(object):
 
                         start = timeit.default_timer()
 
-                        if iterTest + 1 >= MaxTestIters:
+                        if     iterTest + 1 >= MaxTestIters:
                             iterTest = 0
 
                         # test_start = iterTest * val_chunk_size
@@ -545,16 +410,24 @@ class EyeTracker(object):
                         test_start = 0
                         test_end = val_chunk_size
 
+                        val_data = load_batch_from_data(mtcnn_h, val_names, dataset_path, val_chunk_size, img_ch, img_cols, img_rows, train_start = test_start, train_end = test_end)
+
+                        val_n_batches = val_data[0].shape[0] / batch_size + (val_data[0].shape[0] % batch_size != 0)
+
+                        val_data = prepare_data(val_data)
+
                         print ('Loading and preparing val data: %.1fs' % (timeit.default_timer() - start))
                         start = timeit.default_timer()
 
                         val_loss = 0.
                         val_err = 0
+                        for batch_val_data in next_batch(val_data, batch_size):
+                            val_batch_loss, val_batch_err = sess.run([self.cost, self.err], feed_dict={self.eye_left: batch_val_data[0], \
+                                            self.eye_right: batch_val_data[1], self.face: batch_val_data[2], \
+                                            self.face_mask: batch_val_data[3], self.y: batch_val_data[4]})
+                            val_loss += val_batch_loss / val_n_batches
+                            val_err += val_batch_err / val_n_batches
 
-                        val_batch_loss, val_batch_err = sess.run([self.cost_test, self.err_test])
-
-                        val_loss += val_batch_loss / val_n_batches
-                        val_err += val_batch_err / val_n_batches
 
                         print ("val_loss: ", val_loss, "val_err: ", val_err)
                         iterTest += 1
@@ -577,26 +450,25 @@ class EyeTracker(object):
 
                         plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
 
+                        # if val_loss - min_delta < best_loss:
+                        # if val_err - min_delta < best_loss:
+                            # best_loss = val_err
+
                         save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_history_%s"%(np.mean(train_err_history)) + "_val_error_history_%s"%(np.mean(val_err_history))
 
                         # , global_step=n_epoch
                         save_path = saver.save(sess, save_path)
 
                         print ("Model saved in file: %s" % save_path)
+                        # n_incr_error = 0
 
                         ifCheck = False
 
                         print ('Saving models and plotting loss: %.1fs' % (timeit.default_timer() - start))
 
+
                 print ('epoch runtime: %.1fs' % (timeit.default_timer() - epoch_start))
 
-
-            # Stop the threads
-            coord.request_stop()
-
-            # Wait for threads to stop
-            coord.join(threads)
-            sess.close()
 
             return train_loss_history, train_err_history, val_loss_history, val_err_history
 
@@ -748,9 +620,6 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
     # plt.show()
 
 def train(args):
-
-    initialize_data(args)
-
     start = timeit.default_timer()
     plot_ckpt = "plots/" + date
     if not os.path.exists(plot_ckpt):
@@ -763,7 +632,8 @@ def train(args):
     if not os.path.exists(ckpt):
         os.makedirs(ckpt)
 
-    et = EyeTracker(args)
+
+    et = EyeTracker()
     train_loss_history, train_err_history, val_loss_history, val_err_history = et.train(ckpt, plot_ckpt, lr=args.learning_rate, batch_size=args.batch_size, max_epoch=args.max_epoch, \
                                             min_delta=1e-4, \
                                             patience=args.patience, \
@@ -793,7 +663,6 @@ def test(args):
         error = validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=args.batch_size)
         print ('Overall validation error: %f' % error)
 
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--train', action='store_true', help='train flag')
@@ -809,7 +678,7 @@ def main():
     # default = "my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684"
     # default ='my_model/2018-09-06-23-11/model_1_1500_train_error_2.3585315_val_error_2.000537872314453'
     # default='my_model/2018-09-07-11-15/model_4_420_train_error_2.2030365_val_error_1.8307928442955017'
-    parser.add_argument('-bs', '--batch_size', type=int, default=10, help='batch size')
+    parser.add_argument('-bs', '--batch_size', type=int, default=500, help='batch size')
     parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
     parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
     parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')

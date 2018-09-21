@@ -20,7 +20,7 @@ mtcnn eye detect + EyeTracker          2 epochs 180 iters(batch_size 500)  2018-
 mtcnn eye detect + EyeTracker                                              2018-09-18-17-29 lr 0.001
 
 -----------------------------------------------------------------------------------
-columbia
+columbia                                                                  2018-09-18-21-18 lr 0.001
 columbia + double eyes + EyeTracker
 -----------------------------------------------------------------------------------
 mtcnn eye detect + EyeTracker                            (batch_size 500)  2018-09-15-23-38 lr 0.001
