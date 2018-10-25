@@ -51,7 +51,8 @@ def normalize(data):
 def image_normalization(img):
 
     img = img.astype('float32') / 255.
-    img = img - np.mean(img)
+    # img = img - np.mean(img, axis=0)
+    img = img - 127.
 
     return img
 

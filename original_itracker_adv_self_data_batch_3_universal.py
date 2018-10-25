@@ -3,10 +3,12 @@ import timeit
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
-from load_data import load_data_names, load_batch_from_data, save_data_to_tfrecord
+from load_data import load_data_names, load_batch_from_data, save_data_to_tfrecord, save_data_to_tfrecord_without_face
 import datetime
 import random
 from mtcnn.mtcnn import mtcnn_handle
+import time
+
 # loading models with iterations of: -----
 # 140 iters                                                    lr 0.0025
 # 3700 iters                                2018-08-20-02-25   lr 0.0025
@@ -122,34 +124,32 @@ fc2_size = 2
 #     return [train_eye_left, train_eye_right, train_face, train_face_mask, train_y], [val_eye_left, val_eye_right, val_face, val_face_mask, val_y]
 #
 def initialize_data(args):
-    train_names = load_data_names(train_path)
-    val_names = load_data_names(val_path)
-    test_names = load_data_names(test_path)
+    train_names = load_data_names(train_path)[:1000]
+    # val_names = load_data_names(val_path)
+    # test_names = load_data_names(test_path)
 
+    # train_names.extend(test_names)
     train_num = len(train_names)
-    val_num = len(val_names)
-    test_num = len(test_names)
+    # val_num = len(val_names)
+    # test_num = len(test_names)
 
     print ("train_num: ", train_num)
-    print ("val_num: ", val_num)
-    print ("test_num: ", test_num)
+    # print ("val_num: ", val_num)
+    # print ("test_num: ", test_num)
 
-    MaxIters = train_num/args.batch_size
-    n_batches = MaxIters
+    # print ('Train on %s samples, validate on %s samples' % (train_num, val_num))
 
-    val_chunk_size = 1000
-    MaxTestIters = val_num/val_chunk_size
-    val_n_batches = val_chunk_size/args.batch_size
+    # random.shuffle(train_names)
+    # random.shuffle(val_names)
 
-    print ("MaxIters: ", MaxIters)
-    print ("MaxTestIters: ", MaxTestIters)
-    print ('Train on %s samples, validate on %s samples' % (train_num, val_num))
+    # train_names = train_names[:2000]
+    # val_names = val_names[:2000]
 
-    random.shuffle(train_names)
-    random.shuffle(val_names)
 
-    save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, args.batch_size, img_ch, img_cols, img_rows)
-    save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, val_chunk_size, img_ch, img_cols, img_rows)
+    # save_data_to_tfrecord_without_face(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, "train_test2.tfrecords")
+
+    save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, "train_test2.tfrecords")
+    # save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, img_ch, img_cols, img_rows, "test.tfrecords")
 
 def normalize(data):
     shape = data.shape
@@ -183,6 +183,7 @@ class EyeTracker(object):
 
     def __init__(self, args):
         self.batch_size = args.batch_size
+        self.counter = 0
 
         self.weights = {
             'conv1_eye': tf.get_variable('conv1_eye_w', shape=(conv1_eye_size, conv1_eye_size, n_channel, conv1_eye_out), initializer=tf.contrib.layers.xavier_initializer()),
@@ -222,7 +223,12 @@ class EyeTracker(object):
 
     def train_pipe(self):
         # --------------------------------------------------
-        data_path = 'train.tfrecords'
+        # data_path = 'tf_records/train.tfrecords'
+        # data_path = 'train.tfrecords'
+        # data_path = 'train_test.tfrecords'
+        # data_path = 'train_test20000.tfrecords'
+        # data_path = 'train_test5000.tfrecords'
+        data_path = 'train_test1000.tfrecords'
 
         # Create a feature
         feature = {'train/face': tf.FixedLenFeature([], tf.string),
@@ -258,28 +264,24 @@ class EyeTracker(object):
         label = (y_x, y_y)
 
         # Any preprocessing here ...
+        print "self.counter: ", self.counter
 
         # Creates batches by randomly shuffling tensors
-        self.faces_train, self.face_grids_train, self.left_eyes_train, self.right_eyes_train, self.labels_train = tf.train.shuffle_batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity=30, num_threads=10,
-                                                min_after_dequeue=10)
+        # self.faces_train, self.face_grids_train, self.left_eyes_train, self.right_eyes_train, self.labels_train = tf.train.shuffle_batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity=30, num_threads=10, min_after_dequeue=10)
 
-        # tf Graph input
-        eye_left = left_eyes
-        eye_right = right_eyes
-        face = faces
-        face_mask = face_grids
-        y = labels
-        # Store layers weight & bias
+        # self.faces_train, self.face_grids_train, self.left_eyes_train, self.right_eyes_train, self.labels_train = tf.train.shuffle_batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity = 500 + 3 * self.batch_size, min_after_dequeue = 500)
+        # self.counter += 1
 
-        print ("face_mask.shape: ", face_mask.shape)
+        self.faces_train, self.face_grids_train, self.left_eyes_train, self.right_eyes_train, self.labels_train = tf.train.batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity = 500 + 3 * self.batch_size)
 
         # Construct model
         self.pred_train = self.itracker_nets(self.left_eyes_train, self.right_eyes_train, self.faces_train, self.face_grids_train, self.weights, self.biases)
-        self.cost_train = tf.losses.mean_squared_error(y, self.pred_train)
-        self.err_train = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(self.pred_train, y), axis=1)))
+        self.cost_train = tf.losses.mean_squared_error(self.labels_train, self.pred_train)
+        self.err_train = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(self.pred_train, self.labels_train), axis=1)))
 
     def test_pipe(self):
         # --------------------------------------------------
+        # data_path = 'tf_records/test.tfrecords'
         data_path = 'test.tfrecords'
 
         # Create a feature
@@ -291,7 +293,9 @@ class EyeTracker(object):
                    'test/y_y': tf.FixedLenFeature([], tf.float32)}
 
         # Create a list of filenames and pass it to a queue
-        filename_queue = tf.train.string_input_producer([data_path], num_epochs=1)
+        # filename_queue = tf.train.string_input_producer([data_path], num_epochs=1)
+        filename_queue = tf.train.string_input_producer([data_path], num_epochs=None)
+
         # Define a reader and read the next record
         reader = tf.TFRecordReader()
         _, serialized_example = reader.read(filename_queue)
@@ -318,19 +322,18 @@ class EyeTracker(object):
         # Any preprocessing here ...
 
         # Creates batches by randomly shuffling tensors
-        faces, face_grids, left_eyes, right_eyes, labels = tf.train.batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, num_threads=10, capacity=30)
 
-        # tf Graph input
-        eye_left = left_eyes
-        eye_right = right_eyes
-        face = faces
-        face_mask = face_grids
-        y = labels
+        # print "self.batch_size: ", self.batch_size
+        # self.faces_test, self.face_grids_test, self.left_eyes_test, self.right_eyes_test, self.labels_test = tf.train.batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, num_threads=10, capacity=30)
+        self.faces_test, self.face_grids_test, self.left_eyes_test, self.right_eyes_test, self.labels_test = tf.train.batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity = 500 + 3 * self.batch_size)
+        # self.faces_test, self.face_grids_test, self.left_eyes_test, self.right_eyes_test, self.labels_test = tf.train.batch([face, face_grid, left_eye, right_eye, label], batch_size=500, num_threads=10, capacity=30)
+
+        # self.faces_test, self.face_grids_test, self.left_eyes_test, self.right_eyes_test, self.labels_test = tf.train.shuffle_batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity=30, num_threads=10, min_after_dequeue=10)
 
         # Construct model
-        self.pred_test = self.itracker_nets(eye_left, eye_right, face, face_mask, self.weights, self.biases)
-        self.cost_test = tf.losses.mean_squared_error(y, self.pred_test)
-        self.err_test = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(self.pred_test, y), axis=1)))
+        self.pred_test = self.itracker_nets(self.left_eyes_test, self.right_eyes_test, self.faces_test, self.face_grids_test, self.weights, self.biases)
+        self.cost_test = tf.losses.mean_squared_error(self.labels_test, self.pred_test)
+        self.err_test = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(self.pred_test, self.labels_test), axis=1)))
 
     # Create some wrappers for simplicity
     def conv2d(self, x, W, b, strides=1):
@@ -463,10 +466,16 @@ class EyeTracker(object):
         tf.get_collection("validation_nodes")
 
         # Add stuff to the collection.
-        tf.add_to_collection("validation_nodes", self.eye_left)
-        tf.add_to_collection("validation_nodes", self.eye_right)
-        tf.add_to_collection("validation_nodes", self.face)
-        tf.add_to_collection("validation_nodes", self.face_mask)
+        tf.add_to_collection("validation_nodes", self.left_eyes_train)
+        tf.add_to_collection("validation_nodes", self.right_eyes_train)
+        tf.add_to_collection("validation_nodes", self.faces_train)
+        tf.add_to_collection("validation_nodes", self.face_grids_train)
+
+        tf.add_to_collection("validation_nodes", self.left_eyes_test)
+        tf.add_to_collection("validation_nodes", self.right_eyes_test)
+        tf.add_to_collection("validation_nodes", self.faces_test)
+        tf.add_to_collection("validation_nodes", self.face_grids_test)
+
         tf.add_to_collection("validation_nodes", [self.pred_train, self.pred_test])
         # TODO
 
@@ -502,8 +511,8 @@ class EyeTracker(object):
 
                     start = timeit.default_timer()
 
-                    # print ("--------------------------------")
-                    # print ("iter: ", iter)
+                    print ("--------------------------------")
+                    print ("iter: ", iter)
                     train_start=iter * batch_size
                     train_end = (iter+1) * batch_size
 
@@ -515,6 +524,7 @@ class EyeTracker(object):
                     start = timeit.default_timer()
 
                     # Run optimization op (backprop)
+
                     train_batch_loss, train_batch_err, _ = sess.run([self.cost_train, self.err_train, self.optimizer])
 
                     print ("train_batch_loss: ", train_batch_loss, "train_batch_err: ", train_batch_err)
@@ -575,12 +585,19 @@ class EyeTracker(object):
                         val_loss_history.append(val_loss)
                         val_err_history.append(val_err)
 
-                        plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+                        print "train_loss_history[:4]: ", train_loss_history[:4]
+                        print "train_err_history[:4]: ", train_err_history[:4]
+                        print "val_loss_history[:4]: ", val_loss_history[:4]
+                        print "val_err_history[:4]: ", val_err_history[:4]
+
+                        # raise 'debug'
+
+                        # plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
 
                         save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_history_%s"%(np.mean(train_err_history)) + "_val_error_history_%s"%(np.mean(val_err_history))
 
                         # , global_step=n_epoch
-                        save_path = saver.save(sess, save_path)
+                        # save_path = saver.save(sess, save_path)
 
                         print ("Model saved in file: %s" % save_path)
 
@@ -750,6 +767,8 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 def train(args):
 
     initialize_data(args)
+    # #
+    raise "debug"
 
     start = timeit.default_timer()
     plot_ckpt = "plots/" + date
@@ -771,7 +790,7 @@ def train(args):
 
     print ('Total training runtime: %.1fs' % (timeit.default_timer() - start))
 
-    plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file= plot_ckpt + "/total_loss.png")
+    # plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_err_history), start=0, per=1, save_file= plot_ckpt + "/total_loss.png")
 
     if args.save_loss:
         with open(plot_ckpt + "/" + args.save_loss, 'w') as outfile:
@@ -800,20 +819,11 @@ def main():
     # parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
     parser.add_argument('-max_epoch', '--max_epoch', type=int, default=60, help='max number of iterations')
     parser.add_argument('-lr', '--learning_rate', type=float, default=0.001, help='learning rate')
-    # 0.0025
-    # 0.0001
-    # 0.00001
-    # 0.000001
-
-    # default = "pretrained_models/itracker_adv/model-23",
-    # default = "my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684"
-    # default ='my_model/2018-09-06-23-11/model_1_1500_train_error_2.3585315_val_error_2.000537872314453'
-    # default='my_model/2018-09-07-11-15/model_4_420_train_error_2.2030365_val_error_1.8307928442955017'
-    parser.add_argument('-bs', '--batch_size', type=int, default=10, help='batch size')
+    parser.add_argument('-bs', '--batch_size', type=int, default=1, help='batch size')
     parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
     parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
     parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
-    parser.add_argument('-lm', '--load_model', type=str, default='my_model/2018-09-08-23-32/model_1_25_train_error_2.202213_val_error_2.193189859390259')
+    parser.add_argument('-lm', '--load_model', type=str)
     parser.add_argument('-pl', '--plot_loss', type=str, default='loss.png', help='plot loss')
     parser.add_argument('-sl', '--save_loss', type=str, default='loss.npz', help='save loss')
     args = parser.parse_args()
@@ -823,7 +833,7 @@ def main():
     # else:
     #     if not args.load_model:
     #         raise Exception('load_model arg needed in test phase')
-    test(args)
+    # test(args)
 
 if __name__ == '__main__':
     main()
