@@ -21,8 +21,8 @@ import time
 #                                                              lr 0.001
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
-# os.environ["CUDA_VISIBLE_DEVICES"]="1"
+# os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
@@ -124,32 +124,32 @@ fc2_size = 2
 #     return [train_eye_left, train_eye_right, train_face, train_face_mask, train_y], [val_eye_left, val_eye_right, val_face, val_face_mask, val_y]
 #
 def initialize_data(args):
-    train_names = load_data_names(train_path)[:1000]
-    # val_names = load_data_names(val_path)
-    # test_names = load_data_names(test_path)
+    train_names = load_data_names(train_path)
+    val_names = load_data_names(val_path)
+    test_names = load_data_names(test_path)
 
-    # train_names.extend(test_names)
+    train_names.extend(test_names)
     train_num = len(train_names)
-    # val_num = len(val_names)
-    # test_num = len(test_names)
+    val_num = len(val_names)
+    test_num = len(test_names)
 
     print ("train_num: ", train_num)
-    # print ("val_num: ", val_num)
-    # print ("test_num: ", test_num)
+    print ("val_num: ", val_num)
+    print ("test_num: ", test_num)
 
-    # print ('Train on %s samples, validate on %s samples' % (train_num, val_num))
+    print ('Train on %s samples, validate on %s samples' % (train_num, val_num))
 
-    # random.shuffle(train_names)
-    # random.shuffle(val_names)
+    random.shuffle(train_names)
+    random.shuffle(val_names)
 
-    # train_names = train_names[:2000]
-    # val_names = val_names[:2000]
+    train_names = train_names
+    val_names = val_names[:5000]
 
 
     # save_data_to_tfrecord_without_face(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, "train_test2.tfrecords")
 
-    save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, "train_test2.tfrecords")
-    # save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, img_ch, img_cols, img_rows, "test.tfrecords")
+    save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, True, "train.tfrecords")
+    save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, img_ch, img_cols, img_rows,  False, "test.tfrecords")
 
 def normalize(data):
     shape = data.shape
@@ -223,12 +223,13 @@ class EyeTracker(object):
 
     def train_pipe(self):
         # --------------------------------------------------
-        # data_path = 'tf_records/train.tfrecords'
+        data_path = 'tf_records/train.tfrecords'
         # data_path = 'train.tfrecords'
         # data_path = 'train_test.tfrecords'
         # data_path = 'train_test20000.tfrecords'
         # data_path = 'train_test5000.tfrecords'
-        data_path = 'train_test1000.tfrecords'
+        # data_path = 'train_test1000.tfrecords'
+        # data_path = 'train.tfrecords'
 
         # Create a feature
         feature = {'train/face': tf.FixedLenFeature([], tf.string),
@@ -269,10 +270,10 @@ class EyeTracker(object):
         # Creates batches by randomly shuffling tensors
         # self.faces_train, self.face_grids_train, self.left_eyes_train, self.right_eyes_train, self.labels_train = tf.train.shuffle_batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity=30, num_threads=10, min_after_dequeue=10)
 
-        # self.faces_train, self.face_grids_train, self.left_eyes_train, self.right_eyes_train, self.labels_train = tf.train.shuffle_batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity = 500 + 3 * self.batch_size, min_after_dequeue = 500)
+        self.faces_train, self.face_grids_train, self.left_eyes_train, self.right_eyes_train, self.labels_train = tf.train.shuffle_batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity = 500 + 3 * self.batch_size, min_after_dequeue = 500)
         # self.counter += 1
 
-        self.faces_train, self.face_grids_train, self.left_eyes_train, self.right_eyes_train, self.labels_train = tf.train.batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity = 500 + 3 * self.batch_size)
+        # self.faces_train, self.face_grids_train, self.left_eyes_train, self.right_eyes_train, self.labels_train = tf.train.batch([face, face_grid, left_eye, right_eye, label], batch_size=self.batch_size, capacity = 500 + 3 * self.batch_size)
 
         # Construct model
         self.pred_train = self.itracker_nets(self.left_eyes_train, self.right_eyes_train, self.faces_train, self.face_grids_train, self.weights, self.biases)
@@ -281,8 +282,8 @@ class EyeTracker(object):
 
     def test_pipe(self):
         # --------------------------------------------------
-        # data_path = 'tf_records/test.tfrecords'
-        data_path = 'test.tfrecords'
+        data_path = 'tf_records/test_old.tfrecords'
+        # data_path = 'test.tfrecords'
 
         # Create a feature
         feature = {'test/face': tf.FixedLenFeature([], tf.string),
@@ -455,11 +456,6 @@ class EyeTracker(object):
         self.optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(self.cost_train)
         # train_op = self.optimizer
 
-        train_loss_history = []
-        train_err_history = []
-        val_loss_history = []
-        val_err_history = []
-
         best_loss = np.Inf
 
         # Create the collection
@@ -506,6 +502,11 @@ class EyeTracker(object):
                 iter_start = None
 
                 iterTest=0
+
+                train_loss_history = []
+                train_err_history = []
+                val_loss_history = []
+                val_err_history = []
 
                 for iter in range (int(MaxIters)):
 
@@ -592,12 +593,12 @@ class EyeTracker(object):
 
                         # raise 'debug'
 
-                        # plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+                        plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cumul_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
 
                         save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_history_%s"%(np.mean(train_err_history)) + "_val_error_history_%s"%(np.mean(val_err_history))
 
                         # , global_step=n_epoch
-                        # save_path = saver.save(sess, save_path)
+                        save_path = saver.save(sess, save_path)
 
                         print ("Model saved in file: %s" % save_path)
 
@@ -719,7 +720,7 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
     fig, ax1 = plt.subplots()
     label='train loss'
     lns1 = ax1.plot(idx, train_loss[idx], 'b-', alpha=1.0, label='train loss')
-    ax1.set_xlabel('epochs')
+    ax1.set_xlabel('iters')
     # Make the y-axis label, ticks and tick labels match the line color.
     ax1.set_ylabel('loss', color='b')
     ax1.tick_params('y', colors='b')
@@ -731,9 +732,10 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
     fig, ax2 = plt.subplots()
     label='train_err'
     lns2 = ax2.plot(idx, train_err[idx], 'r-', alpha=1.0, label='train_err')
+    ax2.set_xlabel('iters')
     ax2.set_ylabel('error', color='r')
     ax2.tick_params('y', colors='r')
-    ax1.legend(lns2, label, loc=0)
+    ax2.legend(lns2, label, loc=0)
 
     fig.tight_layout()
     plt.savefig(save_file + "_train_err" + ".png")
@@ -743,7 +745,7 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
     fig, ax1 = plt.subplots()
     label='test loss'
     lns3 = ax1.plot(idx_30, test_loss[idx], 'c-', alpha=1.0, label='test loss')
-    ax1.set_xlabel('epochs')
+    ax1.set_xlabel('iters')
     # Make the y-axis label, ticks and tick labels match the line color.
     ax1.set_ylabel('loss', color='b')
     ax1.tick_params('y', colors='b')
@@ -756,9 +758,10 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
     fig, ax2 = plt.subplots()
     label='test_err'
     lns4 = ax2.plot(idx_30, test_err[idx], 'g-', alpha=1.0, label='test_err')
+    ax2.set_xlabel('iters')
     ax2.set_ylabel('error', color='r')
     ax2.tick_params('y', colors='r')
-    ax1.legend(lns4, label, loc=0)
+    ax2.legend(lns4, label, loc=0)
 
     fig.tight_layout()
     plt.savefig(save_file + "_test_err" + ".png")
@@ -767,7 +770,7 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 def train(args):
 
     initialize_data(args)
-    # #
+    # # # #
     raise "debug"
 
     start = timeit.default_timer()
@@ -819,7 +822,7 @@ def main():
     # parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
     parser.add_argument('-max_epoch', '--max_epoch', type=int, default=60, help='max number of iterations')
     parser.add_argument('-lr', '--learning_rate', type=float, default=0.001, help='learning rate')
-    parser.add_argument('-bs', '--batch_size', type=int, default=1, help='batch size')
+    parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
     parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
     parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
     parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
