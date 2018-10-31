@@ -1,0 +1,4 @@
+increase data preprocessing and gpu utility
+
+1. use built-in dataloader instead of feed_dict
+2. store intermediate data types
