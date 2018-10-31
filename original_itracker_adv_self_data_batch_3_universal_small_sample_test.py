@@ -8,6 +8,7 @@ import datetime
 import random
 from mtcnn.mtcnn import mtcnn_handle
 import time
+from utility.data_utility import write_to_file
 
 # loading models with iterations of: -----
 # 140 iters                                                    lr 0.0025
@@ -21,12 +22,16 @@ import time
 #                                                              lr 0.001
 
 import os
-# os.environ["CUDA_VISIBLE_DEVICES"]="0"
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
+# os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
 date = now.strftime("%Y-%m-%d-%H-%M")
+
+record_file_name = date + '_record.txt'
+records = ""
+records_count = 0
 
 # dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
 # train_path = dataset_path + '\ '.strip() + "train"
@@ -102,29 +107,19 @@ face_face_mask_size = 128
 fc_size = 128
 fc2_size = 2
 
+def save_to_record(content):
+        global records
+        global records_count
 
-# # Import data
-# def load_data(file):
-#     npzfile = np.load(file)
-#
-#     limit = 1000
-#     train_eye_left = npzfile["train_eye_left"][:limit]
-#     train_eye_right = npzfile["train_eye_right"][:limit]
-#     train_face = npzfile["train_face"][:limit]
-#     train_face_mask = npzfile["train_face_mask"][:limit]
-#     train_y = npzfile["train_y"][:limit]
-#
-#     limit = 1000
-#     val_eye_left = npzfile["val_eye_left"][:limit]
-#     val_eye_right = npzfile["val_eye_right"][:limit]
-#     val_face = npzfile["val_face"][:limit]
-#     val_face_mask = npzfile["val_face_mask"][:limit]
-#     val_y = npzfile["val_y"][:limit]
-#
-#     return [train_eye_left, train_eye_right, train_face, train_face_mask, train_y], [val_eye_left, val_eye_right, val_face, val_face_mask, val_y]
-#
+        print (content)
+        records += content
+        records_count += 1
+        if records_count % 20 == 0:
+            write_to_file(record_file_name, records)
+            records = ""
+
 def initialize_data(args):
-    train_names = load_data_names(train_path)
+    train_names = load_data_names(train_path)[10000:13000]
     # val_names = load_data_names(val_path)
     # test_names = load_data_names(test_path)
 
@@ -143,14 +138,14 @@ def initialize_data(args):
     # random.shuffle(val_names)
 
     val_names = train_names[:1000]
-    train_names = train_names[:1000]
+    train_names = train_names[1000:]
     # val_names = val_names[:5000]
 
 
     # save_data_to_tfrecord_without_face(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, "train_test2.tfrecords")
 
-    save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, True, "train_test2.tfrecords")
-    save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, img_ch, img_cols, img_rows,  False, "test_test2.tfrecords")
+    save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, True, "train_test8.tfrecords")
+    save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, img_ch, img_cols, img_rows,  False, "test_test8.tfrecords")
 
 def normalize(data):
     shape = data.shape
@@ -230,7 +225,7 @@ class EyeTracker(object):
         # data_path = 'train_test20000.tfrecords'
         # data_path = 'train_test5000.tfrecords'
         # data_path = 'train_test1000.tfrecords'
-        data_path = 'train_test2.tfrecords'
+        data_path = 'train_test8.tfrecords'
 
         # Create a feature
         feature = {'train/face': tf.FixedLenFeature([], tf.string),
@@ -284,7 +279,7 @@ class EyeTracker(object):
     def test_pipe(self):
         # --------------------------------------------------
         # data_path = 'tf_records/test_30000.tfrecords'
-        data_path = 'test_test2.tfrecords'
+        data_path = 'test_test8.tfrecords'
 
         # Create a feature
         feature = {'test/face': tf.FixedLenFeature([], tf.string),
@@ -425,9 +420,9 @@ class EyeTracker(object):
         val_num = len(val_names)
         test_num = len(test_names)
 
-        print ("train_num: ", train_num)
-        print ("val_num: ", val_num)
-        print ("test_num: ", test_num)
+        save_to_record("train_num: " + str(train_num) + "\n")
+        save_to_record("val_num: " + str(val_num) + "\n")
+        save_to_record("test_num: " + str(test_num) + "\n")
 
         MaxIters = train_num/batch_size
         n_batches = MaxIters
@@ -435,9 +430,9 @@ class EyeTracker(object):
         val_chunk_size = 1000
         MaxTestIters = val_num/val_chunk_size
         val_n_batches = val_chunk_size/batch_size
-        print ("MaxIters: ", MaxIters)
-        print ("MaxTestIters: ", MaxTestIters)
-        print ('Train on %s samples, validate on %s samples' % (train_num, val_num))
+        save_to_record("MaxIters: " + str(MaxIters) + "\n")
+        save_to_record("MaxTestIters: " + str(MaxTestIters) + "\n")
+        save_to_record('Train on %s samples, validate on %s samples\n' % (train_num, val_num))
 
         ifCheck = False
 
@@ -481,7 +476,7 @@ class EyeTracker(object):
              # TODO://////
             writer = tf.summary.FileWriter("logs", sess.graph)
 
-            # saver.restore(sess, "./my_model/2018-10-27-16-38/model_1_2490_train_error_history_3.9420671_val_error_history_1.8667920998164587")
+            # saver.restore(sess, "./my_model/2018-10-29-13-58/model_1_2490_train_error_history_3.9420671_val_error_history_1.8667920998164587")
 
             train_loss_history = []
             train_err_history = []
@@ -490,8 +485,8 @@ class EyeTracker(object):
 
             # Keep training until reach max iterations
             for n_epoch in range(1, max_epoch + 1):
-                print ("vvvvvvvvvvvvvvvvvvv")
-                print ("n_epoch: ", n_epoch)
+                save_to_record("vvvvvvvvvvvvvvvvvvv\n")
+                save_to_record("n_epoch: " + str(n_epoch) + "\n")
                 epoch_start = timeit.default_timer()
                 iter_start = None
 
@@ -508,8 +503,8 @@ class EyeTracker(object):
 
                     start = timeit.default_timer()
 
-                    print ("--------------------------------")
-                    print ("iter: ", iter)
+                    save_to_record("--------------------------------\n")
+                    save_to_record("iter: " + str(iter) + "\n")
                     train_start=iter * batch_size
                     train_end = (iter+1) * batch_size
 
@@ -518,10 +513,10 @@ class EyeTracker(object):
 
                     # Run optimization op (backprop)
 
-                    print ("learning_rate: ", lr)
+                    save_to_record("learning_rate: " + str(lr) + "\n")
                     train_batch_loss, train_batch_err, _ = sess.run([self.cost_train, self.err_train, self.optimizer], feed_dict = {learning_rate: lr})
 
-                    print ("train_batch_loss: ", train_batch_loss, "train_batch_err: ", train_batch_err)
+                    save_to_record("train_batch_loss: " + str(train_batch_loss) + " train_batch_err: " +  str(train_batch_err))
 
                     if train_batch_err > 15:
                         train_loss_history.append(0)
@@ -563,7 +558,7 @@ class EyeTracker(object):
                         val_loss = val_batch_loss
                         val_err = val_batch_err
 
-                        print ("val_loss: ", val_loss, "val_err: ", val_err)
+                        save_to_record("val_loss: " + str(val_loss) + " val_err: " + str(val_err))
                         iterTest += 1
 
                         print ('Testing on chunk: %.1fs' % (timeit.default_timer() - start))
@@ -574,10 +569,10 @@ class EyeTracker(object):
                         else:
                             iter_start = timeit.default_timer()
 
-                        print ("now: ", now)
-                        print ("learning rate: ", lr)
+                        save_to_record("now: " + str(now) + "\n")
+                        save_to_record("learning rate: " + str(lr) + "\n")
 
-                        print ('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f'%(n_epoch, max_epoch, iter, np.mean(train_loss_history), np.mean(train_err_history), np.mean(val_loss_history), np.mean(val_err_history)))
+                        save_to_record('Epoch %s/%s Iter %s, train loss: %.5f, train error: %.5f, val loss: %.5f, val error: %.5f\n'%(n_epoch, max_epoch, iter, np.mean(train_loss_history), np.mean(train_err_history), np.mean(val_loss_history), np.mean(val_err_history)))
 
                         if val_err > 15:
                             val_loss_history.append(0)
@@ -781,8 +776,7 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
     # plt.show()
 
 def train(args):
-
-    initialize_data(args)
+    # initialize_data(args)
     # # # #
     # raise "debug"
 
@@ -834,7 +828,7 @@ def main():
     parser.add_argument('--train', action='store_true', help='train flag')
     # parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
     parser.add_argument('-max_epoch', '--max_epoch', type=int, default=60, help='max number of iterations')
-    parser.add_argument('-lr', '--learning_rate', type=float, default=0.01, help='learning rate')
+    parser.add_argument('-lr', '--learning_rate', type=float, default=0.001, help='learning rate')
     parser.add_argument('-bs', '--batch_size', type=int, default=500, help='batch size')
     parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
     parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')

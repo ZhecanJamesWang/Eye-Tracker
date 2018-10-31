@@ -376,9 +376,10 @@ def load_batch_from_data_columbia(mtcnn_h, data, batch_size, img_ch, img_cols, i
 
 	return [right_eye_batch, left_eye_batch, face_batch, face_grid_batch, y_batch]
 
-def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img_rows, train_start = None, train_end = None):
+def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img_rows, total_num, train_start = None, train_end = None):
 
 	save_img = False
+	cum_err_num = 0
 
 	# data structures for batches
 	left_eye_batch = np.zeros(shape=(batch_size, img_cols, img_rows, img_ch), dtype=np.float32)
@@ -392,18 +393,37 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 	# counter for check the size of loading batch
 	b = 0
 
-	print ("int(train_start),int(train_end: ", int(train_start),int(train_end))
 
-	for i in range(int(train_start),int(train_end)):
+	print ("int(train_start),int(train_end: ", int(train_start),int(train_end))
+	# for i in range(int(train_start),int(train_end)):
+	i = 0
+	orig_batch_size = batch_size
+
+	while (i < batch_size and b < orig_batch_size):
+		# print ("i: ", i)
+		# print ("orig_batch_size: ", orig_batch_size)
+		# print ("batch_size: ", batch_size)
+		# print("b: ", b)
+
+		index = train_start + i
+
+		if index > total_num - 1:
+			break
+
 		# if i % 50 == 0:
 		#     print i
 		try:
 			# lottery
 			# i = np.random.randint(0, len(names))
 			# get the lucky one
-			img_name = names[i]
+			img_name = names[index]
 		except Exception as e:
+			# print ("could not find img_name")
+			cum_err_num += 1
+			i += 1
+			batch_size += cum_err_num
 			print (e)
+			continue
 
 		# directory
 		dir = img_name[:5]
@@ -421,120 +441,126 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 		# if image is null, skip
 		if img is None:
 			print("Error opening image: {}".format(join(path, dir, "frames", frame)))
+			cum_err_num += 1
+			i += 1
+			batch_size += cum_err_num
 			continue
 
 
+		# try:
+		# 	# result = mtcnn_h.run_mtcnn(resize_img,  if_face = False, if_facemask = False, if_draw = False)
+		# 	result = mtcnn_h.run_mtcnn(img,  if_face = True, if_facemask = True, if_draw = False)
+		#
+		# 	# [_, _, _, left_eye, right_eye, _, left_eye_pts, right_eye_pts] = result
+		# 	[original, draw, face, left_eye, right_eye, face_grid, left_eye_pts, right_eye_pts] = result
+		#
+		# 	check_dimension(face)
+		# 	check_dimension(face_grid, if_last_channel = False)
+		# 	face, face_grid = resize(face, 64), resize(face_grid, 25)
+		# 	check_dimension(left_eye, if_even=True)
+		# 	check_dimension(right_eye, if_even=True)
+		# 	left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
+		#
+		# 	mtcnn_flag = "True"
+
+		# except Exception as e:
+		# print "check eyes check_dimension"
+		# print e
+		mtcnn_flag = "False"
+
+
+		# open json files
+		face_file = open(join(path, dir, "appleFace.json"))
+		left_file = open(join(path, dir, "appleLeftEye.json"))
+		right_file = open(join(path, dir, "appleRightEye.json"))
+		grid_file = open(join(path, dir, "faceGrid.json"))
+
+		# load json content
+		face_json = json.load(face_file)
+		left_json = json.load(left_file)
+		right_json = json.load(right_file)
+		grid_json = json.load(grid_file)
+
+		# # if coordinates are negatives, skip (a lot of negative coords!)
+		# if int(face_json["X"][idx]) < 0 or int(face_json["Y"][idx]) < 0 or \
+		#     int(left_json["X"][idx]) < 0 or int(left_json["Y"][idx]) < 0 or \
+		#     int(right_json["X"][idx]) < 0 or int(right_json["Y"][idx]) < 0:
+		#     print("Error with coordinates: {}".format(join(path, dir, "frames", frame)))
+		#     continue
+
+		# get face
+		tl_x_face = int(face_json["X"][idx])
+		tl_y_face = int(face_json["Y"][idx])
+		w = int(face_json["W"][idx])
+		h = int(face_json["H"][idx])
+		br_x = tl_x_face + w
+		br_y = tl_y_face + h
+		face = img[tl_y_face:br_y, tl_x_face:br_x]
+
 		try:
-			# result = mtcnn_h.run_mtcnn(resize_img,  if_face = False, if_facemask = False, if_draw = False)
-			result = mtcnn_h.run_mtcnn(img,  if_face = True, if_facemask = True, if_draw = False)
-
-			# [_, _, _, left_eye, right_eye, _, left_eye_pts, right_eye_pts] = result
-			[original, draw, face, left_eye, right_eye, face_grid, left_eye_pts, right_eye_pts] = result
-
-			check_dimension(left_eye, if_even = True)
-			check_dimension(right_eye, if_even = True)
-			left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
-
-			mtcnn_flag = "True"
-
+			# print type(face)
+			# print face.shape
+			check_dimension(face)
+			face = resize(face, 64)
 		except Exception as e:
-			# print "check eyes check_dimension"
+			# print "check face check_dimension"
+			# print ("face.shape: ", face.shape)
+			cum_err_num += 1
+			i += 1
+			batch_size += cum_err_num
 			# print e
-			mtcnn_flag = "False"
+			continue
 
+		# get left eye
+		tl_x = tl_x_face + int(left_json["X"][idx])
+		tl_y = tl_y_face + int(left_json["Y"][idx])
+		w = int(left_json["W"][idx])
+		h = int(left_json["H"][idx])
+		br_x = tl_x + w
+		br_y = tl_y + h
+		left_eye = img[tl_y:br_y, tl_x:br_x]
 
-			# open json files
-			face_file = open(join(path, dir, "appleFace.json"))
-			left_file = open(join(path, dir, "appleLeftEye.json"))
-			right_file = open(join(path, dir, "appleRightEye.json"))
-			grid_file = open(join(path, dir, "faceGrid.json"))
+		# get right eye
+		tl_x = tl_x_face + int(right_json["X"][idx])
+		tl_y = tl_y_face + int(right_json["Y"][idx])
+		w = int(right_json["W"][idx])
+		h = int(right_json["H"][idx])
+		br_x = tl_x + w
+		br_y = tl_y + h
+		right_eye = img[tl_y:br_y, tl_x:br_x]
 
-			# load json content
-			face_json = json.load(face_file)
-			left_json = json.load(left_file)
-			right_json = json.load(right_file)
-			grid_json = json.load(grid_file)
+		try:
+			check_dimension(left_eye)
+			left_eye = resize(left_eye, 64)
+			check_dimension(right_eye)
+			right_eye = resize(right_eye, 64)
+		except Exception as e:
+			# print ("check lef and right eye")
+			# print ("left_eye.shape: ", left_eye.shape)
+			# print ("right_eye.shape: ", right_eye.shape)
+			cum_err_num += 1
+			i += 1
+			batch_size += cum_err_num
+			# print e
+			continue
 
-			# # if coordinates are negatives, skip (a lot of negative coords!)
-			# if int(face_json["X"][idx]) < 0 or int(face_json["Y"][idx]) < 0 or \
-			#     int(left_json["X"][idx]) < 0 or int(left_json["Y"][idx]) < 0 or \
-			#     int(right_json["X"][idx]) < 0 or int(right_json["Y"][idx]) < 0:
-			#     print("Error with coordinates: {}".format(join(path, dir, "frames", frame)))
-			#     continue
+		# get face grid (in ch, cols, rows convention)
+		face_grid = np.zeros(shape=(25, 25), dtype=np.float32)
+		tl_x = int(grid_json["X"][idx])
+		tl_y = int(grid_json["Y"][idx])
+		w = int(grid_json["W"][idx])
+		h = int(grid_json["H"][idx])
+		br_x = tl_x + w
+		br_y = tl_y + h
 
-			# get face
-			tl_x_face = int(face_json["X"][idx])
-			tl_y_face = int(face_json["Y"][idx])
-			w = int(face_json["W"][idx])
-			h = int(face_json["H"][idx])
-			br_x = tl_x_face + w
-			br_y = tl_y_face + h
-			face = img[tl_y_face:br_y, tl_x_face:br_x]
-			try:
-				# print type(face)
-				# print face.shape
-				check_dimension(face)
-				face = resize(face, 64)
-			except Exception as e:
-				print "check face check_dimension"
-				# print e
-				continue
-
-			# get left eye
-			tl_x = tl_x_face + int(left_json["X"][idx])
-			tl_y = tl_y_face + int(left_json["Y"][idx])
-			w = int(left_json["W"][idx])
-			h = int(left_json["H"][idx])
-			br_x = tl_x + w
-			br_y = tl_y + h
-			left_eye = img[tl_y:br_y, tl_x:br_x]
-
-			# get right eye
-			tl_x = tl_x_face + int(right_json["X"][idx])
-			tl_y = tl_y_face + int(right_json["Y"][idx])
-			w = int(right_json["W"][idx])
-			h = int(right_json["H"][idx])
-			br_x = tl_x + w
-			br_y = tl_y + h
-			right_eye = img[tl_y:br_y, tl_x:br_x]
-			try:
-				check_dimension(left_eye)
-				left_eye = resize(left_eye, 64)
-				check_dimension(right_eye)
-				right_eye = resize(right_eye, 64)
-			except Exception as e:
-				# print e
-				continue
-
-			# get face grid (in ch, cols, rows convention)
-			face_grid = np.zeros(shape=(25, 25), dtype=np.float32)
-			tl_x = int(grid_json["X"][idx])
-			tl_y = int(grid_json["Y"][idx])
-			w = int(grid_json["W"][idx])
-			h = int(grid_json["H"][idx])
-			br_x = tl_x + w
-			br_y = tl_y + h
-
-			# print ("face_grid: ", face_grid.shape)
-			face_grid[tl_y:br_y, tl_x:br_x] = 1
+		# print ("face_grid: ", face_grid.shape)
+		face_grid[tl_y:br_y, tl_x:br_x] = 1
 
 		dot_file = open(join(path, dir, "dotInfo.json"))
 		dot_json = json.load(dot_file)
 		# get labels
 		y_x = dot_json["XCam"][idx]
 		y_y = dot_json["YCam"][idx]
-
-		if save_img:
-			cv2.imwrite("images/" + dir + "_" + frame + "_face_" + mtcnn_flag + ".png", face)
-			cv2.imwrite("images/" + dir + "_" + frame + "_right_" + mtcnn_flag + ".png", right_eye)
-			cv2.imwrite("images/" + dir + "_" + frame + "_left_" + mtcnn_flag + ".png", left_eye)
-			cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid_" + mtcnn_flag + ".png", face_grid)
-			cv2.imwrite("images/" + dir + "_" + frame + "_image_" + mtcnn_flag + ".png", img)
-
-			print ("face.shape: ", face.shape)
-			print ("left_eye.shape: ", left_eye.shape)
-			print ("right_eye.shape: ", right_eye.shape)
-
 
 		try:
 			# print type(right_eye)
@@ -550,18 +576,31 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 			right_eye = cv2.resize(right_eye, (img_cols, img_rows))
 		except Exception as e:
 			print ("checking resizing")
+			cum_err_num += 1
+			i += 1
+			batch_size += cum_err_num
 			print (e)
+			continue
 
-
-		# # save images (for debug)
+		# save images (for debug)
 		# if save_img:
-		#     increase = 3
-		#     y_x, y_y = - int(y_x * increase), int(y_y * increase)
-		#     print (px, py)
-		#     h, w, _ = face.shape
-		#     cx, cy = w/2.0, h/2.0
-		#     cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
-		#     cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
+
+		increase = 3
+		y_x, y_y = - int(y_x * increase), int(y_y * increase)
+		h, w, _ = face.shape
+		cx, cy = w/2.0, h/2.0
+		cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
+		cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
+
+		cv2.imwrite("images/" + dir + "_" + frame + "_face_" + mtcnn_flag + ".png", face)
+		cv2.imwrite("images/" + dir + "_" + frame + "_right_" + mtcnn_flag + ".png", right_eye)
+		cv2.imwrite("images/" + dir + "_" + frame + "_left_" + mtcnn_flag + ".png", left_eye)
+		cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid_" + mtcnn_flag + ".png", face_grid)
+		cv2.imwrite("images/" + dir + "_" + frame + "_image_" + mtcnn_flag + ".png", img)
+
+		print ("face.shape: ", face.shape)
+		print ("left_eye.shape: ", left_eye.shape)
+		print ("right_eye.shape: ", right_eye.shape)
 
 		# normalization
 		# face = image_normalization(face)
@@ -590,8 +629,9 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 
 		# increase the size of the current batch
 		b += 1
+		i += 1
 
-	return [right_eye_batch, left_eye_batch, face_batch, face_grid_batch, y_batch]
+	return [right_eye_batch, left_eye_batch, face_batch, face_grid_batch, y_batch], cum_err_num
 
 
 def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_train, file_name = None):
@@ -641,6 +681,7 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			print("Error opening image: {}".format(join(path, dir, "frames", frame)))
 			continue
 
+
 		try:
 			# result = mtcnn_h.run_mtcnn(resize_img,  if_face = False, if_facemask = False, if_draw = False)
 			result = mtcnn_h.run_mtcnn(img, if_face=True, if_facemask=True, if_draw=False)
@@ -648,8 +689,10 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			# [_, _, _, left_eye, right_eye, _, left_eye_pts, right_eye_pts] = result
 			[original, draw, face, left_eye, right_eye, face_grid, left_eye_pts, right_eye_pts] = result
 
+
 			check_dimension(face)
-			face = resize(face, 64)
+			check_dimension(face_grid, if_last_channel = False)
+			face, face_grid = resize(face, 64), resize(face_grid, 25)
 			check_dimension(left_eye, if_even=True)
 			check_dimension(right_eye, if_even=True)
 			left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
@@ -759,10 +802,10 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid_" + mtcnn_flag + ".png", face_grid)
 			cv2.imwrite("images/" + dir + "_" + frame + "_image_" + mtcnn_flag + ".png", img)
 
-			print("face.shape: ", face.shape)
-			print("left_eye.shape: ", left_eye.shape)
-			print("right_eye.shape: ", right_eye.shape)
-			print("face_grid.shape: ", face_grid.shape)
+			# print("face.shape: ", face.shape)
+			# print("left_eye.shape: ", left_eye.shape)
+			# print("right_eye.shape: ", right_eye.shape)
+			# print("face_grid.shape: ", face_grid.shape)
 
 		# normalization
 		face = image_normalization(face)

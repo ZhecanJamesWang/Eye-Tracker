@@ -35,3 +35,32 @@ mtcnn eye detect + EyeTracker                            (batch_size 500)  2018-
 (continue after 2018-09-12-13-29）
 -----------------------------------------------------------------------------------
 right and left eye                                                           2018-09-19-10-50 lr 0.001
+
+-----------------------------------------------------------------------------------
+TFrecords
+EyeTracker                            3 epochs_5490 iters                  2018-10-26-10-44  lr 0.001
+EyeTracker                            2 epochs 5400 iters                  2018-10-26-15-32  lr 0.0001
+
+
+EyeTracker                                     1052 iters                  2018-10-27-11-04  lr 0.01
+EyeTracker                                     1052 iters                  2018-10-27-11-04  lr 0.01
+
+EyeTracker                                     2490 iters                  2018-10-27-16-38  lr 0.001
+
+
+2018-10-29-11-52      train and test = train[:1000]    train_test2.tfrecords    looks good
+2018-10-29-13-07      train = train[:1000]  test = train[1000:2000]  train_test3.tfrecords    no shuffle
+2018-10-29-13-58      train = train[:1000]  test = train[1000:2000]  train_test4.tfrecords    shuffle
+2018-10-29-17-50
+load_data_names(train_path)[3000:10000]
+val_names = train_names[:1000]
+train_names = train_names[1000:2000]
+train_test5.tfrecords
+
+2018-10-29-23-38      train and test = train[:1000]    train_test6.tfrecords    no shuffle   looks wrong
+2018-10-30-10-30      train and test = train[:1000]    train_test7.tfrecords    shuffle   looks good
+
+
+
+------------------------------------------------------------------------------------------------------
+Overall validation error: 3.635297    2018-08-30-23-11   lr 0.000001

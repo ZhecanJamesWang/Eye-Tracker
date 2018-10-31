@@ -2,8 +2,21 @@ import numpy as np
 import random
 import cv2
 
-def check_dimension(img, if_even = False):
-	height, width, channels = img.shape
+def write_to_file(file_name, content):
+
+	fh = open(file_name, "a")
+	fh.write(content)
+	fh.close
+
+	content = ""
+	return content
+	
+def check_dimension(img, if_even = False, if_last_channel = True):
+	if if_last_channel:
+		height, width, channels = img.shape
+	else:
+		height, width = img.shape
+
 	if height == 0:
 		raise "left_eye height != width or height == 0 or width == 0"
 	if width == 0:

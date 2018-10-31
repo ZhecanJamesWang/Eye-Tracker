@@ -574,32 +574,37 @@ def validate_model(sess, val_names, val_ops, plot_ckpt, batch_size=200):
 
     iter_start = None
 
+    cum_err_num = 0
+
     print("len(val_ops): ", len(val_ops))
-    # eye_left, eye_right, face, face_mask, pred = val_ops
-    eye_left, eye_right, face, face_mask, pred_xy, pred_ang_left, pred_ang_right = val_ops
+    eye_left, eye_right, face, face_mask, pred = val_ops
+    # eye_left, eye_right, face, face_mask, pred_xy, pred_ang_left, pred_ang_right = val_ops
 
     y = tf.placeholder(tf.float32, [None, 2], name='pos')
-    # err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred, y), axis=1)))
-    err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred_xy, y), axis=1)))
+    err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred, y), axis=1)))
+    # err = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.squared_difference(pred_xy, y), axis=1)))
 
     for iterTest in range(MaxTestIters):
-        test_start = iterTest * batch_size
-        test_end = (iterTest + 1) * batch_size
+        test_start = iterTest * batch_size + cum_err_num
+        test_end = test_start + batch_size
 
-        batch_val_data = load_batch_from_data(mtcnn_h, val_names, dataset_path, 1000, img_ch, img_cols, img_rows,
-                                              train_start=test_start, train_end=test_end)
 
+        batch_val_data, cum_err = load_batch_from_data(mtcnn_h, val_names, dataset_path, batch_size, img_ch, img_cols, img_rows, val_num, train_start=test_start, train_end=test_end)
         batch_val_data = prepare_data(batch_val_data)
+
+        cum_err_num += cum_err
 
         val_batch_err = sess.run(err, feed_dict={eye_left: batch_val_data[0], \
                                                  eye_right: batch_val_data[1], face: batch_val_data[2], \
                                                  face_mask: batch_val_data[3], y: batch_val_data[4]})
+        print ("val_batch_err: ", val_batch_err)
 
         val_err.append(val_batch_err)
 
         if iterTest % 10 == 0:
             print('IterTest %s, val error: %.5f' % \
                   (iterTest, np.mean(val_err)))
+            print ("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
             # plot_loss(np.array(train_loss), np.array(train_err), np.array(Val_err), start=0, per=1, save_file=plot_ckpt + "/testing_loss_" + str(n_epoch) + "_" + str(iterTest) + ".png")
 
@@ -722,25 +727,25 @@ def main():
     # 0.000001
 
     # default = "pretrained_models/itracker_adv/model-23",
-    # default = "my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684"
     # default ='my_model/2018-09-06-23-11/model_1_1500_train_error_2.3585315_val_error_2.000537872314453'
     # default='my_model/2018-09-07-11-15/model_4_420_train_error_2.2030365_val_error_1.8307928442955017'
-    parser.add_argument('-bs', '--batch_size', type=int, default=20, help='batch size')
+    # , default='my_model/2018-09-08-23-32/model_1_25_train_error_2.202213_val_error_2.193189859390259'
+    # default = "my_model/pretrained/model_4_1800_train_error_3.5047762_val_error_5.765135765075684"
+    parser.add_argument('-bs', '--batch_size', type=int, default=200, help='batch size')
     parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
     parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
     parser.add_argument('-sm', '--save_model', type=str, default='my_model', help='path to the output model')
-    parser.add_argument('-lm', '--load_model', type=str)
-    # , default='my_model/2018-09-08-23-32/model_1_25_train_error_2.202213_val_error_2.193189859390259'
+    parser.add_argument('-lm', '--load_model', type=str, default = "pretrained_models/2018-08-30-23-11/model_3_630_train_error_3.510948_val_error_4.466572284698486")
     parser.add_argument('-pl', '--plot_loss', type=str, default='loss.png', help='plot loss')
     parser.add_argument('-sl', '--save_loss', type=str, default='loss.npz', help='save loss')
     args = parser.parse_args()
 
     # if args.train:
-    train(args)
+    # train(args)
     # else:
     #     if not args.load_model:
     #         raise Exception('load_model arg needed in test phase')
-    # test(args)
+    test(args)
 
 
 if __name__ == '__main__':
