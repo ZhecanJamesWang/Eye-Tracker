@@ -3,11 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="e9b8af76-2ca3-4575-959f-59952877b71f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/load_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old_scripts/original_itracker_adv_self_data_batch_3_universal_copy.py" beforeDir="false" afterPath="$PROJECT_DIR$/old_scripts/original_itracker_adv_self_data_batch_3_universal_copy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_record.txt" beforeDir="false" afterPath="$PROJECT_DIR$/experiments_record.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" beforeDir="false" afterPath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_feed_dict.py" beforeDir="false" afterPath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_feed_dict.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/data_utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility/data_utility.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_small_sample_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_small_sample_test.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,54 +17,54 @@
     <session id="893339949">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="4" />
+          <entry key="project.closed" value="5" />
+          <entry key="project.open.time.2" value="1" />
           <entry key="project.open.time.3" value="1" />
           <entry key="project.open.time.4" value="2" />
-          <entry key="project.open.time.5" value="1" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.open.time.5" value="2" />
+          <entry key="project.opened" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="12" />
+          <entry key="py" value="14" />
+          <entry key="txt" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="12" />
+          <entry key="PLAIN_TEXT" value="1" />
+          <entry key="Python" value="14" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="921" />
+          <entry key="py" value="937" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="921" />
+          <entry key="Python" value="937" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_feed_dict.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6060">
-              <caret line="404" column="22" selection-start-line="404" selection-start-column="22" selection-end-line="404" selection-end-column="22" />
+            <state relative-caret-position="307">
+              <caret line="481" column="27" selection-start-line="481" selection-start-column="27" selection-end-line="481" selection-end-column="27" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/old_scripts/original_itracker_adv_self_data_batch_3_universal_copy.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/experiments_record.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="29" column="20" selection-start-line="29" selection-start-column="20" selection-end-line="29" selection-end-column="20" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="-5">
+              <caret line="31" column="17" lean-forward="true" selection-start-line="31" selection-start-column="17" selection-end-line="31" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -75,9 +73,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>columbia</find>
-      <find>sys</find>
-      <find>load_batch</find>
       <find>save_data_to_tfrecord</find>
       <find>random.shuffle</find>
       <find>_int64_feature</find>
@@ -88,7 +83,6 @@
       <find>face_mask</find>
       <find>flat</find>
       <find>normalize</find>
-      <find>def train</find>
       <find>tf.float</find>
       <find>coord</find>
       <find>train</find>
@@ -104,6 +98,11 @@
       <find>load_batch_from</find>
       <find>image_normalization</find>
       <find>prepare_data</find>
+      <find>train_pipe</find>
+      <find>test_pipe</find>
+      <find>def train</find>
+      <find>def initialize_data</find>
+      <find>restore</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -112,10 +111,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" />
         <option value="$PROJECT_DIR$/load_data.py" />
         <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_feed_dict.py" />
         <option value="$PROJECT_DIR$/old_scripts/original_itracker_adv_self_data_batch_3_universal_copy.py" />
+        <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_small_sample_test.py" />
+        <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" />
       </list>
     </option>
   </component>
@@ -140,11 +140,6 @@
             <path>
               <item name="Eye-Tracker-master" type="b2602c69:ProjectViewProjectNode" />
               <item name="Eye-Tracker-master" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Eye-Tracker-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Eye-Tracker-master" type="462c0819:PsiDirectoryNode" />
-              <item name="old_scripts" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -187,11 +182,9 @@
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.35264665" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26466382" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -203,11 +196,13 @@
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" />
-      <window_info anchor="right" id="Database" />
-      <window_info anchor="right" id="SciView" />
+      <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="right" id="SciView" order="4" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -231,13 +226,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="481" column="24" selection-start-line="481" selection-start-column="24" selection-end-line="481" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/original_itracker_adv_single_eye.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -255,20 +243,41 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/old_scripts/original_itracker_adv_self_data_batch_3_universal_copy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" lean-forward="true" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_feed_dict.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6060">
+        <state relative-caret-position="739">
           <caret line="404" column="22" selection-start-line="404" selection-start-column="22" selection-end-line="404" selection-end-column="22" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/old_scripts/original_itracker_adv_self_data_batch_3_universal_copy.py">
+    <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_small_sample_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="20" selection-start-line="29" selection-start-column="20" selection-end-line="29" selection-end-column="20" />
+        <state relative-caret-position="234">
+          <caret line="354" selection-start-line="354" selection-end-line="354" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/experiments_record.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5">
+          <caret line="31" column="17" lean-forward="true" selection-start-line="31" selection-start-column="17" selection-end-line="31" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="481" column="27" selection-start-line="481" selection-start-column="27" selection-end-line="481" selection-end-column="27" />
         </state>
       </provider>
     </entry>

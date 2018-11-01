@@ -29,7 +29,7 @@ mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
 date = now.strftime("%Y-%m-%d-%H-%M")
 
-record_file_name = date + '_record.txt'
+record_file_name = "records/" + date + '_record.txt'
 records = ""
 records_count = 0
 
