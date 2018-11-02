@@ -648,7 +648,7 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			# if i % 100 == 0:
 			print('Train data {}/{}'.format(i, length))
 			print ("index: ", index)
-			
+
 			try:
 				img_name = names[i]
 			except Exception as e:
@@ -833,7 +833,6 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			print("right_eye.shape: ", right_eye.shape)
 			print("face_grid.shape: ", face_grid.shape)
 
-			raise "debug"
 
 			# # normalization
 			# face = image_normalization(face)
@@ -869,6 +868,7 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			#
 			# # Serialize to string and write on the file
 			# writer.write(example.SerializeToString())
+		raise "debug"
 
 	writer.close()
 	sys.stdout.flush()
