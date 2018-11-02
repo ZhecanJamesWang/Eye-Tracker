@@ -645,9 +645,10 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 	for i in range(length):
 		for index in range(len(generateFunc)):
 
-			if i % 100 == 0:
-				print('Train data {}/{}'.format(i, length))
-
+			# if i % 100 == 0:
+			print('Train data {}/{}'.format(i, length))
+			print ("index: ", index)
+			
 			try:
 				img_name = names[i]
 			except Exception as e:
