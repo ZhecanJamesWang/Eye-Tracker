@@ -2,19 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9b8af76-2ca3-4575-959f-59952877b71f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/load_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/load_data_0921.py" beforeDir="false" afterPath="$PROJECT_DIR$/old_scripts/load_data_0921.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log_0927.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/mtcnn/mtcnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/mtcnn/mtcnn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notes.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/original_itracker_adv_double_eye.py" beforeDir="false" afterPath="$PROJECT_DIR$/multi_task/original_itracker_adv_double_eye.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/original_itracker_adv_multi_task.py" beforeDir="false" afterPath="$PROJECT_DIR$/multi_task/original_itracker_adv_multi_task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_0921.py" beforeDir="false" afterPath="$PROJECT_DIR$/old_scripts/original_itracker_adv_self_data_batch_3_universal_0921.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_feed_dict.py" beforeDir="false" afterPath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_feed_dict.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/original_itracker_adv_single_eye.py" beforeDir="false" afterPath="$PROJECT_DIR$/multi_task/original_itracker_adv_single_eye.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_tf_queue.py" beforeDir="false" afterPath="$PROJECT_DIR$/old_scripts/test_tf_queue.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/data_utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility/data_utility.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" beforeDir="false" afterPath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +26,7 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="png" value="7" />
-          <entry key="py" value="25" />
+          <entry key="py" value="26" />
           <entry key="txt" value="2" />
         </counts>
       </usages-collector>
@@ -46,39 +34,36 @@
         <counts>
           <entry key="Image" value="7" />
           <entry key="PLAIN_TEXT" value="2" />
-          <entry key="Python" value="25" />
+          <entry key="Python" value="26" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1528" />
+          <entry key="py" value="1531" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="1528" />
+          <entry key="Python" value="1531" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mtcnn/mtcnn.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="347">
-              <caret line="73" lean-forward="true" selection-start-line="73" selection-end-line="73" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
+              <caret line="130" lean-forward="true" selection-start-line="130" selection-end-line="130" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/load_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="760">
+            <state relative-caret-position="14616">
               <caret line="812" lean-forward="true" selection-start-line="812" selection-end-line="812" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -100,8 +85,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>normalize</find>
-      <find>tf.float</find>
       <find>coord</find>
       <find>train</find>
       <find>optimizer</find>
@@ -117,7 +100,6 @@
       <find>prepare_data</find>
       <find>train_pipe</find>
       <find>test_pipe</find>
-      <find>def train</find>
       <find>def initialize_data</find>
       <find>restore</find>
       <find>validate</find>
@@ -127,9 +109,12 @@
       <find>run_mtcnn</find>
       <find>r</find>
       <find>left_eye</find>
-      <find>x_primex_prime</find>
       <find>left_eye_pts</find>
       <find>resize</find>
+      <find>x_primex_prime</find>
+      <find>save_data</find>
+      <find>def train</find>
+      <find>initialize_data</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -140,11 +125,11 @@
       <list>
         <option value="$PROJECT_DIR$/old_scripts/original_itracker_adv_self_data_batch_3_universal_copy.py" />
         <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_small_sample_test.py" />
-        <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" />
         <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_feed_dict.py" />
         <option value="$PROJECT_DIR$/mtcnn/mtcnn.py" />
         <option value="$PROJECT_DIR$/utility/data_utility.py" />
         <option value="$PROJECT_DIR$/load_data.py" />
+        <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" />
       </list>
     </option>
   </component>
@@ -155,8 +140,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="y" value="22" />
     <option name="width" value="1440" />
-    <option name="height" value="900" />
+    <option name="height" value="878" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -169,16 +155,6 @@
             <path>
               <item name="Eye-Tracker-master" type="b2602c69:ProjectViewProjectNode" />
               <item name="Eye-Tracker-master" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Eye-Tracker-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Eye-Tracker-master" type="462c0819:PsiDirectoryNode" />
-              <item name="mtcnn" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Eye-Tracker-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Eye-Tracker-master" type="462c0819:PsiDirectoryNode" />
-              <item name="utility" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -255,7 +231,7 @@
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32891566" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -362,10 +338,10 @@
     <entry file="file://$PROJECT_DIR$/mtcnn/02673_02041.jpg_image_False.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py">
+    <entry file="file://$PROJECT_DIR$/utility/data_utility.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="702" column="30" selection-start-line="702" selection-start-column="29" selection-end-line="702" selection-end-column="30" />
+        <state relative-caret-position="-1177">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
@@ -379,20 +355,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utility/data_utility.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1177">
-          <caret line="14" selection-start-line="14" selection-end-line="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/load_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="760">
+        <state relative-caret-position="14616">
           <caret line="812" lean-forward="true" selection-start-line="812" selection-end-line="812" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="347">
+          <caret line="130" lean-forward="true" selection-start-line="130" selection-end-line="130" />
         </state>
       </provider>
     </entry>

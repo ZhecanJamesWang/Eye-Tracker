@@ -32,12 +32,8 @@ record_file_name = "records/" + date + '_record.txt'
 records = ""
 records_count = 0
 
-# dataset_path = "..\Eye-Tracking-for-Everyone-master\Eye-Tracking-for-Everyone-master\GazeCapture"
-# train_path = dataset_path + '\ '.strip() + "train"
-# val_path = dataset_path + '\ '.strip() + "validation"
-# test_path = dataset_path + '\ '.strip() + "test"
-
-dataset_path = "../data/GazeCapture"
+# dataset_path = "../data/GazeCapture"
+dataset_path = "/data/public/gaze/raw/GazeCapture"
 train_path = dataset_path + '/' + "train"
 val_path = dataset_path + '/' + "validation"
 test_path = dataset_path + '/' + "test"
@@ -119,32 +115,32 @@ def save_to_record(content):
 
 def initialize_data(args):
     train_names = load_data_names(train_path)
-    # val_names = load_data_names(val_path)
-    # test_names = load_data_names(test_path)
+    val_names = load_data_names(val_path)
+    test_names = load_data_names(test_path)
 
-    # train_names.extend(test_names)
+    train_names.extend(test_names)
     train_num = len(train_names)
-    # val_num = len(val_names)
-    # test_num = len(test_names)
+    val_num = len(val_names)
+    test_num = len(test_names)
 
     print ("train_num: ", train_num)
-    # print ("val_num: ", val_num)
-    # print ("test_num: ", test_num)
+    print ("val_num: ", val_num)
+    print ("test_num: ", test_num)
 
-    # print ('Train on %s samples, validate on %s samples' % (train_num, val_num))
+    print ('Train on %s samples, validate on %s samples' % (train_num, val_num))
 
     random.shuffle(train_names)
-    # random.shuffle(val_names)
+    random.shuffle(val_names)
 
-    val_names = train_names[:1000]
-    train_names = train_names[:1000]
+    # val_names = train_names[:1000]
+    # train_names = train_names[:1000]
     # val_names = val_names[:5000]
 
 
     # save_data_to_tfrecord_without_face(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, "train_test2.tfrecords")
 
-    save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, True, "train_test2.tfrecords")
-    save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, img_ch, img_cols, img_rows,  False, "test_test2.tfrecords")
+    save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, True, "train.tfrecords")
+    save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, img_ch, img_cols, img_rows,  False, "test.tfrecords")
 
 def normalize(data):
     shape = data.shape
@@ -776,9 +772,9 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 
 def train(args):
 
-    # initialize_data(args)
+    initialize_data(args)
     # # # #
-    # raise "debug"
+    raise "debug"
 
     start = timeit.default_timer()
     plot_ckpt = "plots/" + date
