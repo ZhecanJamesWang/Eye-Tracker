@@ -17,8 +17,8 @@ class mtcnn_handle(object):
 		self.factor = 0.709 # scale factor
 
 
-	def run_mtcnn(self, draw, if_face = False, if_facemask = False, if_draw = False, left_eye_noise = left_eye_noise,
-				  right_eye_noise = right_eye_noise, face_noise = face_noise):
+	def run_mtcnn(self, draw, if_face = False, if_facemask = False, if_draw = False, left_eye_noise = 1,
+				  right_eye_noise = 1, face_noise = 1):
 
 		original = draw.copy()
 		bounding_boxes, points = detect_face.detect_face(draw, self.minsize, self.pnet, self.rnet, self.onet, self.threshold, self.factor)
