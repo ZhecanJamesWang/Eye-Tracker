@@ -3,7 +3,7 @@ import timeit
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
-from load_data_0921 import load_data_names, load_batch_from_data
+from old_scripts.load_data_0921 import load_data_names, load_batch_from_data
 import datetime
 import random
 from mtcnn.mtcnn import mtcnn_handle

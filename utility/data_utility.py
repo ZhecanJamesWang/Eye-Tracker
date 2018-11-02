@@ -12,6 +12,7 @@ def write_to_file(file_name, content):
 	return content
 	
 def check_dimension(img, if_even = False, if_last_channel = True):
+
 	if if_last_channel:
 		height, width, channels = img.shape
 	else:
@@ -26,7 +27,48 @@ def check_dimension(img, if_even = False, if_last_channel = True):
 		if height != width:
 			raise "left_eye height != width or height == 0 or width == 0"
 
+
+def translate(image, w=None, h=None):
+
+	originalImage = image.copy()
+	(h, w, _) = image.shape
+	xTransRange, yTransRange = np.random.randint(0, w / 3), np.random.randint(0, h / 3)
+	newImg = np.zeros_like(image)
+	newImg[yTransRange:, xTransRange:] = image[:int(h - yTransRange), :int(w - xTransRange)]
+	image = newImg
+
+	return image
+
+
+def mirror(face, left_eye, right_eye, face_grid, y_x, y_y, h = None, w = None):
+    face = np.fliplr(face)
+    left_eye = np.fliplr(left_eye)
+    right_eye = np.fliplr(right_eye)
+    face_grid = np.fliplr(face_grid)
+    y_x = w - y_x
+    return face, left_eye, right_eye, face_grid, y_x, y_y
+
+def contrastBrightess(image):
+
+    contrast = np.random.uniform(0.5, 3)
+    brightness = np.random.uniform(-50, 50)
+    # contrast = 2
+    # brightness = 50
+
+    maxIntensity = 255.0 # depends on dtype of image data
+    phi = 1
+    theta = 1
+    image = ((maxIntensity/phi)*(image/(maxIntensity/theta))**contrast) + brightness
+    image = np.asarray(image)
+    top_index = np.where(image > 255)
+    bottom_index = np.where(image < 0)
+    image[top_index] = 255
+    image[bottom_index] = 0
+    image = array(image,dtype=uint8)
+    return image
+
 def resize(im, desired_size = None):
+
 	old_size = im.shape[:2] # old_size is in (height, width) format
 
 	ratio = float(desired_size)/max(old_size)

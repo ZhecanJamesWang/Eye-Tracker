@@ -583,41 +583,35 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 			continue
 
 		# save images (for debug)
-		# if save_img:
+		if save_img:
+            increase = 3
+            y_x, y_y = - int(y_x * increase), int(y_y * increase)
+            h, w, _ = face.shape
+            cx, cy = w/2.0, h/2.0
+            cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
+            cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
 
-		increase = 3
-		y_x, y_y = - int(y_x * increase), int(y_y * increase)
-		h, w, _ = face.shape
-		cx, cy = w/2.0, h/2.0
-		cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
-		cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
+            cv2.imwrite("images/" + dir + "_" + frame + "_face_" + mtcnn_flag + ".png", face)
+            cv2.imwrite("images/" + dir + "_" + frame + "_right_" + mtcnn_flag + ".png", right_eye)
+            cv2.imwrite("images/" + dir + "_" + frame + "_left_" + mtcnn_flag + ".png", left_eye)
+            cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid_" + mtcnn_flag + ".png", face_grid)
+            cv2.imwrite("images/" + dir + "_" + frame + "_image_" + mtcnn_flag + ".png", img)
 
-		cv2.imwrite("images/" + dir + "_" + frame + "_face_" + mtcnn_flag + ".png", face)
-		cv2.imwrite("images/" + dir + "_" + frame + "_right_" + mtcnn_flag + ".png", right_eye)
-		cv2.imwrite("images/" + dir + "_" + frame + "_left_" + mtcnn_flag + ".png", left_eye)
-		cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid_" + mtcnn_flag + ".png", face_grid)
-		cv2.imwrite("images/" + dir + "_" + frame + "_image_" + mtcnn_flag + ".png", img)
+            print ("face.shape: ", face.shape)
+            print ("left_eye.shape: ", left_eye.shape)
+            print ("right_eye.shape: ", right_eye.shape)
 
-		print ("face.shape: ", face.shape)
-		print ("left_eye.shape: ", left_eye.shape)
-		print ("right_eye.shape: ", right_eye.shape)
-
-		# normalization
-		# face = image_normalization(face)
-		# left_eye = image_normalization(left_eye)
-		# right_eye = image_normalization(right_eye)
 
 		# check data types
-		#
 		face = face.astype('float32')
 		left_eye = left_eye.astype('float32')
 		right_eye = right_eye.astype('float32')
 		face_grid = face_grid.astype('float32')
 
-		# face = image_normalization(face)
-		# left_eye = image_normalization(left_eye)
-		# right_eye = image_normalization(right_eye)
-		# face_grid = face_grid.flatten().astype('float32')
+		face = image_normalization(face)
+		left_eye = image_normalization(left_eye)
+		right_eye = image_normalization(right_eye)
+		face_grid = face_grid.flatten().astype('float32')
 
 		# add to the related batch
 		left_eye_batch[b] = left_eye
@@ -637,6 +631,9 @@ def load_batch_from_data(mtcnn_h, names, path, batch_size, img_ch, img_cols, img
 def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_train, file_name = None):
 	save_img = False
 
+
+    generateFunc = ["original", "resize", "mirror", "translate", "brightnessAndContrast"]
+
 	# open the TFRecords file
 	writer = tf.python_io.TFRecordWriter(file_name)
 
@@ -646,149 +643,177 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 	# length = 1000
 
 	for i in range(length):
+        for index in range(len(generateFunc)):
 
-		# if i % 10 == 0:
-		#     print('Train data {}/{}'.format(i, length))
+            if i % 100 == 0:
+                print('Train data {}/{}'.format(i, length))
 
-		if i % 100 == 0:
-			print (i)
+            try:
+                img_name = names[i]
+            except Exception as e:
+                print ("get img_name")
+                print 1
+                print(e)
 
-		try:
-			# lottery
-			# i = np.random.randint(0, len(names))
-			# get the lucky one
-			img_name = names[i]
-		except Exception as e:
-			print ("get img_name")
-			print 1
-			print(e)
+            # directory
+            dir = img_name[:5]
 
-		# directory
-		dir = img_name[:5]
+            # frame name
+            frame = img_name[6:]
 
-		# frame name
-		frame = img_name[6:]
+            # index of the frame into a sequence
+            idx = int(frame[:-4])
 
-		# index of the frame into a sequence
-		idx = int(frame[:-4])
+            # open image
+            img = cv2.imread(join(path, dir, "frames", frame))
+            # print ("img.shape: ", img.shape)
 
-		# open image
-		img = cv2.imread(join(path, dir, "frames", frame))
-		# print ("img.shape: ", img.shape)
+            # if image is null, skip
+            if img is None:
+                print("Error opening image: {}".format(join(path, dir, "frames", frame)))
+                continue
 
-		# if image is null, skip
-		if img is None:
-			print("Error opening image: {}".format(join(path, dir, "frames", frame)))
-			continue
+			method = generateFunc[index]
+			(w, h, _) = img.shape
+
+			left_eye_noise = 1
+			right_eye_noise = 1
+			face_noise = 1
+
+			if method == "resize":
+				left_eye_noise = random.uniform(1.0, 1.5)
+				right_eye_noise = random.uniform(1.0, 1.5)
+				face_noise = random.uniform(1.0, 1.5)
+
+            try:
+                # result = mtcnn_h.run_mtcnn(resize_img,  if_face = False, if_facemask = False, if_draw = False)
+                result = mtcnn_h.run_mtcnn(img, if_face=True, if_facemask=True, if_draw=False,
+										   left_eye_noise = left_eye_noise, right_eye_noise = right_eye_noise,
+										   face_noise = face_noise)
+
+                [original, draw, face, left_eye, right_eye, face_grid, left_eye_pts, right_eye_pts] = result
+
+                check_dimension(face)
+                check_dimension(face_grid, if_last_channel = False)
+                face, face_grid = resize(face, 64), resize(face_grid, 25)
+                check_dimension(left_eye, if_even=True)
+                check_dimension(right_eye, if_even=True)
+                left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
+
+                mtcnn_flag = "True"
+
+            except Exception as e:
+                print "check eyes check_dimension"
+                print e
+                mtcnn_flag = "False"
+
+                # open json files
+                face_file = open(join(path, dir, "appleFace.json"))
+                left_file = open(join(path, dir, "appleLeftEye.json"))
+                right_file = open(join(path, dir, "appleRightEye.json"))
+                grid_file = open(join(path, dir, "faceGrid.json"))
+
+                # load json content
+                face_json = json.load(face_file)
+                left_json = json.load(left_file)
+                right_json = json.load(right_file)
+                grid_json = json.load(grid_file)
+
+                # # if coordinates are negatives, skip (a lot of negative coords!)
+                # if int(face_json["X"][idx]) < 0 or int(face_json["Y"][idx]) < 0 or \
+                #     int(left_json["X"][idx]) < 0 or int(left_json["Y"][idx]) < 0 or \
+                #     int(right_json["X"][idx]) < 0 or int(right_json["Y"][idx]) < 0:
+                #     print("Error with coordinates: {}".format(join(path, dir, "frames", frame)))
+                #     continue
+
+                # get face
+                tl_x_face = int(face_json["X"][idx])
+                tl_y_face = int(face_json["Y"][idx])
+                w = int(face_json["W"][idx]) * face_noise
+                h = int(face_json["H"][idx]) * face_noise
+                br_x = tl_x_face + w
+                br_y = tl_y_face + h
+                face = img[tl_y_face:br_y, tl_x_face:br_x]
+
+                try:
+                    # print type(face)
+                    # print face.shape
+                    check_dimension(face)
+                    face = resize(face, 64)
+                except Exception as e:
+                    print ("check face check_dimension")
+                    print 2
+                    print (e)
+                    continue
+
+                # get left eye
+                tl_x = tl_x_face + int(left_json["X"][idx])
+                tl_y = tl_y_face + int(left_json["Y"][idx])
+                w = int(left_json["W"][idx]) * left_eye_noise
+                h = int(left_json["H"][idx]) * left_eye_noise
+                br_x = tl_x + w
+                br_y = tl_y + h
+                left_eye = img[tl_y:br_y, tl_x:br_x]
+
+                # get right eye
+                tl_x = tl_x_face + int(right_json["X"][idx])
+                tl_y = tl_y_face + int(right_json["Y"][idx])
+                w = int(right_json["W"][idx]) * right_eye_noise
+                h = int(right_json["H"][idx]) * right_eye_noise
+                br_x = tl_x + w
+                br_y = tl_y + h
+                right_eye = img[tl_y:br_y, tl_x:br_x]
+
+                try:
+                    check_dimension(left_eye)
+                    left_eye = resize(left_eye, 64)
+                    check_dimension(right_eye)
+                    right_eye = resize(right_eye, 64)
+                except Exception as e:
+                    print ("check left and right eye size")
+                    print (e)
+                    continue
+
+                # get face grid (in ch, cols, rows convention)
+                face_grid = np.zeros(shape=(25, 25), dtype=np.float32)
+                tl_x = int(grid_json["X"][idx])
+                tl_y = int(grid_json["Y"][idx])
+                w = int(grid_json["W"][idx])
+                h = int(grid_json["H"][idx])
+                br_x = tl_x + w
+                br_y = tl_y + h
+
+                # print ("face_grid: ", face_grid.shape)
+                face_grid[tl_y:br_y, tl_x:br_x] = 1
+
+            dot_file = open(join(path, dir, "dotInfo.json"))
+            dot_json = json.load(dot_file)
+            # get labels
+            y_x = dot_json["XCam"][idx]
+            y_y = dot_json["YCam"][idx]
+
+			if method == "mirror":
+				face, left_eye, right_eye, face_grid, y_x, y_y = mirror(face, left_eye, right_eye, face_grid, y_x, y_y, w=w, h=h)
+
+			elif method == "translate":
+				face = translate(face, w=w, h=h)
+				left_eye = translate(left_eye, w=w, h=h)
+				right_eye = translate(right_eye, w=w, h=h)
+
+			elif method == "brightnessAndContrast":
+				face = contrastBrightess(face)
+				left_eye = contrastBrightess(left_eye)
+				right_eye = contrastBrightess(right_eye)
+
+			elif method == "original":
+				pass
+
+			else:
+				raise "not existing function"
 
 
-		try:
-			# result = mtcnn_h.run_mtcnn(resize_img,  if_face = False, if_facemask = False, if_draw = False)
-			result = mtcnn_h.run_mtcnn(img, if_face=True, if_facemask=True, if_draw=False)
-
-			# [_, _, _, left_eye, right_eye, _, left_eye_pts, right_eye_pts] = result
-			[original, draw, face, left_eye, right_eye, face_grid, left_eye_pts, right_eye_pts] = result
-
-
-			check_dimension(face)
-			check_dimension(face_grid, if_last_channel = False)
-			face, face_grid = resize(face, 64), resize(face_grid, 25)
-			check_dimension(left_eye, if_even=True)
-			check_dimension(right_eye, if_even=True)
-			left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
-
-			mtcnn_flag = "True"
-
-		except Exception as e:
-			print "check eyes check_dimension"
-			print e
-			mtcnn_flag = "False"
-
-			# open json files
-			face_file = open(join(path, dir, "appleFace.json"))
-			left_file = open(join(path, dir, "appleLeftEye.json"))
-			right_file = open(join(path, dir, "appleRightEye.json"))
-			grid_file = open(join(path, dir, "faceGrid.json"))
-
-			# load json content
-			face_json = json.load(face_file)
-			left_json = json.load(left_file)
-			right_json = json.load(right_file)
-			grid_json = json.load(grid_file)
-
-			# # if coordinates are negatives, skip (a lot of negative coords!)
-			# if int(face_json["X"][idx]) < 0 or int(face_json["Y"][idx]) < 0 or \
-			#     int(left_json["X"][idx]) < 0 or int(left_json["Y"][idx]) < 0 or \
-			#     int(right_json["X"][idx]) < 0 or int(right_json["Y"][idx]) < 0:
-			#     print("Error with coordinates: {}".format(join(path, dir, "frames", frame)))
-			#     continue
-
-			# get face
-			tl_x_face = int(face_json["X"][idx])
-			tl_y_face = int(face_json["Y"][idx])
-			w = int(face_json["W"][idx])
-			h = int(face_json["H"][idx])
-			br_x = tl_x_face + w
-			br_y = tl_y_face + h
-			face = img[tl_y_face:br_y, tl_x_face:br_x]
-			try:
-				# print type(face)
-				# print face.shape
-				check_dimension(face)
-				face = resize(face, 64)
-			except Exception as e:
-				print ("check face check_dimension")
-				print 2
-				print (e)
-				continue
-
-			# get left eye
-			tl_x = tl_x_face + int(left_json["X"][idx])
-			tl_y = tl_y_face + int(left_json["Y"][idx])
-			w = int(left_json["W"][idx])
-			h = int(left_json["H"][idx])
-			br_x = tl_x + w
-			br_y = tl_y + h
-			left_eye = img[tl_y:br_y, tl_x:br_x]
-
-			# get right eye
-			tl_x = tl_x_face + int(right_json["X"][idx])
-			tl_y = tl_y_face + int(right_json["Y"][idx])
-			w = int(right_json["W"][idx])
-			h = int(right_json["H"][idx])
-			br_x = tl_x + w
-			br_y = tl_y + h
-			right_eye = img[tl_y:br_y, tl_x:br_x]
-			try:
-				check_dimension(left_eye)
-				left_eye = resize(left_eye, 64)
-				check_dimension(right_eye)
-				right_eye = resize(right_eye, 64)
-			except Exception as e:
-				print ("check left and right eye size")
-				print (e)
-				continue
-
-			# get face grid (in ch, cols, rows convention)
-			face_grid = np.zeros(shape=(25, 25), dtype=np.float32)
-			tl_x = int(grid_json["X"][idx])
-			tl_y = int(grid_json["Y"][idx])
-			w = int(grid_json["W"][idx])
-			h = int(grid_json["H"][idx])
-			br_x = tl_x + w
-			br_y = tl_y + h
-
-			# print ("face_grid: ", face_grid.shape)
-			face_grid[tl_y:br_y, tl_x:br_x] = 1
-
-		dot_file = open(join(path, dir, "dotInfo.json"))
-		dot_json = json.load(dot_file)
-		# get labels
-		y_x = dot_json["XCam"][idx]
-		y_y = dot_json["YCam"][idx]
-
-		# save images (for debug)
-		if save_img:
+            # save images (for debug)
+            # if save_img:
 			increase = 3
 			y_x, y_y = - int(y_x * increase), int(y_y * increase)
 			h, w, _ = face.shape
@@ -802,45 +827,47 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid_" + mtcnn_flag + ".png", face_grid)
 			cv2.imwrite("images/" + dir + "_" + frame + "_image_" + mtcnn_flag + ".png", img)
 
-			# print("face.shape: ", face.shape)
-			# print("left_eye.shape: ", left_eye.shape)
-			# print("right_eye.shape: ", right_eye.shape)
-			# print("face_grid.shape: ", face_grid.shape)
+			print("face.shape: ", face.shape)
+			print("left_eye.shape: ", left_eye.shape)
+			print("right_eye.shape: ", right_eye.shape)
+			print("face_grid.shape: ", face_grid.shape)
 
-		# normalization
-		face = image_normalization(face)
-		left_eye = image_normalization(left_eye)
-		right_eye = image_normalization(right_eye)
-		face_grid = face_grid.flatten()
+			raise "debug"
 
-		# check data types
-		face = face.astype('float32')
-		left_eye = left_eye.astype('float32')
-		right_eye = right_eye.astype('float32')
-		face_grid = face_grid.astype('float32')
-
-
-		if if_train:
-			# Create a feature
-			feature = {'train/y_x': _float_feature(y_x),
-					   'train/y_y': _float_feature(y_y),
-					   'train/face': _bytes_feature(tf.compat.as_bytes(face.tostring())),
-					   'train/face_grid': _bytes_feature(tf.compat.as_bytes(face_grid.tostring())),
-					   'train/left_eye': _bytes_feature(tf.compat.as_bytes(left_eye.tostring())),
-					   'train/right_eye': _bytes_feature(tf.compat.as_bytes(right_eye.tostring()))}
-		else:
-			feature = {'test/y_x': _float_feature(y_x),
-					   'test/y_y': _float_feature(y_y),
-					   'test/face': _bytes_feature(tf.compat.as_bytes(face.tostring())),
-					   'test/face_grid': _bytes_feature(tf.compat.as_bytes(face_grid.tostring())),
-					   'test/left_eye': _bytes_feature(tf.compat.as_bytes(left_eye.tostring())),
-					   'test/right_eye': _bytes_feature(tf.compat.as_bytes(right_eye.tostring()))}
-
-		# Create an example protocol buffer
-		example = tf.train.Example(features=tf.train.Features(feature=feature))
-
-		# Serialize to string and write on the file
-		writer.write(example.SerializeToString())
+            # # normalization
+            # face = image_normalization(face)
+            # left_eye = image_normalization(left_eye)
+            # right_eye = image_normalization(right_eye)
+            # face_grid = face_grid.flatten()
+			#
+            # # check data types
+            # face = face.astype('float32')
+            # left_eye = left_eye.astype('float32')
+            # right_eye = right_eye.astype('float32')
+            # face_grid = face_grid.astype('float32')
+			#
+			#
+            # if if_train:
+            #     # Create a feature
+            #     feature = {'train/y_x': _float_feature(y_x),
+            #                'train/y_y': _float_feature(y_y),
+            #                'train/face': _bytes_feature(tf.compat.as_bytes(face.tostring())),
+            #                'train/face_grid': _bytes_feature(tf.compat.as_bytes(face_grid.tostring())),
+            #                'train/left_eye': _bytes_feature(tf.compat.as_bytes(left_eye.tostring())),
+            #                'train/right_eye': _bytes_feature(tf.compat.as_bytes(right_eye.tostring()))}
+            # else:
+            #     feature = {'test/y_x': _float_feature(y_x),
+            #                'test/y_y': _float_feature(y_y),
+            #                'test/face': _bytes_feature(tf.compat.as_bytes(face.tostring())),
+            #                'test/face_grid': _bytes_feature(tf.compat.as_bytes(face_grid.tostring())),
+            #                'test/left_eye': _bytes_feature(tf.compat.as_bytes(left_eye.tostring())),
+            #                'test/right_eye': _bytes_feature(tf.compat.as_bytes(right_eye.tostring()))}
+			#
+            # # Create an example protocol buffer
+            # example = tf.train.Example(features=tf.train.Features(feature=feature))
+			#
+            # # Serialize to string and write on the file
+            # writer.write(example.SerializeToString())
 
 	writer.close()
 	sys.stdout.flush()

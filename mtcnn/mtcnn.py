@@ -17,8 +17,8 @@ class mtcnn_handle(object):
 		self.factor = 0.709 # scale factor
 
 
-	def run_mtcnn(self, draw, if_face = False, if_facemask = False, if_draw = False):
-
+	def run_mtcnn(self, draw, if_face = False, if_facemask = False, if_draw = False, left_eye_noise = left_eye_noise,
+				  right_eye_noise = right_eye_noise, face_noise = face_noise):
 
 		original = draw.copy()
 		bounding_boxes, points = detect_face.detect_face(draw, self.minsize, self.pnet, self.rnet, self.onet, self.threshold, self.factor)
@@ -39,7 +39,9 @@ class mtcnn_handle(object):
 			face_mask = zeros
 
 		if if_face:
-			face = original[int(b[1]):int(b[3]), int(b[0]):int(b[2])]
+			h = int((int(b[3]) - int(b[1])) * face_noise)
+			w = int((int(b[2]) - int(b[0])) * face_noise)
+			face = original[int(b[1]):int(b[1]) + h, int(b[0]):int(b[0]) + w]
 
 		# print "points.T: ", points.T
 		p = points.T[0]
@@ -61,12 +63,14 @@ class mtcnn_handle(object):
 
 		x_prime = np.cos(theta) * l_prime
 		padding = int(x_prime * 1.5)
+		l_padding = int(x_prime * 1.5) * left_eye_noise
+		r_padding = int(x_prime * 1.5) * right_eye_noise
 
 		left_eye_pts = [x1, y1]
-		left_eye = original[int(y1 - padding):int(y1 + padding), int(x1 - padding):int(x1 + padding)]
+		left_eye = original[int(y1 - l_padding):int(y1 + l_padding), int(x1 - l_padding):int(x1 + l_padding)]
 
 		right_eye_pts = [x2, y2]
-		right_eye = original[int(y2 - padding):int(y2 + padding), int(x2 - padding):int(x2 + padding)]
+		right_eye = original[int(y2 - r_padding):int(y2 + r_padding), int(x2 - r_padding):int(x2 + r_padding)]
 
 		if if_draw:
 			cv2.rectangle(draw, (int(x1 - padding), int(y1 - padding)), (int(x1 + padding), int(y1 + padding)), (0, 255, 0))
