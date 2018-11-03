@@ -822,11 +822,11 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
 			cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
 
-			cv2.imwrite("images/" + dir + "_" + frame + "_face_" + mtcnn_flag + ".png", face)
-			cv2.imwrite("images/" + dir + "_" + frame + "_right_" + mtcnn_flag + ".png", right_eye)
-			cv2.imwrite("images/" + dir + "_" + frame + "_left_" + mtcnn_flag + ".png", left_eye)
-			cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid_" + mtcnn_flag + ".png", face_grid)
-			cv2.imwrite("images/" + dir + "_" + frame + "_image_" + mtcnn_flag + ".png", img)
+			cv2.imwrite("images/" + dir + "_" + frame + "_face_" + mtcnn_flag + "_" + method + ".png", face)
+			cv2.imwrite("images/" + dir + "_" + frame + "_right_" + mtcnn_flag + "_" + method + ".png", right_eye)
+			cv2.imwrite("images/" + dir + "_" + frame + "_left_" + mtcnn_flag + "_" + method + ".png", left_eye)
+			cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid_" + mtcnn_flag + "_" + method + ".png", face_grid)
+			cv2.imwrite("images/" + dir + "_" + frame + "_image_" + mtcnn_flag + "_" + method + ".png", img)
 
 			print("face.shape: ", face.shape)
 			print("left_eye.shape: ", left_eye.shape)
