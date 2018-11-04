@@ -583,8 +583,8 @@ class EyeTracker(object):
                         print "val_err_hist[:4]: ", val_err_hist[:4]
                         # raise 'debug'
 
-                        plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cum_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
-                        plot_loss(np.array(train_loss_hist), np.array(train_err_hist), np.array(val_loss_hist), np.array(val_err_hist), start=0, per=1, save_file=plot_ckpt + "/epoch_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+                        # plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cum_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+                        # plot_loss(np.array(train_loss_hist), np.array(train_err_hist), np.array(val_loss_hist), np.array(val_err_hist), start=0, per=1, save_file=plot_ckpt + "/epoch_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
 
                         save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_history_%s"%(np.mean(train_err_history)) + "_val_error_history_%s"%(np.mean(val_err_history))
 
