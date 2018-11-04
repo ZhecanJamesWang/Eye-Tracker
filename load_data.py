@@ -811,6 +811,13 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 
 			print ("type(face): ", type(face))
 
+
+			# # check data types
+			face = face.astype('float32')
+			left_eye = left_eye.astype('float32')
+			right_eye = right_eye.astype('float32')
+			face_grid = face_grid.astype('float32')
+
 			# save images (for debug)
 			# if save_img:
 			increase = 3
@@ -837,14 +844,8 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			# left_eye = image_normalization(left_eye)
 			# right_eye = image_normalization(right_eye)
 			# face_grid = face_grid.flatten()
-			#
-			# # check data types
-			# face = face.astype('float32')
-			# left_eye = left_eye.astype('float32')
-			# right_eye = right_eye.astype('float32')
-			# face_grid = face_grid.astype('float32')
-			#
-			#
+
+
 			# if if_train:
 			#     # Create a feature
 			#     feature = {'train/y_x': _float_feature(y_x),

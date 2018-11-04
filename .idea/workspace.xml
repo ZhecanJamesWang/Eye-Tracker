@@ -39,12 +39,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1647" />
+          <entry key="py" value="1654" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="1647" />
+          <entry key="Python" value="1654" />
         </counts>
       </usages-collector>
     </session>
@@ -63,8 +63,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/load_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="72">
-              <caret line="811" column="18" selection-start-line="811" selection-start-column="18" selection-end-line="811" selection-end-column="18" />
+            <state relative-caret-position="313">
+              <caret line="821" column="26" lean-forward="true" selection-start-line="821" selection-start-column="26" selection-end-line="821" selection-end-column="26" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -85,8 +85,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>self.optimizer</find>
-      <find>reshape</find>
       <find>batch_train_data = load_batch_from_data(mtcnn_h, trai</find>
       <find>load_batch_from_data</find>
       <find>def prepare_data</find>
@@ -115,6 +113,8 @@
       <find>mirror</find>
       <find>left_eye_noise</find>
       <find>print</find>
+      <find>dtype(</find>
+      <find>dtype</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -391,8 +391,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/load_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="811" column="18" selection-start-line="811" selection-start-column="18" selection-end-line="811" selection-end-column="18" />
+        <state relative-caret-position="313">
+          <caret line="821" column="26" lean-forward="true" selection-start-line="821" selection-start-column="26" selection-end-line="821" selection-end-column="26" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
