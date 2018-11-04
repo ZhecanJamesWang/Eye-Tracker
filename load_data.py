@@ -809,6 +809,7 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			elif method == "original":
 				pass
 
+			print ("type(face)：", type(face))
 
 			# save images (for debug)
 			# if save_img:
