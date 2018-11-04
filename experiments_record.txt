@@ -61,6 +61,7 @@ train_test5.tfrecords
 2018-10-29-23-38      train and test = train[:1000]    train_test6.tfrecords    no shuffle   looks wrong
 2018-10-30-10-30      train and test = train[:1000]    train_test7.tfrecords    shuffle   looks good
 
+2018-10-31-16-58
 train_names = load_data_names(train_path)[10000:13000]
 val_names = train_names[:1000]
 train_names = train_names[1000:]
@@ -69,6 +70,8 @@ train_test8.tfrecords
 
 ------------------------------------------------------------------------------------------------------
 EyeTracker + MTCNN tfrecords 2018-10-29-16-39  7 epochs 1380 iters (batch_size 500)  lr = 0.01   *0.1 every 5 epochs
+EyeTracker + MTCNN tfrecords 2018-11-01-13-30 6 epochs 1500 iters  (batch_size 500)  lr = 0.001   *0.1 every 5 epochs
+EyeTracker + MTCNN tfrecords 2018-11-02-00-46 5 epochs 2340 iters  (batch_size 500)  lr = 0.0001   *0.1 every 5 epochs
 
 
 

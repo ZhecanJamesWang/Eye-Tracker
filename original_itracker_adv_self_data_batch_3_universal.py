@@ -471,7 +471,7 @@ class EyeTracker(object):
              # TODO://////
             writer = tf.summary.FileWriter("logs", sess.graph)
 
-            saver.restore(sess, "./my_model/2018-10-29-16-39/model_1_2490_train_error_history_3.9420671_val_error_history_1.8667920998164587")
+            # saver.restore(sess, "./my_model/2018-11-02-00-46/model_6_2340_train_error_history_3.878128_val_error_history_3.7854033")
 
             train_loss_history = []
             train_err_history = []
@@ -774,7 +774,7 @@ def train(args):
 
     initialize_data(args)
     # # # #
-    raise "debug"
+    # raise "debug"
 
     start = timeit.default_timer()
     plot_ckpt = "plots/" + date
@@ -824,7 +824,7 @@ def main():
     parser.add_argument('--train', action='store_true', help='train flag')
     # parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
     parser.add_argument('-max_epoch', '--max_epoch', type=int, default=60, help='max number of iterations')
-    parser.add_argument('-lr', '--learning_rate', type=float, default=0.001, help='learning rate')
+    parser.add_argument('-lr', '--learning_rate', type=float, default=0.01, help='learning rate')
     parser.add_argument('-bs', '--batch_size', type=int, default=500, help='batch size')
     parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
     parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
