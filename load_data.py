@@ -4,7 +4,7 @@ import os
 import glob
 from os.path import join
 import json
-from utility.data_utility import image_normalization, resize, check_dimension
+from utility.data_utility import image_normalization, resize, check_dimension, mirror, contrastBrightess, translate
 import tensorflow as tf
 import sys
 
@@ -805,7 +805,7 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 				face = contrastBrightess(face)
 				left_eye = contrastBrightess(left_eye)
 				right_eye = contrastBrightess(right_eye)
-				
+
 			elif method == "original":
 				pass
 
