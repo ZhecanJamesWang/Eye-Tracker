@@ -809,9 +809,6 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			elif method == "original":
 				pass
 
-			print ("type(face): ", type(face))
-
-
 			# # check data types
 			face = face.astype('float32')
 			left_eye = left_eye.astype('float32')
@@ -819,55 +816,55 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			face_grid = face_grid.astype('float32')
 
 			# save images (for debug)
-			# if save_img:
-			increase = 3
-			y_x, y_y = - int(y_x * increase), int(y_y * increase)
-			h, w, _ = face.shape
-			cx, cy = w/2.0, h/2.0
-			cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
-			cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
+			if save_img:
+				increase = 3
+				y_x, y_y = - int(y_x * increase), int(y_y * increase)
+				h, w, _ = face.shape
+				cx, cy = w/2.0, h/2.0
+				cv2.circle(face,(int(cx), int(cy)), 5, (0,0,255), -1)
+				cv2.line(face, (int(cx), int(cy)), (int(cx + y_x), int(cy + y_y)), (255, 0, 0), 3)
 
-			cv2.imwrite("images/" + dir + "_" + frame + "_face_" + mtcnn_flag + "_" + method + ".png", face)
-			cv2.imwrite("images/" + dir + "_" + frame + "_right_" + mtcnn_flag + "_" + method + ".png", right_eye)
-			cv2.imwrite("images/" + dir + "_" + frame + "_left_" + mtcnn_flag + "_" + method + ".png", left_eye)
-			cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid_" + mtcnn_flag + "_" + method + ".png", face_grid)
-			cv2.imwrite("images/" + dir + "_" + frame + "_image_" + mtcnn_flag + "_" + method + ".png", img)
+				cv2.imwrite("images/" + dir + "_" + frame + "_face_" + mtcnn_flag + "_" + method + ".png", face)
+				cv2.imwrite("images/" + dir + "_" + frame + "_right_" + mtcnn_flag + "_" + method + ".png", right_eye)
+				cv2.imwrite("images/" + dir + "_" + frame + "_left_" + mtcnn_flag + "_" + method + ".png", left_eye)
+				cv2.imwrite("images/" + dir + "_" + frame + "_faceGrid_" + mtcnn_flag + "_" + method + ".png", face_grid)
+				cv2.imwrite("images/" + dir + "_" + frame + "_image_" + mtcnn_flag + "_" + method + ".png", img)
 
-			print("face.shape: ", face.shape)
-			print("left_eye.shape: ", left_eye.shape)
-			print("right_eye.shape: ", right_eye.shape)
-			print("face_grid.shape: ", face_grid.shape)
-
-
-			# # normalization
-			# face = image_normalization(face)
-			# left_eye = image_normalization(left_eye)
-			# right_eye = image_normalization(right_eye)
-			# face_grid = face_grid.flatten()
+				print("face.shape: ", face.shape)
+				print("left_eye.shape: ", left_eye.shape)
+				print("right_eye.shape: ", right_eye.shape)
+				print("face_grid.shape: ", face_grid.shape)
 
 
-			# if if_train:
-			#     # Create a feature
-			#     feature = {'train/y_x': _float_feature(y_x),
-			#                'train/y_y': _float_feature(y_y),
-			#                'train/face': _bytes_feature(tf.compat.as_bytes(face.tostring())),
-			#                'train/face_grid': _bytes_feature(tf.compat.as_bytes(face_grid.tostring())),
-			#                'train/left_eye': _bytes_feature(tf.compat.as_bytes(left_eye.tostring())),
-			#                'train/right_eye': _bytes_feature(tf.compat.as_bytes(right_eye.tostring()))}
-			# else:
-			#     feature = {'test/y_x': _float_feature(y_x),
-			#                'test/y_y': _float_feature(y_y),
-			#                'test/face': _bytes_feature(tf.compat.as_bytes(face.tostring())),
-			#                'test/face_grid': _bytes_feature(tf.compat.as_bytes(face_grid.tostring())),
-			#                'test/left_eye': _bytes_feature(tf.compat.as_bytes(left_eye.tostring())),
-			#                'test/right_eye': _bytes_feature(tf.compat.as_bytes(right_eye.tostring()))}
-			#
-			# # Create an example protocol buffer
-			# example = tf.train.Example(features=tf.train.Features(feature=feature))
-			#
-			# # Serialize to string and write on the file
-			# writer.write(example.SerializeToString())
-		raise "debug"
+			# normalization
+			face = image_normalization(face)
+			left_eye = image_normalization(left_eye)
+			right_eye = image_normalization(right_eye)
+			face_grid = face_grid.flatten()
+
+
+			if if_train:
+			    # Create a feature
+			    feature = {'train/y_x': _float_feature(y_x),
+			               'train/y_y': _float_feature(y_y),
+			               'train/face': _bytes_feature(tf.compat.as_bytes(face.tostring())),
+			               'train/face_grid': _bytes_feature(tf.compat.as_bytes(face_grid.tostring())),
+			               'train/left_eye': _bytes_feature(tf.compat.as_bytes(left_eye.tostring())),
+			               'train/right_eye': _bytes_feature(tf.compat.as_bytes(right_eye.tostring()))}
+			else:
+			    feature = {'test/y_x': _float_feature(y_x),
+			               'test/y_y': _float_feature(y_y),
+			               'test/face': _bytes_feature(tf.compat.as_bytes(face.tostring())),
+			               'test/face_grid': _bytes_feature(tf.compat.as_bytes(face_grid.tostring())),
+			               'test/left_eye': _bytes_feature(tf.compat.as_bytes(left_eye.tostring())),
+			               'test/right_eye': _bytes_feature(tf.compat.as_bytes(right_eye.tostring()))}
+
+			# Create an example protocol buffer
+			example = tf.train.Example(features=tf.train.Features(feature=feature))
+
+			# Serialize to string and write on the file
+			writer.write(example.SerializeToString())
+		# raise "debug"
 
 	writer.close()
 	sys.stdout.flush()
