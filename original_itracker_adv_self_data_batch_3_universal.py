@@ -10,8 +10,8 @@ from mtcnn.mtcnn import mtcnn_handle
 from utility.data_utility import write_to_file
 
 import os
-# os.environ["CUDA_VISIBLE_DEVICES"]="0"
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
+# os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
@@ -763,9 +763,9 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 
 def train(args):
 
-    initialize_data(args)
+    # initialize_data(args)
     # # # #
-    raise "debug"
+    # raise "debug"
 
     start = timeit.default_timer()
     plot_ckpt = "plots/" + date
