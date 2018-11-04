@@ -462,7 +462,7 @@ class EyeTracker(object):
              # TODO://////
             writer = tf.summary.FileWriter("logs", sess.graph)
 
-            saver.restore(sess, "./my_model/2018-11-02-00-46/model_6_2340_train_error_history_3.878128_val_error_history_3.7854033")
+            saver.restore(sess, "./pretrained_models/model_6_2340_train_error_history_3.878128_val_error_history_3.7854033")
 
             train_loss_history = []
             train_err_history = []
