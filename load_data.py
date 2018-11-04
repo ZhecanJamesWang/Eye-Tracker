@@ -730,8 +730,8 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 				# get face
 				tl_x_face = int(face_json["X"][idx])
 				tl_y_face = int(face_json["Y"][idx])
-				w = int(face_json["W"][idx]) * face_noise
-				h = int(face_json["H"][idx]) * face_noise
+				w = int(face_json["W"][idx] * face_noise)
+				h = int(face_json["H"][idx] * face_noise)
 				br_x = tl_x_face + w
 				br_y = tl_y_face + h
 				face = img[tl_y_face:br_y, tl_x_face:br_x]
@@ -750,8 +750,8 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 				# get left eye
 				tl_x = tl_x_face + int(left_json["X"][idx])
 				tl_y = tl_y_face + int(left_json["Y"][idx])
-				w = int(left_json["W"][idx]) * left_eye_noise
-				h = int(left_json["H"][idx]) * left_eye_noise
+				w = int(left_json["W"][idx] * left_eye_noise)
+				h = int(left_json["H"][idx] * left_eye_noise)
 				br_x = tl_x + w
 				br_y = tl_y + h
 				left_eye = img[tl_y:br_y, tl_x:br_x]
@@ -759,8 +759,8 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 				# get right eye
 				tl_x = tl_x_face + int(right_json["X"][idx])
 				tl_y = tl_y_face + int(right_json["Y"][idx])
-				w = int(right_json["W"][idx]) * right_eye_noise
-				h = int(right_json["H"][idx]) * right_eye_noise
+				w = int(right_json["W"][idx] * right_eye_noise)
+				h = int(right_json["H"][idx] * right_eye_noise)
 				br_x = tl_x + w
 				br_y = tl_y + h
 				right_eye = img[tl_y:br_y, tl_x:br_x]
