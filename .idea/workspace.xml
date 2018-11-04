@@ -39,12 +39,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1674" />
+          <entry key="py" value="1684" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="1674" />
+          <entry key="Python" value="1684" />
         </counts>
       </usages-collector>
     </session>
@@ -54,11 +54,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="333">
-              <caret line="36" column="9" lean-forward="true" selection-start-line="36" selection-start-column="9" selection-end-line="36" selection-end-column="9" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="137">
+              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
             </state>
           </provider>
         </entry>
@@ -75,8 +72,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/experiments_record.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="535">
-              <caret line="67" column="7" selection-end-line="82" />
+            <state relative-caret-position="580">
+              <caret line="73" column="36" lean-forward="true" selection-start-line="73" selection-start-column="36" selection-end-line="73" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -97,13 +94,11 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>def prepare_data</find>
       <find>def normalize</find>
       <find>image_normalizatio</find>
       <find>image_normalization</find>
       <find>prepare_data</find>
       <find>train_pipe</find>
-      <find>test_pipe</find>
       <find>def initialize_data</find>
       <find>restore</find>
       <find>validate</find>
@@ -124,9 +119,11 @@
       <find>save_data</find>
       <find>dtype(</find>
       <find>resize</find>
-      <find>def train</find>
       <find>write_to_file</find>
       <find>.astype</find>
+      <find>train_path</find>
+      <find>test_pipe</find>
+      <find>def train</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -378,13 +375,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/experiments_record.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="535">
-          <caret line="67" column="7" selection-end-line="82" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_small_sample_test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -402,13 +392,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/experiments_record.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="580">
+          <caret line="73" column="36" lean-forward="true" selection-start-line="73" selection-start-column="36" selection-end-line="73" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="36" column="9" lean-forward="true" selection-start-line="36" selection-start-column="9" selection-end-line="36" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="137">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
         </state>
       </provider>
     </entry>
