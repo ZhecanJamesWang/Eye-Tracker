@@ -805,12 +805,9 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 				face = contrastBrightess(face)
 				left_eye = contrastBrightess(left_eye)
 				right_eye = contrastBrightess(right_eye)
-
+				
 			elif method == "original":
 				pass
-
-			else:
-				raise "not existing function"
 
 
 			# save images (for debug)
