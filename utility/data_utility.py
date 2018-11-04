@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import cv2
+from pylab import array, uint8
 
 def write_to_file(file_name, content):
 
