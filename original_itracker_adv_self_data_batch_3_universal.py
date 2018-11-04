@@ -32,8 +32,8 @@ record_file_name = "records/" + date + '_record.txt'
 records = ""
 records_count = 0
 
-# dataset_path = "../data/GazeCapture"
-dataset_path = "/data/public/gaze/raw/GazeCapture"
+dataset_path = "../data/GazeCapture"
+# dataset_path = "/data/public/gaze/raw/GazeCapture"
 train_path = dataset_path + '/' + "train"
 val_path = dataset_path + '/' + "validation"
 test_path = dataset_path + '/' + "test"

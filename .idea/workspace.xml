@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9b8af76-2ca3-4575-959f-59952877b71f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" beforeDir="false" afterPath="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utility/data_utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility/data_utility.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -39,12 +40,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1655" />
+          <entry key="py" value="1661" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="1655" />
+          <entry key="Python" value="1661" />
         </counts>
       </usages-collector>
     </session>
@@ -54,8 +55,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="15" lean-forward="true" selection-start-line="6" selection-start-column="15" selection-end-line="6" selection-end-column="15" />
+            <state relative-caret-position="540">
+              <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -63,8 +67,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/load_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="387">
-              <caret line="818" column="40" selection-start-line="818" selection-start-column="33" selection-end-line="818" selection-end-column="40" />
+            <state relative-caret-position="460">
+              <caret line="686" column="56" lean-forward="true" selection-start-line="686" selection-start-column="56" selection-end-line="686" selection-end-column="56" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -75,8 +79,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/utility/data_utility.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+            <state relative-caret-position="333">
+              <caret line="35" column="57" selection-start-line="35" selection-start-column="57" selection-end-line="35" selection-end-column="57" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -88,7 +92,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>batch_train_data = load_batch_from_data(mtcnn_h, trai</find>
       <find>load_batch_from_data</find>
       <find>def prepare_data</find>
       <find>def normalize</find>
@@ -114,10 +117,11 @@
       <find>mirror</find>
       <find>left_eye_noise</find>
       <find>print</find>
-      <find>dtype(</find>
       <find>dtype</find>
-      <find>resize</find>
       <find>save_data</find>
+      <find>resize</find>
+      <find>dtype(</find>
+      <find>.astype</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -129,9 +133,9 @@
         <option value="$PROJECT_DIR$/old_scripts/original_itracker_adv_self_data_batch_3_universal_copy.py" />
         <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_small_sample_test.py" />
         <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal_feed_dict.py" />
-        <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" />
         <option value="$PROJECT_DIR$/mtcnn/mtcnn.py" />
         <option value="$PROJECT_DIR$/load_data.py" />
+        <option value="$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py" />
         <option value="$PROJECT_DIR$/utility/data_utility.py" />
       </list>
     </option>
@@ -380,15 +384,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/original_itracker_adv_self_data_batch_3_universal.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="15" lean-forward="true" selection-start-line="6" selection-start-column="15" selection-end-line="6" selection-end-column="15" />
+        <state relative-caret-position="540">
+          <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/load_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="818" column="40" selection-start-line="818" selection-start-column="33" selection-end-line="818" selection-end-column="40" />
+        <state relative-caret-position="460">
+          <caret line="686" column="56" lean-forward="true" selection-start-line="686" selection-start-column="56" selection-end-line="686" selection-end-column="56" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -397,8 +404,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/utility/data_utility.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+        <state relative-caret-position="333">
+          <caret line="35" column="57" selection-start-line="35" selection-start-column="57" selection-end-line="35" selection-end-column="57" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
