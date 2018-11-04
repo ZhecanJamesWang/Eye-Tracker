@@ -84,8 +84,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/load_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="579">
-              <caret line="828" column="96" selection-start-line="828" selection-start-column="96" selection-end-line="828" selection-end-column="96" />
+            <state relative-caret-position="409">
+              <caret line="1108" column="36" lean-forward="true" selection-start-line="1108" selection-start-column="36" selection-end-line="1108" selection-end-column="36" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -106,7 +106,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>optimizer</find>
       <find>sess.run</find>
       <find>self.optimizer</find>
       <find>reshape</find>
@@ -136,6 +135,7 @@
       <find>left_eye_noise</find>
       <find>save_data</find>
       <find>print</find>
+      <find>random</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -412,8 +412,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/load_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="579">
-          <caret line="828" column="96" selection-start-line="828" selection-start-column="96" selection-end-line="828" selection-end-column="96" />
+        <state relative-caret-position="409">
+          <caret line="1108" column="36" lean-forward="true" selection-start-line="1108" selection-start-column="36" selection-end-line="1108" selection-end-column="36" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

@@ -682,9 +682,9 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			face_noise = 1
 
 			if method == "resize":
-				left_eye_noise = random.uniform(1.0, 1.5)
-				right_eye_noise = random.uniform(1.0, 1.5)
-				face_noise = random.uniform(1.0, 1.5)
+				left_eye_noise = np.random.uniform(1.0, 1.5)
+				right_eye_noise = np.random.uniform(1.0, 1.5)
+				face_noise = np.random.uniform(1.0, 1.5)
 
 			try:
 				# result = mtcnn_h.run_mtcnn(resize_img,  if_face = False, if_facemask = False, if_draw = False)
