@@ -7,6 +7,7 @@ from load_data import load_data_names, load_batch_from_data, save_data_to_tfreco
 import datetime
 import random
 from mtcnn.mtcnn import mtcnn_handle
+from utility.data_utility import write_to_file
 import time
 
 # loading models with iterations of: -----
