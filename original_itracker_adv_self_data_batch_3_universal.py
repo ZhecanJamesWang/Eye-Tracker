@@ -10,8 +10,9 @@ from mtcnn.mtcnn import mtcnn_handle
 from utility.data_utility import write_to_file
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+# os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="2"
 
 mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
