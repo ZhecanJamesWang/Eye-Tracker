@@ -643,11 +643,11 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 	# length = 1000
 
 	for i in range(length):
-		for index in range(len(generateFunc)):
-
-			# if i % 100 == 0:
+		if i % 10 == 0:
 			print('Train data {}/{}'.format(i, length))
-			print ("index: ", index)
+			# print ("index: ", index)
+
+		for index in range(len(generateFunc)):
 
 			try:
 				img_name = names[i]
@@ -706,7 +706,7 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			# except Exception as e:
 			# print "check eyes check_dimension"
 			# print e
-			
+
 			mtcnn_flag = "False"
 
 			# open json files
