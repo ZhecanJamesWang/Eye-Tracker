@@ -5,6 +5,7 @@ images/
 others/
 pretrained_models/
 SavedModel/
+records/
 
 *.DS_Store
 *.jpeg
@@ -13,7 +14,6 @@ SavedModel/
 *.dat
 *.pyc
 *.npz
-
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
