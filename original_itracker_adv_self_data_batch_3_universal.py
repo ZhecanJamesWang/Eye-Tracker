@@ -128,8 +128,8 @@ def initialize_data(args):
 
     # save_data_to_tfrecord_without_face(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, "train_test2.tfrecords")
 
-    save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, True, "tf_records/train.tfrecords")
-    save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, img_ch, img_cols, img_rows,  False, "tf_records/test.tfrecords")
+    save_data_to_tfrecord(mtcnn_h, train_names, dataset_path, img_ch, img_cols, img_rows, True, "tf_records/train_aug.tfrecords")
+    # save_data_to_tfrecord(mtcnn_h, val_names, dataset_path, img_ch, img_cols, img_rows,  False, "tf_records/test_aug.tfrecords")
 
 def normalize(data):
     shape = data.shape
@@ -583,8 +583,9 @@ class EyeTracker(object):
                         print "val_err_hist[:4]: ", val_err_hist[:4]
                         # raise 'debug'
 
-                        # plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cum_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
-                        # plot_loss(np.array(train_loss_hist), np.array(train_err_hist), np.array(val_loss_hist), np.array(val_err_hist), start=0, per=1, save_file=plot_ckpt + "/epoch_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+                        plot_loss(np.array(train_loss_history), np.array(train_err_history), np.array(val_loss_history), np.array(val_err_history), start=0, per=1, save_file=plot_ckpt + "/cum_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
+
+                        plot_loss(np.array(train_loss_hist), np.array(train_err_hist), np.array(val_loss_hist), np.array(val_err_hist), start=0, per=1, save_file=plot_ckpt + "/epoch_loss_" + str(n_epoch) + "_" + str(iter) + ".png")
 
                         save_path = ckpt + "model_" + str(n_epoch) + "_" + str(iter) + "_train_error_history_%s"%(np.mean(train_err_history)) + "_val_error_history_%s"%(np.mean(val_err_history))
 
@@ -763,9 +764,9 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 
 def train(args):
 
-    # initialize_data(args)
+    initialize_data(args)
     # # # #
-    # raise "debug"
+    raise "debug"
 
     start = timeit.default_timer()
     plot_ckpt = "plots/" + date

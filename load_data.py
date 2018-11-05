@@ -686,106 +686,109 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 				right_eye_noise = np.random.uniform(1.0, 1.5)
 				face_noise = np.random.uniform(1.0, 1.5)
 
+			# try:
+			# 	# result = mtcnn_h.run_mtcnn(resize_img,  if_face = False, if_facemask = False, if_draw = False)
+			# 	result = mtcnn_h.run_mtcnn(img, if_face=True, if_facemask=True, if_draw=False,
+			# 							   left_eye_noise = left_eye_noise, right_eye_noise = right_eye_noise,
+			# 							   face_noise = face_noise)
+			#
+			# 	[original, draw, face, left_eye, right_eye, face_grid, left_eye_pts, right_eye_pts] = result
+			#
+			# 	check_dimension(face)
+			# 	check_dimension(face_grid, if_last_channel = False)
+			# 	face, face_grid = resize(face, 64), resize(face_grid, 25)
+			# 	check_dimension(left_eye, if_even=True)
+			# 	check_dimension(right_eye, if_even=True)
+			# 	left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
+			#
+			# 	mtcnn_flag = "True"
+			#
+			# except Exception as e:
+			print "check eyes check_dimension"
+			print e
+			mtcnn_flag = "False"
+
+			# open json files
+			face_file = open(join(path, dir, "appleFace.json"))
+			left_file = open(join(path, dir, "appleLeftEye.json"))
+			right_file = open(join(path, dir, "appleRightEye.json"))
+			grid_file = open(join(path, dir, "faceGrid.json"))
+
+			# load json content
+			face_json = json.load(face_file)
+			left_json = json.load(left_file)
+			right_json = json.load(right_file)
+			grid_json = json.load(grid_file)
+
+			# # if coordinates are negatives, skip (a lot of negative coords!)
+			# if int(face_json["X"][idx]) < 0 or int(face_json["Y"][idx]) < 0 or \
+			#     int(left_json["X"][idx]) < 0 or int(left_json["Y"][idx]) < 0 or \
+			#     int(right_json["X"][idx]) < 0 or int(right_json["Y"][idx]) < 0:
+			#     print("Error with coordinates: {}".format(join(path, dir, "frames", frame)))
+			#     continue
+
+			# get face
+			tl_x_face = int(face_json["X"][idx])
+			tl_y_face = int(face_json["Y"][idx])
+			w = int(face_json["W"][idx] * face_noise)
+			h = int(face_json["H"][idx] * face_noise)
+			br_x = tl_x_face + w
+			br_y = tl_y_face + h
+			face = img[tl_y_face:br_y, tl_x_face:br_x]
+
 			try:
-				# result = mtcnn_h.run_mtcnn(resize_img,  if_face = False, if_facemask = False, if_draw = False)
-				result = mtcnn_h.run_mtcnn(img, if_face=True, if_facemask=True, if_draw=False,
-										   left_eye_noise = left_eye_noise, right_eye_noise = right_eye_noise,
-										   face_noise = face_noise)
-
-				[original, draw, face, left_eye, right_eye, face_grid, left_eye_pts, right_eye_pts] = result
-
+				# print type(face)
+				# print face.shape
 				check_dimension(face)
-				check_dimension(face_grid, if_last_channel = False)
-				face, face_grid = resize(face, 64), resize(face_grid, 25)
-				check_dimension(left_eye, if_even=True)
-				check_dimension(right_eye, if_even=True)
-				left_eye, right_eye = resize(left_eye, 64), resize(right_eye, 64)
-
-				mtcnn_flag = "True"
-
+				face = resize(face, 64)
 			except Exception as e:
-				print "check eyes check_dimension"
-				print e
-				mtcnn_flag = "False"
+				print ("check face check_dimension")
+				print 2
+				print (e)
+				continue
 
-				# open json files
-				face_file = open(join(path, dir, "appleFace.json"))
-				left_file = open(join(path, dir, "appleLeftEye.json"))
-				right_file = open(join(path, dir, "appleRightEye.json"))
-				grid_file = open(join(path, dir, "faceGrid.json"))
+			# get left eye
+			tl_x = tl_x_face + int(left_json["X"][idx])
+			tl_y = tl_y_face + int(left_json["Y"][idx])
+			w = int(left_json["W"][idx] * left_eye_noise)
+			h = int(left_json["H"][idx] * left_eye_noise)
+			br_x = tl_x + w
+			br_y = tl_y + h
+			left_eye = img[tl_y:br_y, tl_x:br_x]
 
-				# load json content
-				face_json = json.load(face_file)
-				left_json = json.load(left_file)
-				right_json = json.load(right_file)
-				grid_json = json.load(grid_file)
+			# get right eye
+			tl_x = tl_x_face + int(right_json["X"][idx])
+			tl_y = tl_y_face + int(right_json["Y"][idx])
+			w = int(right_json["W"][idx] * right_eye_noise)
+			h = int(right_json["H"][idx] * right_eye_noise)
+			br_x = tl_x + w
+			br_y = tl_y + h
+			right_eye = img[tl_y:br_y, tl_x:br_x]
 
-				# # if coordinates are negatives, skip (a lot of negative coords!)
-				# if int(face_json["X"][idx]) < 0 or int(face_json["Y"][idx]) < 0 or \
-				#     int(left_json["X"][idx]) < 0 or int(left_json["Y"][idx]) < 0 or \
-				#     int(right_json["X"][idx]) < 0 or int(right_json["Y"][idx]) < 0:
-				#     print("Error with coordinates: {}".format(join(path, dir, "frames", frame)))
-				#     continue
+			try:
+				check_dimension(left_eye)
+				left_eye = resize(left_eye, 64)
+				check_dimension(right_eye)
+				right_eye = resize(right_eye, 64)
+			except Exception as e:
+				print ("check left and right eye size")
+				print (e)
+				continue
 
-				# get face
-				tl_x_face = int(face_json["X"][idx])
-				tl_y_face = int(face_json["Y"][idx])
-				w = int(face_json["W"][idx] * face_noise)
-				h = int(face_json["H"][idx] * face_noise)
-				br_x = tl_x_face + w
-				br_y = tl_y_face + h
-				face = img[tl_y_face:br_y, tl_x_face:br_x]
+			# get face grid (in ch, cols, rows convention)
+			face_grid = np.zeros(shape=(25, 25), dtype=np.float32)
+			tl_x = int(grid_json["X"][idx])
+			tl_y = int(grid_json["Y"][idx])
+			w = int(grid_json["W"][idx])
+			h = int(grid_json["H"][idx])
+			br_x = tl_x + w
+			br_y = tl_y + h
 
-				try:
-					# print type(face)
-					# print face.shape
-					check_dimension(face)
-					face = resize(face, 64)
-				except Exception as e:
-					print ("check face check_dimension")
-					print 2
-					print (e)
-					continue
+			# print ("face_grid: ", face_grid.shape)
+			face_grid[tl_y:br_y, tl_x:br_x] = 1
 
-				# get left eye
-				tl_x = tl_x_face + int(left_json["X"][idx])
-				tl_y = tl_y_face + int(left_json["Y"][idx])
-				w = int(left_json["W"][idx] * left_eye_noise)
-				h = int(left_json["H"][idx] * left_eye_noise)
-				br_x = tl_x + w
-				br_y = tl_y + h
-				left_eye = img[tl_y:br_y, tl_x:br_x]
 
-				# get right eye
-				tl_x = tl_x_face + int(right_json["X"][idx])
-				tl_y = tl_y_face + int(right_json["Y"][idx])
-				w = int(right_json["W"][idx] * right_eye_noise)
-				h = int(right_json["H"][idx] * right_eye_noise)
-				br_x = tl_x + w
-				br_y = tl_y + h
-				right_eye = img[tl_y:br_y, tl_x:br_x]
-
-				try:
-					check_dimension(left_eye)
-					left_eye = resize(left_eye, 64)
-					check_dimension(right_eye)
-					right_eye = resize(right_eye, 64)
-				except Exception as e:
-					print ("check left and right eye size")
-					print (e)
-					continue
-
-				# get face grid (in ch, cols, rows convention)
-				face_grid = np.zeros(shape=(25, 25), dtype=np.float32)
-				tl_x = int(grid_json["X"][idx])
-				tl_y = int(grid_json["Y"][idx])
-				w = int(grid_json["W"][idx])
-				h = int(grid_json["H"][idx])
-				br_x = tl_x + w
-				br_y = tl_y + h
-
-				# print ("face_grid: ", face_grid.shape)
-				face_grid[tl_y:br_y, tl_x:br_x] = 1
+# --------------------------------------------------------------------
 
 			dot_file = open(join(path, dir, "dotInfo.json"))
 			dot_json = json.load(dot_file)
