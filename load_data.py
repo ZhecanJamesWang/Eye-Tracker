@@ -704,8 +704,9 @@ def save_data_to_tfrecord(mtcnn_h, names, path, img_ch, img_cols, img_rows, if_t
 			# 	mtcnn_flag = "True"
 			#
 			# except Exception as e:
-			print "check eyes check_dimension"
-			print e
+			# print "check eyes check_dimension"
+			# print e
+			
 			mtcnn_flag = "False"
 
 			# open json files
