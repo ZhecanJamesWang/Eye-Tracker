@@ -10,9 +10,9 @@ from mtcnn.mtcnn import mtcnn_handle
 from utility.data_utility import write_to_file
 
 import os
-# os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # os.environ["CUDA_VISIBLE_DEVICES"]="1"
-os.environ["CUDA_VISIBLE_DEVICES"]="2"
+# os.environ["CUDA_VISIBLE_DEVICES"]="2"
 
 mtcnn_h = mtcnn_handle()
 now = datetime.datetime.now()
@@ -205,7 +205,8 @@ class EyeTracker(object):
     def train_pipe(self):
         # --------------------------------------------------
         # data_path = 'tf_records/train.tfrecords'
-        data_path = '/data/public/gaze/intermediate/train.tfrecords'
+        # data_path = '/data/public/gaze/intermediate/train.tfrecords'
+        data_path = '/data/public/gaze/intermediate/train_aug.tfrecords'
         # data_path = 'train.tfrecords'
         # data_path = 'train_test.tfrecords'
         # data_path = 'train_test20000.tfrecords'
@@ -765,9 +766,9 @@ def plot_loss(train_loss, train_err, test_loss, test_err, start=0, per=1, save_f
 
 def train(args):
 
-    initialize_data(args)
+    # initialize_data(args)
     # # # #
-    raise "debug"
+    # raise "debug"
 
     start = timeit.default_timer()
     plot_ckpt = "plots/" + date
@@ -817,7 +818,7 @@ def main():
     parser.add_argument('--train', action='store_true', help='train flag')
     # parser.add_argument('-i', '--input', required=True, type=str, help='path to the input data')
     parser.add_argument('-max_epoch', '--max_epoch', type=int, default=60, help='max number of iterations')
-    parser.add_argument('-lr', '--learning_rate', type=float, default=0.00001, help='learning rate')
+    parser.add_argument('-lr', '--learning_rate', type=float, default=0.01, help='learning rate')
     parser.add_argument('-bs', '--batch_size', type=int, default=500, help='batch size')
     parser.add_argument('-p', '--patience', type=int, default=np.Inf, help='early stopping patience')
     parser.add_argument('-pp_iter', '--print_per_epoch', type=int, default=1, help='print per iteration')
