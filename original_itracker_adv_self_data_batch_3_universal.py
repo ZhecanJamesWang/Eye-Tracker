@@ -2,6 +2,8 @@ import argparse
 import timeit
 import numpy as np
 import tensorflow as tf
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from load_data import load_data_names, load_batch_from_data, save_data_to_tfrecord, save_data_to_tfrecord_without_face
 import datetime

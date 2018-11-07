@@ -620,6 +620,9 @@ def get_prediction(session, val_data, val_ops, orig_val_data = None):
 	val_eye_right = np.expand_dims(val_eye_right, axis=0)
 	val_face = np.expand_dims(val_face, axis=0)
 
+
+
+
 	val_face_mask = val_face_mask.flatten()
 	# print val_face_mask.shape
 	val_face_mask = np.expand_dims(val_face_mask, axis=0)
@@ -928,7 +931,11 @@ def live_test(args, val_ops = None, flag = 0, path = None, if_return = False):
 	print "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
 	print "successfully loadded: args.load_model"
 
+	counter = 0
+
 	while(hold):
+		print "counter: ", counter
+		counter += 1
 		start_time = time.time()
 
 		if flag == 0:
@@ -948,7 +955,7 @@ def live_test(args, val_ops = None, flag = 0, path = None, if_return = False):
 		start_time = time.time()
 
 		result = cam_mtcnn(frame)
-		print ("result: ", result)
+		print ("len(result): ", len(result))
 
 		lapse = time.time() - start_time
 		mtcnn_window.append(lapse)
@@ -1045,8 +1052,8 @@ def live_test(args, val_ops = None, flag = 0, path = None, if_return = False):
 				display_window = display_window[-10:]
 			print (" --- display ----")
 			print("--- %s seconds ---" % np.mean(display_window))
-		else:
-			return []
+		# else:
+		# 	return []
 
 
 def test(args):
@@ -1097,10 +1104,11 @@ def main():
 
 
 	# live_test(args, flag = 2, path = "/Users/zhecanwang/Project/Eye-Tracker-master/demo_data/images/in_car/boya/A00001_G2_Ch0_Rear_S01.jpg")
-	# live_test(args, flag = 1, path = 'demo_data/avi/20180816_18_24_19_223_000_Ch0_Rear_F1_297_00000.AVI')
+	live_test(args, flag = 1, path = 'demo_data/avi/20180816_18_24_19_223_000_Ch0_Rear_F1_297_00000.AVI')
+	# live_test(args, flag = 1, path = 'demo_data/new_video_0.AVI')
 
 	# sample_imag_testing(args, "/Users/zhecanwang/Project/Eye-Tracker-master/demo_data/images/in_car/boya")
-	sample_imag_testing(args, "/Users/zhecanwang/Project/Eye-Tracker-master/demo_data/images/in_car/testin")
+	# sample_imag_testing(args, "/Users/zhecanwang/Project/Eye-Tracker-master/demo_data/images/in_car/testin")
 
 if __name__ == '__main__':
 	main()

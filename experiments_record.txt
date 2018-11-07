@@ -72,7 +72,7 @@ train_test8.tfrecords
 EyeTracker + MTCNN tfrecords 2018-10-29-16-39  7 epochs 1380 iters (batch_size 500)  lr = 0.01   *0.1 every 5 epochs
 EyeTracker + MTCNN tfrecords 2018-11-01-13-30 6 epochs 1500 iters  (batch_size 500)  lr = 0.001   *0.1 every 5 epochs
 EyeTracker + MTCNN tfrecords 2018-11-02-00-46 5 epochs 2340 iters  (batch_size 500)  lr = 0.0001   *0.1 every 5 epochs
-
+EyeTracker + MTCNN tfrecords 2018-11-04-13-35 60 epochs (batch_size 500)             lr = 0.00001   *0.1 every 5 epochs  until lr: 1e-17
 
 
 
